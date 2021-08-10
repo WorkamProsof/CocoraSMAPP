@@ -1,0 +1,33 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-button (click)="irAtras()">
+				<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+		<ion-title>Diligenciar Lista de Chequeo</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<table id="head">
+		<tr>
+			<th>VIN / PLACA</th>
+			<td>{{ VIN }}</td>
+			<th>MARCA</th>
+			<td>{{ Marca }}</td>
+		</tr>
+		<tr>
+			<th>LINEA</th>
+			<td>{{ Linea }}</td>
+			<th>COLOR</th>
+			<td>{{ Color }}</td>
+		</tr>
+	</table>
+	<div id="listaHTML"></div>
+	<ion-fab vertical="bottom" horizontal="end" slot="fixed" id="btnSubmit" [hidden]=formulario>
+		<ion-fab-button (click)="submit()">
+			<ion-icon name="save"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+</ion-content>

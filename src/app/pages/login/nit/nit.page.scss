@@ -1,0 +1,149 @@
+ion-app {
+	content: "";
+	background: url('/assets/BgFullApp.jpg');
+	background-size: auto;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-size: cover;
+	position: absolute;
+	z-index: -1;
+	background-position: center;
+}
+
+.IconoLogin {
+	width: 5.5em;
+	height: 5.5em;
+	background: url('/assets/Logo.png') no-repeat center/contain; 
+}
+
+.TituloInicioApp {
+	font-size: 20px;
+	color: #fff;
+	font-weight: 300;
+	text-align: center;
+	margin-top: 0px;
+	width: 100%;
+}
+
+.button-test {
+	width: 100%;
+	background-image: linear-gradient(to right, #0084ce, #26bcf6);
+	color: #fff;
+	font-size: 20px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	border-radius: 20px;
+	margin-top: 5px;
+}
+
+ion-footer {
+	text-align: center;
+}
+
+.DivTop {
+	position: absolute;
+	right: 0px;
+	width: 100%;
+	top: 10%;
+}
+
+.ClasePadre.footer {
+	height: 40px;
+	position: fixed;
+	z-index: 5;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.ClasePadre {
+	text-align: center !important;
+	height: 100%;
+}
+
+.hijo {
+	padding: 10px;
+
+	display: inline-block;
+}
+
+ion-content, ion-footer, ion-toolbar {
+	--background: none;
+}
+
+.TituloApp {
+	font-size: 30px;
+	text-align: center;
+	padding-top: 10px;
+	font-weight: 300;
+	color: #363636;
+}
+
+.SubTituloApp {
+	font-size: 17px;
+	margin-top: 0px;
+}
+
+.DivLogin {
+	width: 100%;
+	position: absolute;
+	bottom: 50px;
+	right: 0px;
+}
+
+.item-input {
+	border-radius: 12px;
+	box-shadow: 0px 0px 1px 0px gray;
+	--background: var(--ion-item-background,var(--ion-background-color,rgba(255,255,255,0.5)));
+	border: 3px solid #fff;
+}
+
+.bgLogoCS {
+	width: 120px;
+	height: 35px;
+	background: url("/assets/LogoCS.png") no-repeat center/cover;
+}
+
+.footer-md::before {
+	background-image:none; 
+}
+
+@media (orientation: landscape){
+	.DivTop {
+		width: 50%;
+		left: 0px;
+		margin: 0;
+		position: absolute;
+		top: 50%;
+		-ms-transform: translateY(-50%);
+		transform: translateY(-50%);
+	}
+
+	.DivTop p {
+		margin: 0;
+	}
+
+	.TituloInicioApp {
+		font-size: 25px;
+		margin-top: -12px;
+	}
+
+	.IconoLogin {
+		margin-top: 5%;
+		width: 110px;
+		height: 122px;
+	}
+
+	.DivLogin {
+		width: 50%;
+		right: 0px;
+		margin: 0;
+		position: absolute;
+		top: 50%;
+		-ms-transform: translateY(-50%);
+		transform: translateY(-50%);
+		bottom: auto;
+	}
+}

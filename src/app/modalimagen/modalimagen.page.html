@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons class="btnInicio" slot="start">
+        <ion-button (click)="cerrarModal()">
+          <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Imagenes Incidencia {{incidencia}}</ion-title>
+    </ion-toolbar>	
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+      	<ion-slides> 
+            <ion-slide *ngFor="let item of arryayImage_aux">
+              <img [src]="item.img" (click)="verImagen()">
+            </ion-slide>
+        </ion-slides> 
+    </ion-grid>
+</ion-content>

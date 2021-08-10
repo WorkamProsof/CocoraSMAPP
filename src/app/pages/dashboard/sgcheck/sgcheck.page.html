@@ -1,0 +1,81 @@
+<ion-header>
+	<ion-toolbar class="toolbarPrincipal" *ngIf="!verBusqueda">
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-menu-button></ion-menu-button>
+		</ion-buttons>
+		<ion-title>SGCHECK</ion-title>
+
+		<ion-buttons class="btnInicio" slot="primary">
+			<ion-button (click)="leerVin()">VIN</ion-button>
+		</ion-buttons>
+
+		<ion-buttons slot="primary">
+			<ion-button class="btnInicio" (click)="mostrarBusqueda()">
+				<ion-icon slot="icon-only" name="search"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-toolbar>
+
+	<form #form="ngForm" method="post" autocomplete="off" *ngIf="verBusqueda" style="background-color: white !important;">
+		<ion-toolbar>
+			<ion-buttons slot="start" id="content-back">
+				<ion-button (click)="volver()" style="color: black;">
+					<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+				</ion-button>
+			</ion-buttons>
+
+			<ion-searchbar searchIcon="undefined" placeholder="Buscar..." animated="true" ngModel name="vin" id="inputVin" class="inputVin" (ionChange)="buscarVin(form)" #buscador></ion-searchbar>
+		</ion-toolbar>
+	</form>
+	<ion-progress-bar type="indeterminate" [hidden]=cargando></ion-progress-bar>
+</ion-header>
+
+<ion-content>
+	<ion-refresher class="refresh" slot="fixed" pullFactor="0.5" pullMin="35" pullMax="150" (ionRefresh)="doRefresh($event)">
+		<ion-refresher-content 
+			pullingIcon="arrow-down"
+			refreshingSpinner="crescent"
+		>
+		</ion-refresher-content>
+	</ion-refresher>
+	<div [hidden]=contenido>
+		<div [hidden]=mostrarProcesados>
+
+			<ion-list id="listaVins" [hidden]=repetidos>
+			</ion-list>
+
+			<ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [hidden]=repetidos>
+			<ion-infinite-scroll-content
+				on-refresh="none"
+				loadingSnipper="none"
+				loadingText="Cargando...">
+				</ion-infinite-scroll-content>
+			</ion-infinite-scroll>
+
+			<ion-list [hidden]=!repetidos>
+				<ion-item *ngFor="let repetido of listaRepetidos" (click)="diligenciarCheckList(repetido)">
+					<ion-label>
+						<ion-card-subtitle>{{repetido.VIN}}</ion-card-subtitle>
+					</ion-label>
+				</ion-item>
+			</ion-list>
+		</div>
+		<div [hidden]=!mostrarProcesados>
+			<p style="margin: 10px;">Estos vehículos ya han sido procesados, por lo tanto no se guardaran los movimientos en la base de datos.</p>
+			<ion-list>
+				<ion-item *ngFor="let procesado of procesados">
+					<ion-label>
+						<h6><b>{{procesado.Numerolote}}</b> <span class="listFecha">{{procesado.Fecha}}</span></h6>
+						<ion-card-subtitle>{{procesado.Nombre}}</ion-card-subtitle>
+					</ion-label>
+				</ion-item>
+			</ion-list>
+			<ion-button expand="block" color="primary" (click)="ocultarProcesados()">Volver</ion-button>
+		</div>
+	</div>
+	<ion-fab [hidden]=contenido vertical="bottom" horizontal="end" slot="fixed">
+		<ion-fab-button (click)="scan()">
+			<ion-icon name="barcode"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header> 
+	<ion-toolbar>
+		<ion-buttons slot="start">
+			<ion-menu-button></ion-menu-button>
+		</ion-buttons>
+		<ion-title>Desplazamiento Masivo</ion-title>
+	</ion-toolbar>
+</ion-header>
+<div style="text-align: center;margin-top: 5px;">
+	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
+</div>
+<ion-content padding [hidden]=contenido>
+	<form #form="ngForm" (ngSubmit)="cambioClave(form)" method="post" autocomplete="off">
+		<ion-item>
+			<ion-label position="floating">Usuario</ion-label>
+			<ion-select name="user" [value]="user" required ngModel>
+				<ion-select-option *ngFor="let usuario of usuarios"  value="{{usuario.user}}">{{usuario.nombreusuario}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Contraseña Anterior</ion-label>
+			<ion-input ngModel [type]="passwordType" name="password" clearOnEdit="false" required></ion-input>
+			<ion-icon slot="end" [name]="passwordIcon" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Nueva Contraseña</ion-label>
+			<ion-input ngModel [type]="passwordType" name="nuevaContrasena" clearOnEdit="false" required></ion-input>
+			<ion-icon slot="end" [name]="passwordIcon" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Confirmar Nueva Contraseña</ion-label>
+			<ion-input ngModel [type]="passwordType" name="ConfiContrasena" clearOnEdit="false" required></ion-input>
+			<ion-icon slot="end" [name]="passwordIcon" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+		</ion-item>
+
+		<br/>
+
+		<ion-button type="submit" expand="full" color="primary">Guardar Cambios</ion-button>
+	</form>
+</ion-content>

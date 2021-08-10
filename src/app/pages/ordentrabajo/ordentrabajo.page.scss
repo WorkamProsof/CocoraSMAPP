@@ -1,0 +1,124 @@
+ion-header {
+	--ion-background-color: #4894d7;
+}
+ion-button{
+	border-radius: 5px !important;	
+}
+
+.listFecha{
+	float: right;
+	font-size: 12px;
+}
+
+.btnInicio{
+	color: white !important;
+}
+
+ion-list{
+	margin-top: -8px;
+}
+
+#btnInicio {
+	width: 48% !important;
+}
+
+#btnInicioAct {
+	width: 100% !important;
+}
+
+#divSeccionPatio{
+	overflow-x: auto;
+	display: block;
+	height: 65%;
+}
+
+.seleccionado {
+	--ion-color-base: #505050 !important;
+}
+
+#btnPausa{
+	color: white !important;
+	width: 48% !important;
+	background-color: #c85404ff !important;
+}
+
+
+#btnFinaliza{
+	color: white !important;
+	width: 48% !important;
+	background-color: red !important;
+	// border-radius: 25px !important;
+}
+
+#btnConfirmaPausa{
+	color: white !important;
+	width: 100% !important;
+	background-color: #c85404ff !important;
+}
+
+#btnContinuar{
+	color: white !important;
+	width: 100% !important;
+	background-color: #858500c4 !important;
+}
+
+#btnFinalizarInc{
+	color: white !important;
+	width: 48% !important;
+	font-size: 75% !important;
+	background-color: red !important;
+}
+
+#btnRutaInc{
+	color: white !important;
+	width: 48% !important;
+	background-color: #0e1b37ff !important;
+}
+#btnRutaFin{
+	color: white !important;
+	width: 100% !important;
+	background-color: #0e1b37ff !important;
+}
+
+#btnNotas{
+	color: white !important;
+	width: 45% !important;
+	background-color: #5bc0de !important;
+}
+
+#notas{
+	border: solid 0.5px #555555;
+	padding: 2px;
+	background-color: #ddd;
+}
+
+#dd{
+	 float: right !important;
+}
+
+#foot {
+	--background : white;
+}
+
+.expand-wrapper{
+	height: 0;
+	transition: 0.2s linear;
+}
+.collapsed{
+	height: 0 !important;
+}
+
+.popover-content{
+	width:90% !important;
+}
+
+.sc-ion-select-popover-md{
+	font-size: 11px;
+}
+
+
+
+
+
+
+

@@ -1,0 +1,128 @@
+<ion-header>
+	<ion-toolbar class="toolbarPrincipal" *ngIf="!verBusqueda">
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-menu-button *ngIf="patioSeleccionado == null"></ion-menu-button>
+			<ion-button *ngIf="patioSeleccionado != null" (click)="irAtras()">
+				<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+		<ion-title>Incidencias</ion-title>
+
+		<ion-buttons class="btnInicio" slot="primary">
+			<ion-button (click)="leerInc()">Inc</ion-button>
+		</ion-buttons>
+
+		<ion-buttons slot="primary">
+			<ion-button class="btnInicio" (click)="mostrarBusqueda()">
+				<ion-icon slot="icon-only" name="search"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-toolbar>
+
+	<form #form="ngForm" method="post" autocomplete="off" *ngIf="verBusqueda" style="background-color: white !important;">
+		<ion-toolbar>
+			<ion-buttons slot="start" id="content-back">
+				<ion-button (click)="volver()" style="color: black;">
+					<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+				</ion-button>
+			</ion-buttons>
+
+			<ion-searchbar searchIcon="undefined" placeholder="Buscar..." animated="true" ngModel name="pqrid" id="inputVin" class="inputVin" (ionChange)="buscarVin(form)" #buscador></ion-searchbar>
+		</ion-toolbar>
+	</form>
+	<ion-progress-bar type="indeterminate" [hidden]=cargando></ion-progress-bar>
+	
+</ion-header>
+<div style="text-align: center;margin-top: 5px;">
+	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
+</div>
+
+<div padding *ngIf="!filtro && this.isConnected" style="padding: 0px 15px;">
+	<ion-button color="success" (click)="verOcultarFiltro()"><ion-icon name="list-box"></ion-icon> Filtro</ion-button>
+	<ion-button color="secondary" (click)="verTodos()">Todos</ion-button>
+</div>
+
+<ion-content padding *ngIf="filtro">
+	<ion-button class="ion-margin-bottom" (click)="verOcultarFiltro()">Cancelar Filtro</ion-button>
+	<form #form="ngForm" (ngSubmit)="filtrar(form)" method="post" autocomplete="off">
+
+		
+		<ion-item>
+			<ion-label position="floating">Ordenar Por</ion-label>
+			<ion-select name="ordenadopor"  [value]="FormularioFiltro.ordenadopor" ngModel [(ngModel)]="FormularioFiltro.ordenadopor">
+				<ion-select-option value="1">Sucursal</ion-select-option>
+				<ion-select-option value="2">Incidencia Acendente</ion-select-option>
+				<ion-select-option value="3">Incidencia Decendente</ion-select-option>
+				<ion-select-option value="4">Código Interno</ion-select-option>
+				<ion-select-option value="5">fecha Incidencia</ion-select-option>
+				<ion-select-option value="6">Equipo</ion-select-option>
+			</ion-select> 
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Cliente</ion-label>
+			<ion-select name="terceroid" required  [value]="FormularioFiltro.terceroid" ngModel (ionChange)="changeSucursal($event.target.value)">
+				<ion-select-option *ngFor="let clientes of clientes" value="{{clientes.terceroid}}">{{clientes.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Sucursal</ion-label>
+			<ion-select name="sucursalid" id="sucursalid" [value]="FormularioFiltro.sucursalid" required  [(ngModel)]="FormularioFiltro.sucursalid">
+				<ion-select-option *ngFor="let sucursales of sucursales" value="{{sucursales.sucursalid}}">{{sucursales.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+		
+		<ion-item>
+			<ion-label position="floating">Fecha Inicial</ion-label>
+			<ion-datetime name="fechainicial"  monthShortNames="{{meses}}" [(ngModel)]="FormularioFiltro.fechainicial"></ion-datetime>
+		</ion-item>
+		
+		<ion-item>
+			<ion-label position="floating">Fecha Final</ion-label>
+			<ion-datetime name="fechafinal" monthShortNames="{{meses}}"  [(ngModel)]="FormularioFiltro.fechafinal"></ion-datetime>
+    	</ion-item>
+    
+    	<ion-item>
+			<ion-label position="floating">Estados</ion-label>
+			<ion-select name="estadopqrid" [value]="FormularioFiltro.estadopqrid" required ngModel>
+				<ion-select-option *ngFor="let estadopqrSelect of estadopqr" value="{{estadopqrSelect.estadopqrid}}">{{estadopqrSelect.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+		<br/>
+
+		<ion-button type="submit" expand="full" color="primary">Filtrar</ion-button>
+	</form>
+</ion-content>
+<ion-content *ngIf="!filtro">
+
+
+	<ion-refresher class="refresh" slot="fixed" pullFactor="0.5" pullMin="35" pullMax="150" (ionRefresh)="doRefresh($event)">
+		<ion-refresher-content 
+			pullingIcon="arrow-down"
+			refreshingSpinner="crescent"
+		>
+		</ion-refresher-content>
+	</ion-refresher>
+
+	<div [hidden]=contenido>
+		<div [hidden]=mostrarProcesados>
+			<ion-list id="lista" [hidden]=repetidos>
+			</ion-list>
+
+			<ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [hidden]=repetidos>
+			<ion-infinite-scroll-content
+				on-refresh="none"
+				loadingSnipper="none"
+				loadingText="Cargando...">
+				</ion-infinite-scroll-content>
+			</ion-infinite-scroll> 
+		</div>
+	</div>
+
+	<ion-fab  vertical="bottom" horizontal="end" slot="fixed">
+		<ion-fab-button (click)="call()">
+			<ion-icon name="call"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+</ion-content>

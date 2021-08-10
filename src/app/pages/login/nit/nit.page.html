@@ -1,0 +1,32 @@
+<ion-app>
+	<ion-header translucent="true" mode="md">
+		<ion-progress-bar type="indeterminate" [hidden]=cargando></ion-progress-bar>
+	</ion-header>
+
+	<ion-content class="ion-padding-horizontal ion-margin-top">
+		<div class="ClasePadre">
+			<div class="DivTop">
+				<div class="IconoLogin hijo">
+
+				</div>
+				<br>
+				<p class="TituloInicioApp hijo"></p>
+			</div>
+			<div class="DivLogin hijo" [hidden]=contenido>
+				<form #form="ngForm" (ngSubmit)="login(form)" method="post">
+					<ion-item>
+					<ion-label position="floating">NIT</ion-label>
+						<ion-input ngModel type="nit" name="nit" required></ion-input>
+					</ion-item>
+
+					<button type="submit" class="button-test">Ingresar</button>
+				</form>
+			</div>
+		</div>
+		<div class="ClasePadre footer">
+			<div class="bgLogoCS hijo">
+
+			</div>
+		</div>
+	</ion-content>
+</ion-app>

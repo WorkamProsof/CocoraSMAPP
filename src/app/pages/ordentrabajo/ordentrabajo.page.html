@@ -1,0 +1,233 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-button (click)="irAtras()">
+				<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-toolbar>	
+
+</ion-header>
+
+<ion-content>
+	<ion-list *ngIf="Arraypqr" style="padding: 0;"> 
+		<ion-item>
+			<ion-label>
+				<p style="font-size: 11px;"><strong style="font-size: 11px;"><label style="color: black;"> Inc:</label> </strong> {{Arraypqr.pqrid}}<strong><label style="color: black;"> F. Inc:</label></strong>{{Arraypqr.fechapqr}}<span class="listFecha" style="float: right;font-size: 11px;"><strong><label [ngStyle]="{'background-color':Arraypqr.colorfechalimite}" style="color: black;"> F.Limite:</label> {{Arraypqr.fechalimite ? Arraypqr.fechalimite : '--'}}</strong></span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Cliente:</label></strong><span class="listFecha" style="float: right;font-size: 11px;">{{Arraypqr.nombretercero}}</span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Sucursal:</label></strong><span class="listFecha" style="float: right;font-size: 11px;">{{Arraypqr.nombresucursal ? Arraypqr.nombresucursal : '--'}}</span></p>
+				<!-- <p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Equipo:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> {{Arraypqr.nombreequipo}}</span></p> -->
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Equipo:</label>{{Arraypqr.nombreequipo}} </strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;"> Serial:</label>{{Arraypqr.serialequipo}} </span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">C.Interno:</label> {{Arraypqr.codigointerno ? Arraypqr.codigointerno : '--'}}</strong> <span class="listFecha" style="float: right;font-size: 11px;"> <strong><label style="color: black;">Dir:</label> {{Arraypqr.direccionsucursal ? Arraypqr.direccionsucursal : '--'}}</strong></span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Asunto:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> {{Arraypqr.asunto}}</span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Estado:</label>{{Arraypqr.nombreestadopqr ? Arraypqr.nombreestadopqr : '--'}} </strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;"> Prioridad:</label>{{Arraypqr.prioridadid ? Arraypqr.prioridadid : '--'}} </span></p>
+				<!-- <p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Direrección:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> {{Arraypqr.direccionsucursal ? Arraypqr.direccionsucursal : '--'}}</span></p> -->
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Componente:</label>{{Arraypqr.componente ? Arraypqr.componente : '--'}}</strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;">Adquisición:</label>{{Arraypqr.nombreadquisicion ? Arraypqr.nombreadquisicion : '--'}}</span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Descripción:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> {{Arraypqr.descripcion ? Arraypqr.descripcion : '--'}}</span></p>
+				<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;">Operación:</label></strong><span style="font-size: 11px;" style="display: flex;align-items: center;" class="listFecha">{{Arraypqr.operacion ? Arraypqr.operacion : '--'}}
+						<ion-icon slot="icon-only" color="primary" style="font-size: 25px;margin-left: 5px;" (click)='dataObservacion()' [name]="Icon"></ion-icon></span></p>  
+			</ion-label>
+		</ion-item>
+		<ion-item *ngIf="validaObservacion">
+			<ion-note id="expandWrapper" [innerHtml]="Arraypqr.operacion ? Arraypqr.observacion : '--'" ></ion-note> 
+		</ion-item>
+	</ion-list>
+
+	<ion-grid *ngIf="!forNota && !forNotaHistotial">
+		<ion-row>
+			<ion-col *ngIf="(estadoInc == 'FinalizoRuta' || estadoInc == 'finalizaractividad' || estadoInc == null || estadoInc == 'finalizar') && !procesoIniciar"  >
+				<ion-button *ngIf="validarutaapp =='1'" id="btnRutaInc" shape="round"  color="danger-shade" (click)="iniciarRuta()">
+					Iniciar ruta
+				</ion-button>
+
+				<ion-button  id="btnInicio"  [disabled]="procesoIniciar" color="success" (click)="iniciar()">
+					Iniciar
+				</ion-button>
+			</ion-col>
+
+			<ion-col *ngIf="estadoInc == 'iniciar'  && estadoFinInc != 'finalizar'">
+
+				<ion-button *ngIf="!procesoPausa "  id="btnFinaliza" shape="round" color="danger-shade" (click)="finalizar()" [disabled]="procesoFin">
+					Finalizar
+				</ion-button>
+
+				<ion-button *ngIf="!procesoPausa"   id="btnPausa" color="danger-shade" (click)="pausar()" [disabled]="procesoPausa">
+					Pausar
+				</ion-button>
+			</ion-col>
+
+			<ion-col *ngIf="estadoInc == 'InicioRuta'">
+				<ion-button *ngIf="validarutaapp =='1'"  id="btnRutaFin" color="danger-shade" (click)="FinalizoRuta()">
+					Finalizo Ruta
+				</ion-button>
+			</ion-col>
+
+			<ion-col *ngIf="estadoInc == 'continuar' && estadoFinInc != 'finalizar'">
+				<ion-button *ngIf="!procesoPausa"   id="btnFinaliza" shape="round" color="danger-shade" (click)="finalizar()" [disabled]="procesoFin">
+					Finalizar
+				</ion-button>
+
+				<ion-button *ngIf="!procesoPausa" class="border"  id="btnPausa" color="danger-shade" (click)="pausar()" [disabled]="procesoPausa">
+					Pausar
+				</ion-button>
+			</ion-col>
+
+			<ion-col *ngIf="estadoInc == 'pausar'">
+				<ion-button  id="btnContinuar"  color="danger-shade" (click)="continuar()">
+					Continuar
+				</ion-button>
+			</ion-col>
+
+			<ion-col *ngIf="estadoFinInc == 'finalizar'">
+
+				<ion-item *ngIf="estadoSelet == true">
+					<ion-label position="floating">Estado</ion-label>
+					<ion-select  [value]="estadopqrid" interface="popover" placeholder="Seleccionar Estado" (ionChange)="seleccionEstadopqr($event,1)">
+						<ion-select-option *ngFor="let estado of ESTADOS" value="{{estado.nuevoestado}}">{{estado.nombrenuevoestadopqr}}</ion-select-option>
+					</ion-select>
+				</ion-item>
+
+				<ion-item *ngIf="estadoSelet == true">
+					<ion-label position="floating">Técnico</ion-label>
+					<ion-select  [value]="datoTecnicoSelet" multiple="{{selectMultiple}}" [disabled]="tecnicoDisabled" interface="popover" placeholder="Seleccionar Ténico" (ionChange)="seleccionEstadopqr($event,0)">
+						<ion-select-option *ngFor="let ListUsuario of Arryusuarios"  value="{{ListUsuario.usuarioid}}">{{ListUsuario.nombre}}</ion-select-option>
+					</ion-select>
+				</ion-item>
+				
+				<ion-button *ngIf="estadoSelet != true" id="btnFinalizarInc"  color="success" (click)="FinalizarActividad()">
+					Finalizar Actividad
+				</ion-button>
+
+				<ion-button *ngIf="estadoSelet != true"  id="btnFinalizarInc"  color="danger-shade" (click)="FinalizarIncidencia()">
+					Finalizar Incidencia
+				</ion-button>
+
+				<ion-button  *ngIf="estadoSelet == true" id="btnFinalizarInc" style="width: 100% !important;"  color="danger-shade" (click)="FinalizarIncidencia()">
+					Finalizar Incidencia
+				</ion-button>
+
+			</ion-col>
+
+		</ion-row>
+	</ion-grid>
+
+	<ion-grid *ngIf="!forNota">
+	
+		<ion-item *ngIf="tiposParadas && procesoPausa && !procesoFin">
+			<ion-label position="floating">Tipo Stop</ion-label>
+			<ion-select  interface="popover" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
+				<ion-select-option *ngFor="let tipoParada of tiposParadas" value="{{tipoParada.tipoparadaid}}">{{tipoParada.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item *ngIf="tipoactividades && procesoIniciar">
+			<ion-label position="floating">Actividad</ion-label>
+			<ion-select style="width:90%" interface="popover" placeholder="Selecciona actividad a realizar" (ionChange)="seleccionActividad($event)">
+				<ion-select-option style="font-size: 10PX;" *ngFor="let tipoactividades of tipoactividades" value="{{tipoactividades.id}}">{{tipoactividades.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+		
+		<ion-grid *ngIf="procesoIniciar">
+			<ion-button  id="btnInicioAct" expand="block" color="success" (click)="procesarIniciar()">
+				Iniciar
+			</ion-button>
+		</ion-grid>
+
+	
+
+		<ion-grid *ngIf="procesoPausa">
+			<ion-button  id="btnConfirmaPausa" expand="block" color="danger-shade" (click)="procesarPausa()">
+				Pausar
+			</ion-button>
+		</ion-grid>
+	</ion-grid>
+
+	<ion-grid *ngIf="forNota">
+		<ion-card id="notas">
+			<form #form="ngForm" (ngSubmit)="submitNotaDetalle(form)" method="post" autocomplete="off">
+				<ion-col size="6">
+					<div >
+						<ion-label style="margin: 0px 10px;color:black">Notas</ion-label>
+						<ion-label style="float: right;margin: 0px 10px;color:black">Privada</ion-label>
+						<ion-checkbox ngModel name="privada" (click)="changePrivate($event)" style="float: right;margin: 0px 10px;"></ion-checkbox>
+					</div>
+				</ion-col>
+
+				<ion-item>
+					<ion-textarea ngModel name="detalle" position="floating"></ion-textarea>
+				</ion-item> 
+
+				<ion-button type="submit" expand="full" color="primary">Añadir Nota</ion-button>
+			</form>
+
+		</ion-card>
+	</ion-grid>
+
+	<ion-grid *ngIf="forNotaHistotial"><h3 style="text-align: center;margin: 0px;"><span>Historial Notas</span></h3>
+		<ion-item *ngFor="let item of ArraypqrNotas">
+				<div>
+					<h6><b>Nota : {{item.detalle}}</b> <span class="listFecha"></span></h6>
+					<ion-label>
+						<ion-card-subtitle>Usuario  : {{item.nombreusuario}} </ion-card-subtitle>
+						<ion-card-subtitle>Fecha    : {{item.created_at}}</ion-card-subtitle>
+						<h6 *ngIf="item.privado == '1'">Tipo Nota :  Privada </h6> 
+						<h6 *ngIf="item.privado != '1'">Tipo Nota :  Publica </h6> 
+					</ion-label>
+				</div>
+			</ion-item> 
+	</ion-grid>
+
+	<ion-fab *ngIf="!forNota && !forNotaHistotial" vertical="bottom" horizontal="end" slot="fixed">
+
+		<ion-fab-button>
+			<ion-icon name="list-box"></ion-icon>
+		</ion-fab-button>
+
+		<ion-fab-list side="top">
+			<ion-fab-button (click)="verCrearNota();">
+				<ion-icon name="chatboxes"></ion-icon>
+			</ion-fab-button>
+			<ion-fab-button (click)="verHistorialNota();">
+				<ion-icon name="paper"></ion-icon>
+			</ion-fab-button>
+		</ion-fab-list>
+
+	</ion-fab>
+
+	<ion-fab *ngIf="forNota || forNotaHistotial" vertical="bottom" horizontal="end" slot="fixed">
+		<ion-fab-button (click)="cerrarNota();">
+			<ion-icon name="close-circle"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+
+	<!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+		<ion-fab-button (click)="Setcamera()">
+			<ion-icon name="camera"></ion-icon>
+		</ion-fab-button>
+	</ion-fab> -->
+
+	<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+			<ion-fab-button>
+					<ion-icon name="ios-camera"></ion-icon>
+			</ion-fab-button>
+	
+			<ion-fab-list side="top">
+				<ion-fab-button (click)="Setcamera(1)">
+						<ion-icon name="md-camera"></ion-icon>
+				</ion-fab-button>
+				<ion-fab-button (click)="Setcamera(2);">
+					<ion-icon name="md-image"></ion-icon>
+				</ion-fab-button>
+			</ion-fab-list>
+	
+	</ion-fab>
+
+
+	
+	<ion-slides style="width: 45%;height: 18%;"> 
+		<ion-slide *ngFor="let item of arryayImage_aux">
+			<img [src]="item.img" (click)="verImagen()">
+		</ion-slide>
+	</ion-slides>
+	
+</ion-content>

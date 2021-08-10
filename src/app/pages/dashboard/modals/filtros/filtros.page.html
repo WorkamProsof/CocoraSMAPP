@@ -1,0 +1,40 @@
+
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-button (click)="irAtras()">
+				<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+    </ion-buttons>
+    <ion-title class="ion-text-justify">filtros</ion-title>
+	</ion-toolbar>	
+
+</ion-header>
+
+<ion-content padding [hidden]=contenido>
+	<form #form="ngForm" (ngSubmit)="filtro(form)" method="post" autocomplete="off">
+		<ion-item>
+			<ion-label position="floating">Cliente</ion-label>
+			<ion-select name="clienteid" required interface="popover" ngModel>
+				<ion-select-option *ngFor="let clientes of clientes" value="{{clientes.terceroid}}">{{cliente.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Sucursal</ion-label>
+			<ion-select name="sucursalid" required interface="popover" ngModel>
+				<ion-select-option *ngFor="let sucursal of sucursal" value="{{sucursal.sucursalid}}">{{usuario.nombre}}</ion-select-option>
+			</ion-select>
+    </ion-item>
+    
+    <ion-item>
+			<ion-label position="floating">Estados</ion-label>
+			<ion-select name="estadoid" required interface="popover" ngModel>
+				<ion-select-option *ngFor="let estadopqr of estadopqr" value="{{estadopqr.estadopqrid}}">{{estadopqr.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+		<br/>
+
+		<ion-button type="submit" expand="full" color="primary">Filtrar</ion-button>
+	</form>
+</ion-content>

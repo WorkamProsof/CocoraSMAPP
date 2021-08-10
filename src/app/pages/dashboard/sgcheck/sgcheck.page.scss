@@ -1,0 +1,55 @@
+ion-header {
+	--ion-background-color: white !important;
+}
+
+ion-header .toolbarPrincipal {
+	--ion-background-color: #4894d7 !important;
+}
+
+.toolbarPrincipal ion-title {
+	color: white;
+}
+
+.btnInicio{
+	color: white !important;
+}
+
+#content-back{
+	width: 15%;
+	float: left;
+	margin-top: 0;
+}
+
+#content-input:hover{
+	--ion-background-color: none;
+}
+
+ion-list ion-item:hover {
+	--ion-background-color: #ccc;
+}
+
+.listFecha{
+	float: right;
+	font-size: 12px;
+}
+
+ion-list{
+	margin-top: -8px;
+}
+
+.has-focus.sc-ion-input-md-h{
+	background: #fff !important;
+}
+
+.refresher-pulling, .refresher-ready {
+	display: block;
+	width: 100%;
+	position: relative;
+}
+
+.refresher-refreshing {
+	display: block;
+	width: 100%;
+	height: 50px;
+	position: relative;
+}

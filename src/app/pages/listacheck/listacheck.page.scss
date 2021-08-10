@@ -1,0 +1,203 @@
+ion-content {
+	--ion-background-color: #f2f4f8;
+}
+
+#formulario table, #formulario select {
+	background-color: white;
+}
+
+#head td{
+	border-bottom: 1px solid #000;
+}
+#head {
+	width: 75%;
+	margin-bottom: 15px;
+	text-align: left;
+	background-color: transparent;
+}
+
+::after, ::before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+td, th {
+	padding: 0;
+}
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #333;
+	margin-bottom: 160px;
+}
+html {
+	font-size: 10px;
+	font-family: sans-serif;
+	-webkit-text-size-adjust: 100%;
+}
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+#ListaCheck th {
+	text-align: center;
+}
+input:not([type='checkbox']), select {
+	width: 100%;
+}
+th.rotate {
+	height: 160px;
+	white-space: nowrap;
+}
+th.rotate > div {
+	transform: translate(0, 60px) rotate(-90deg);
+	-webkit-transform: translate(0, 60px) rotate(-90deg);
+	width: 20px;
+}
+.radio + .radio,
+.checkbox + .checkbox { margin: 0; }
+label.checkbox.special { cursor: pointer; margin: 3px;}
+label.checkbox.special input[type="checkbox"], label.checkbox.special input[type="radio"] {
+	position: absolute;
+	margin-left: 5px;
+	opacity: 0;
+}
+label.checkbox.special input[type="checkbox"] + span:before, label.checkbox.special input[type="radio"] + span:before {
+	border: none;
+	color: #333;
+	line-height: 40px;
+	font-size: 50px;
+	cursor: pointer;
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	margin-right: 0;
+	vertical-align: text-bottom;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	width: 40px;
+	height: 40px;
+}
+label.checkbox.special input[type="checkbox"] + span:before, label.checkbox.special input[type="radio"] + span:before { content: ""; }
+label.checkbox.special input[type="checkbox"]:checked + span:before, label.checkbox.special input[type="radio"]:checked + span:before { content: '\2713' }
+form input[type="text"],form input[type="number"],form select {
+	border: none;
+	padding: 10px;
+	margin: 0;
+}
+form .glyphicon {
+	position: fixed !important;
+	bottom: 85px;
+	right: 20px;
+	top: auto !important;
+	background-color: #4894d7;
+	color: white;
+	height: 100px;
+	width: 100px;
+	border: 0.1px #337ab7 solid;
+	border-radius: 50px;
+	font-size: 35px;
+	box-shadow : 0px 8px 15px rgba(0, 0, 0, 0.3);
+}
+#btnContinuar{
+	bottom: 85px;
+	background-color: #4894d7;
+	color: white;
+	border: 0.1px #337ab7 solid;
+	border-radius: 3px;
+	font-size: 25px;
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+	margin-top: 20px;
+}
+#btnVolver{
+	bottom: 85px;
+	background-color: #4894d7;
+	color: white;
+	border: 0.1px #337ab7 solid;
+	border-radius: 3px;
+	font-size: 25px;
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+#observaciones {
+	min-height: 190px;
+	min-width: 650px;
+	resize: vertical;
+	border: none;
+}
+#listas{
+	margin-left: 10px;
+}
+#listas label{
+	font-size: 20px;
+	font-weight: 470;
+}
+#listas .checkbox.special { cursor: pointer; margin: 3px;}
+#listas .checkbox.special input[type="checkbox"]{ position: absolute; margin-left: 5px; opacity: 0; }
+#listas .checkbox.special input[type="checkbox"] + span:before {
+	color: #333;
+	line-height: 40px;
+	font-size: 35px;
+	cursor: pointer;
+	position: relative;
+	top: 1px;
+	margin-right: 0;
+	vertical-align: text-bottom;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	width: 40px;
+	height: 40px;
+	margin-left: 10px;
+}
+#listas .checkbox.special input[type="checkbox"] + span:before { content: ""; }
+#listas .checkbox.special input[type="checkbox"]:checked + span:before { content: '\2713' }
+.sticky{
+	background-color: transparent;
+	position: -webkit-sticky;
+	position: sticky;
+	z-index: 0;
+	top: 0;
+	color: rgba(0, 0, 0, 0.5);
+	user-select: none;
+	pointer-events: none;
+}
+
+.hide {
+	display: none !important;
+}
+.checkbox + .checkbox, .radio + .radio {
+	margin-top: -5px;
+}
+.checkbox, .radio {
+	position: relative;
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+label {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: 700;
+}
+.glyphicon-saved::before {
+    content: "\e168";
+}
+
+#listaHTML {
+	width: 100%;
+	display: block;
+	overflow: auto;
+	height: 100%;
+}
+
+#listaHTML button{
+	padding: 8px;
+}
