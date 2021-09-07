@@ -43,6 +43,7 @@
     "cordova-sms-plugin": "^1.0.0",
     "cordova-sqlite-storage": "^4.0.0",
     "core-js": "^2.5.4",
+    "ionic-selectable": "^4.6.0",
     "moment": "^2.29.1",
     "ngx-cookie-service": "^2.4.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",

@@ -33,7 +33,102 @@
 		</ion-item>
 	</ion-list>
 
-	<ion-grid *ngIf="!forNota && !forNotaHistotial">
+	
+	<ion-grid *ngIf="validaPausa">
+		<ion-item>
+			<ion-label position="floating">Tipo Stop</ion-label>
+			<ion-select  interface="popover" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
+				<ion-select-option *ngFor="let tipoParada of tiposParadas" value="{{tipoParada.tipoparadaid}}">{{tipoParada.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-button  id="btnConfirmaPausa" expand="block" color="danger-shade" (click)="pausaMultiple()">
+			Pausar
+		</ion-button>
+	</ion-grid>
+
+	<!-- <ion-grid *ngIf="estadoSelet != true && !validaPausa">
+		<ion-col size='6'>
+			<ion-button  *ngIf="validarutaapp =='1'" class="btnRutaIncM" color="danger-shade" (click)="iniciarRuta()">
+				Iniciar ruta
+			</ion-button>
+		</ion-col>
+		<ion-col size='6'>
+			<ion-button  *ngIf="validarutaapp =='1'"  class="btnRutaIncM"  color="danger-shade" (click)="FinalizoRuta()">
+				Finalizo Ruta
+			</ion-button>
+		</ion-col>
+		<ion-col size='6' *ngIf="estadoSelet != true" >
+			<ion-button  id="btnFinalizarIncM" color="danger-shade" (click)="FinalizarIncidencia()">
+				Finaliza Inc
+			</ion-button>
+		</ion-col>
+	</ion-grid> -->
+
+	<ion-col *ngIf="estadoSelet == true">
+
+		<ion-item *ngIf="estadoSelet == true">
+			<ion-label position="floating">Estado</ion-label>
+			<ion-select  [value]="estadopqrid" interface="popover" placeholder="Seleccionar Estado" (ionChange)="seleccionEstadopqr($event,1)">
+				<ion-select-option *ngFor="let estado of ESTADOS" value="{{estado.nuevoestado}}">{{estado.nombrenuevoestadopqr}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item *ngIf="estadoSelet == true">
+			<ion-label position="floating">Técnico</ion-label>
+			<ion-select  [value]="datoTecnicoSelet" multiple="{{selectMultiple}}" [disabled]="tecnicoDisabled" interface="popover" placeholder="Seleccionar Ténico" (ionChange)="seleccionEstadopqr($event,0)">
+				<ion-select-option *ngFor="let ListUsuario of Arryusuarios"  value="{{ListUsuario.usuarioid}}">{{ListUsuario.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-button  *ngIf="estadoSelet == true" id="btnFinalizarIncF"  color="danger-shade" (click)="FinalizarIncidencia()">
+			Finalizar Incidencia
+		</ion-button>
+
+	</ion-col>
+	
+	<ion-list lines="full" class="ion-no-padding" *ngIf="!validaPausa && estadoSelet != true">
+		<ion-item-sliding (click)="slidingVehiculo('slidingInvitados' + i)" *ngFor="let item of tipoactividades | filtro: 'nombre': buscarLista; let i = index;"
+			[id]="'slidingInvitados' + i">
+			<ion-item>
+				<ion-label class="ion-no-margin">
+					<h5>{{ item['nombre'] }}</h5>
+					<!-- <p color="primary">{{ item['accion'] }}</p> -->
+					<ion-text class="ion-text-left" color="primary">
+					<p>{{ item['accion'] }}</p>
+					</ion-text>
+				</ion-label>
+				<!-- <ion-text class="ion-text-center" color="primary">
+					<p>{{ item['accion'] }}</p>
+				</ion-text> -->
+			</ion-item>
+			<ion-item-options side="end">
+				
+				<ion-item-option slot="end" id="btnPausaM" color="danger"
+					(click)="accionActividad('pausar', item['id'], item['nombre'])" *ngIf="item['accion'] == 'iniciar' || item['accion'] == 'continuar'">
+					<ion-icon slot="icon-only" name="pause"></ion-icon>
+				</ion-item-option>
+
+				<ion-item-option slot="end" id="btnContinuaM" color="danger-shade" (click)="accionActividad('continuar', item['id'], item['nombre'])" *ngIf="item['accion'] == 'pausar'">
+					<ion-icon slot="icon-only" name="play"></ion-icon>
+				</ion-item-option>
+
+				<ion-item-option slot="end" color="success"
+					(click)="accionActividad('iniciar', item['id'], item['nombre'])"  *ngIf="item['accion'] == 'FinalizoRuta' || item['accion'] == 'finalizaractividad' || item['accion'] == null || item['accion'] == 'finalizar'">
+					<ion-icon slot="icon-only" name="play"></ion-icon>
+				</ion-item-option>
+
+				<ion-item-option slot="end" color="success" *ngIf="item['accion'] == 'continuar' || item['accion'] == 'iniciar'"
+					(click)="accionActividad('finalizaractividad', item['id'], item['nombre'])">
+					<ion-icon slot="icon-only" name="square"></ion-icon>
+				</ion-item-option>
+
+			</ion-item-options>
+		</ion-item-sliding>
+	</ion-list>
+
+	
+	<ion-grid *ngIf="!forNota && !forNotaHistotial && parametroMultiple == true">
 		<ion-row>
 			<ion-col *ngIf="(estadoInc == 'FinalizoRuta' || estadoInc == 'finalizaractividad' || estadoInc == null || estadoInc == 'finalizar') && !procesoIniciar"  >
 				<ion-button *ngIf="validarutaapp =='1'" id="btnRutaInc" shape="round"  color="danger-shade" (click)="iniciarRuta()">
@@ -200,11 +295,24 @@
 		</ion-fab-button>
 	</ion-fab>
 
-	<!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-		<ion-fab-button (click)="Setcamera()">
-			<ion-icon name="camera"></ion-icon>
-		</ion-fab-button>
-	</ion-fab> -->
+	<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+			<ion-fab-button color="danger">
+					<ion-icon name="map"></ion-icon>
+			</ion-fab-button>
+
+			<ion-fab-list side="top">
+				<ion-fab-button  color="primary" *ngIf="validarutaapp =='1'"  (click)="iniciarRuta()">
+					<ion-icon name="bicycle"></ion-icon>
+				</ion-fab-button>
+				<ion-fab-button color="primary" *ngIf="validarutaapp =='1'" (click)="FinalizoRuta()">
+					<ion-icon name="hand"></ion-icon>
+				</ion-fab-button>
+				<ion-fab-button color="danger" *ngIf="estadoSelet != true" (click)="FinalizarIncidencia()">
+					<ion-icon name="save"></ion-icon>
+				</ion-fab-button>
+			</ion-fab-list>
+
+	</ion-fab>
 
 	<ion-fab vertical="bottom" horizontal="start" slot="fixed">
 			<ion-fab-button>
@@ -223,7 +331,6 @@
 	</ion-fab>
 
 
-	
 	<ion-slides style="width: 45%;height: 18%;"> 
 		<ion-slide *ngFor="let item of arryayImage_aux">
 			<img [src]="item.img" (click)="verImagen()">
