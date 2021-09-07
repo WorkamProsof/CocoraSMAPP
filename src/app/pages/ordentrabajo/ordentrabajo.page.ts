@@ -1,3 +1,4 @@
+import { IonItemSliding, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MenuController, AlertController, NavController, Platform } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
@@ -8,9 +9,11 @@ import { PhotoLibrary } from '@ionic-native/photo-library/ngx';
 import { NgForm } from '@angular/forms';
 import { CallNumber     } from '@ionic-native/call-number/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-import { ModalController } from "@ionic/angular";
 import { ModalimagenPage } from '../../modalimagen/modalimagen.page';
 import * as moment from 'moment';
+import { timeout } from 'rxjs/operators';
+import { IonicSelectableComponent } from "ionic-selectable";
+import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -41,6 +44,14 @@ export class OrdentrabajoPage implements OnInit {
 			});
 		}
 	}
+
+	parametroMultiple : boolean = false;
+	actividadmultiple: string = '';
+
+
+	validaPausa : boolean = false;
+	searching   : boolean = true;
+	buscarLista : string = '';
 	Icon 	: string 	= 'arrow-dropdown-circle';
 	validaObservacion   : boolean = false;
 	transicionestadoapp : any;
@@ -87,12 +98,21 @@ export class OrdentrabajoPage implements OnInit {
 	forNotaHistotial    = false;
 	selectMultiple      = true;
 	arrayTenicosAsignados : any;
+	actividades: Array<Object> = [{
+		id: "Inicio",
+		nombre: "Limpiar lavadora"
+	},{
+		id: "Pausado",
+		nombre: "aceitada horno"
+	}];
 
 	async ngOnInit() {
 		this.alertas();
 		
 		this.menu.enable(false);
 		this.menu.close();
+
+		
 
 		await this.storageService.get('logoempresa').then(
 			(data:any) => {
@@ -149,6 +169,7 @@ export class OrdentrabajoPage implements OnInit {
 				this.datoTecnicoSelet     = this.selectMultiple == true ? this.Arraypqr.tecniosAsignados : this.usuario;
 				this.datoTecnicoSelet_aux = this.datoTecnicoSelet;
 				this.tecnicoDisabled      = this.Arraypqr.cierre == '1' ? true : false;
+				this.tipoactividades      = this.Arraypqr.actividadPqr;//nueva modificacion
 			}
 			);
 
@@ -206,16 +227,18 @@ export class OrdentrabajoPage implements OnInit {
 	seleccionActividad(select){
 		this.tipoactividadid  = select.detail.value;
 		this.tipoactividadSel = select.detail.value;
+
+		console.log('tipoactividadid',this.tipoactividadid);
 	}
 
 	
 	iniciar(){
 		this.procesoIniciar = true;
-
 		this.storageService.get('INCI').then(
 			(data:any) => {
 				data = JSON.parse(data);
 				this.tipoactividades = this.Arraypqr.actividadPqr;
+				console.log('this.tipoactividades',data);
 			}
 			);
 	}
@@ -290,6 +313,7 @@ export class OrdentrabajoPage implements OnInit {
 				created_at 		    : this.getDate(),
 			};
 
+		
 			this.llenarMovimientos(movim);
 			this.storageService.get('INCI').then(
 				(data:any) => {
@@ -596,7 +620,41 @@ export class OrdentrabajoPage implements OnInit {
 				data.push(movim);
 				this.storageService.set('movimientos', JSON.stringify(data));
 			}
-			);
+		);
+
+		
+
+
+		this.storageService.get('movimiActual').then(
+			(data:any) => {
+				data = JSON.parse(data);
+				var arrDt = [];
+				// data = Items_a_elimianar(data,movim);
+
+		
+				if(data == null){
+					data = arrDt;
+				}
+				data.push(movim);
+				this.storageService.set('movimiActual', JSON.stringify(data));
+			}
+		);
+		let self = this;
+		 setTimeout(function(){
+			self.storageService.get('movimiActual').then(
+				(data:any) => {
+					data = JSON.parse(data);
+					console.log('data',data);
+				}
+				);
+		 },500);
+
+		// function Items_a_elimianar(Lista,sp_Fila) {
+		// 	Lista = Lista.filter(function(elemento){
+		// 	  return elemento.pqrid != sp_Fila.pqrid || elemento.tipoactividadid != sp_Fila.tipoactividadid
+		// 	});
+		// }
+		
 	}
 
 	llenarNotadetalle(notaDetalle){
@@ -669,4 +727,177 @@ export class OrdentrabajoPage implements OnInit {
 			}
 		}).then(modal => modal.present())
 	}
+
+	buscarFiltro(evento) {
+		this.buscarLista = evento.detail.value;
 	}
+
+	slidingVehiculo(ref) {
+		let elem: any = document.getElementById(ref);
+		(elem as IonItemSliding).getSlidingRatio().then(numero => {
+			if (numero === 1) {
+				(elem as IonItemSliding).close();
+			} else {
+				(elem as IonItemSliding).open("end");
+			}
+		});
+	}
+
+
+
+	accionActividad(tipo: string, tipoactividadid: number, placa?: string) {
+		this.searching = true;
+		if(tipo == 'pausar'){
+			this.procesarPausaMultiple(tipo,tipoactividadid);
+		}else{
+			this.validaPausa = false;
+			this.actualizarActividades(tipo,tipoactividadid);
+			console.log('llego',tipo, tipoactividadid, placa);
+	
+	
+			var movim = {
+				tipo 		: 'storeLog',
+				accion      : tipo,
+				pqrid   	: this.Arraypqr.pqrid,
+				estado 		: tipo,
+				tipoParada 	: this.tipoParada,
+				tipoactividadid : tipoactividadid,
+				created_at  : this.getDate(),
+			};
+	
+			this.llenarMovimientos(movim);
+	
+			this.storageService.get('INCI').then(
+				(data:any) => {
+					data = JSON.parse(data);
+	
+					this.storageService.remove('INCI');
+					this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, tipo,tipoactividadid,this.estadopqrid)));
+				}
+				);
+	
+			this.alertService.presentToast(tipo + ' la operación', 'middle');
+		}
+		// this.estadoInc = tipo;	
+
+
+		// function Items_a_elimianar(Lista,sp_Fila) {
+		// this.tipoactividades = this.tipoactividades.filter(function(elemento){
+		// 	if(elemento.id == tipoactividadid){
+		// 		elemento.accion = tipo;
+		// 	}
+		// 	return elemento;
+		// });
+		
+		// }
+
+		// return;
+
+
+
+	
+		// switch (tipo) {
+		// 	case 'visualizar':
+		// 	case 'modificar':
+		// 		// this.miVehiculoService.informacion({ idVehiculo }, this.rutaGeneral + 'obtenerVehiculo').then(({ success, datos }) => {
+		// 		// 	if (success) {
+		// 		// 		this.formularioVehiculo(datos, tipo);
+		// 		// 	}
+		// 		// 	this.searching = false;
+		// 		// }, console.error);
+		// 		break;
+		// 	case 'eliminar':
+		// 		// this.notificaciones.alerta("¿Desea eliminar el vehiculo con placa " + placa + "?").then(({ role, data }) => {
+		// 		// 	if (role == 'aceptar') {
+		// 		// 		this.miVehiculoService.informacion({ idVehiculo }, this.rutaGeneral + 'eliminarVehiculo').then(({ success, datos }) => {
+		// 		// 			if (success) {
+		// 		// 				this.obtenerVehiculos();
+		// 		// 			}
+		// 		// 			this.searching = false;
+		// 		// 		}, console.error);
+		// 		// 	} else {
+		// 		// 		this.searching = false;
+		// 		// 	}
+		// 		// });
+		// 		break;
+		// 	default:
+		// 		console.log("EL valor no es valido");
+		// 		break;
+		// }
+	}
+
+
+
+	//funciones multiples para el inicio actividaddes mukltiples
+
+
+	procesarPausaMultiple(tipo,id){
+		this.validaPausa = true;
+		this.actividadmultiple = id;
+		this.actualizarActividades(tipo,id);
+	}
+
+
+	pausaMultiple(){
+
+		if(this.tipoParada == ''){
+			this.alertService.presentToast('Seleccione el Tipo de Parada', 'middle');
+		}else{
+			var movim = {
+				tipo 		    : 'storeLog',
+				accion          : 'pausar', 
+				pqrid   	    : this.Arraypqr.pqrid, 
+				estado 		    : 'P',
+				tipoParada      : this.tipoParada,
+				tipoactividadid : this.actividadmultiple,
+				inicio 		    : -1,
+				created_at	    : this.getDate(),
+			};
+
+			console.log('movim',movim);
+			this.actualizarActividades('pausar',this.actividadmultiple)
+			
+			this.llenarMovimientos(movim);
+			this.storageService.get('INCI').then(
+				(data:any) => {
+					data = JSON.parse(data);
+					this.storageService.remove('INCI');
+					this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, 'pausar',this.actividadmultiple,this.estadopqrid)));
+				}
+				);
+		
+			this.alertService.presentToast('Pausó la operación', 'middle');
+			this.validaPausa = false;
+		}
+	}
+
+	actualizarActividades(tipo,tipoactividadid){
+		this.tipoactividades = this.tipoactividades.filter(function(elemento){
+				if(elemento.id == tipoactividadid){
+					elemento.accion = tipo;
+				}
+				return elemento;
+			});
+
+		var dataArray :any = [];
+		this.storageService.get('inciSeleccionado').then(
+			(data:any) => {
+				dataArray = JSON.parse(data);
+				dataArray.actividadPqr = this.tipoactividades;
+				this.storageService.remove('inciSeleccionado');
+				this.storageService.set('inciSeleccionado', JSON.stringify(dataArray)).then(() => {
+
+				});
+			}
+		);
+		
+
+		// dataArray['actividadPqr'] = this.tipoactividades;
+
+		// console.log('llego de nuevo',dataArray);
+
+		
+	}
+}
+
+	
