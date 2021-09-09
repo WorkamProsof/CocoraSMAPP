@@ -37,6 +37,8 @@ export class LoginPage implements OnInit {
 	ngOnInit() {
 		this.loginService.getUsuarios().subscribe(
 			(data:any) => {
+
+				console.log('usuarios', data);
 				this.usuarios            = data.Usuarios;
 				this.logoempresa         = data.logoempresa;
 				this.transicionestadoapp = data.transicionestadoapp;
@@ -46,6 +48,8 @@ export class LoginPage implements OnInit {
 				this.storageService.set('logoempresa', this.logoempresa);
 				this.storageService.set('transicionestadoapp', this.transicionestadoapp);
 				this.storageService.set('validarutaapp', this.validarutaapp);
+				this.storageService.set('proincrelacionadasapp', data.proincrelacionadasapp);
+				this.storageService.set('multipleactividadapp', data.multipleactividadapp);
 				this.storageService.set('multipleoperarios', this.multipleoperarios);
 				this.loader(false);
 			},
