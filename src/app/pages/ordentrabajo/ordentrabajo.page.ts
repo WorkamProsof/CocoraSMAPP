@@ -168,21 +168,18 @@ export class OrdentrabajoPage implements OnInit {
 		await this.storageService.get('proincrelacionadasapp').then(
 			(data:any) => {
 				this.proincrelacionadasapp = data;
-				console.log('proincrelacionadasapp',this.proincrelacionadasapp);
 			}
 			);
 
 		await this.storageService.get('multipleactividadapp').then(
 			(data:any) => {
 				this.multipleactividadapp = data;
-				console.log('multipleactividadapp',this.multipleactividadapp);
 			}
 			);
 
 		await this.storageService.get('inciSeleccionado').then(
 			(data:any) => {
 				data = JSON.parse(data);
-				console.log('inciSeleccionado',data);
 				this.Arraypqr             = data;
 				this.Arraypqr.fechapqr    = moment(this.Arraypqr.fechapqr).format('DD-MM-YYYY');
 				this.ArraypqrNotas        = data.ArrayNotasPqr;
@@ -210,7 +207,6 @@ export class OrdentrabajoPage implements OnInit {
 			(data:any) => {
 				data = JSON.parse(data);
 				this.ESTADOSESTADOS = data;
-				console.log('this.TODOSESTADOS',this.ESTADOSESTADOS);
 			}
 			);
 
@@ -252,8 +248,6 @@ export class OrdentrabajoPage implements OnInit {
 	seleccionActividad(select){
 		this.tipoactividadid  = select.detail.value;
 		this.tipoactividadSel = select.detail.value;
-
-		console.log('tipoactividadid',this.tipoactividadid);
 	}
 
 	iniciar(){
@@ -262,7 +256,6 @@ export class OrdentrabajoPage implements OnInit {
 			(data:any) => {
 				data = JSON.parse(data);
 				this.tipoactividades = this.Arraypqr.actividadPqr;
-				console.log('this.tipoactividades',data);
 			}
 			);
 	}
@@ -471,8 +464,6 @@ export class OrdentrabajoPage implements OnInit {
 		if(option == 1){
 			this.datoeEstadoSelet  = select.detail.value;
 			let estado = this.ESTADOS.filter(data => data.nuevoestado == this.datoeEstadoSelet);
-			console.log('estadoss',estado[0].cierre);
-			console.log('datoTecnicoSelet',this.datoTecnicoSelet);
 			if(estado[0].cierre == '1'){
 				this.datoTecnicoSelet = this.datoTecnicoSelet_aux;
 				this.tecnicoDisabled = true;
@@ -482,7 +473,6 @@ export class OrdentrabajoPage implements OnInit {
 		}else{
 			this.datoTecnicoSelet  = select.detail.value;
 		}
-		console.log('select.detail.value',select.detail.value);
 	}
 
 	FinalizarIncidencia(){
@@ -836,7 +826,6 @@ export class OrdentrabajoPage implements OnInit {
 
 	// datos de actualizar notas maxivas
 	async formularioInc(accion = "crear") {
-		console.log('this.ESTADOS',this.ESTADOSESTADOS);
 		let componentProps = { 
 			accion, 
 			estados       : this.ESTADOSESTADOS,

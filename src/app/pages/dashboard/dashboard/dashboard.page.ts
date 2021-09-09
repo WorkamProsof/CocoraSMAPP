@@ -475,7 +475,6 @@ export class DashboardPage implements OnInit {
 			pqrid : Inc,
 		}).subscribe(
 		(resp:any) => {
-			console.log('lleer',resp.body);
 			if(resp.body == 1){
 				this.alertService.presentToast('No se encontraron coincidencias', 'middle');
 			}else{

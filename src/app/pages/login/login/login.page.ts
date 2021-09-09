@@ -37,8 +37,6 @@ export class LoginPage implements OnInit {
 	ngOnInit() {
 		this.loginService.getUsuarios().subscribe(
 			(data:any) => {
-
-				console.log('usuarios', data);
 				this.usuarios            = data.Usuarios;
 				this.logoempresa         = data.logoempresa;
 				this.transicionestadoapp = data.transicionestadoapp;

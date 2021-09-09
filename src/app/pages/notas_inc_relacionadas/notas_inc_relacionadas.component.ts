@@ -41,7 +41,6 @@ export class AgregarPqrsfrComponent implements OnInit {
 		await this.storageService.get('notasIncRelacionadas').then(
 			(data:any) => {
 				data = JSON.parse(data);
-				console.log('notasIncRelacionadas',data);
 			}
 		);
 	}
