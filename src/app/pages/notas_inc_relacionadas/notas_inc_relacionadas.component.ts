@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController,IonItemSliding } from '@ionic/angular';
-import { FuncionesGenerales } from 'src/app/config/funciones/funciones';
 import { IonicSelectableComponent } from "ionic-selectable";
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { StorageService } from 'src/app/services/storage.service';

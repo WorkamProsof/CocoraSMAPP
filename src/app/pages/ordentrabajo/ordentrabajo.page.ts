@@ -16,7 +16,6 @@ import { IonicSelectableComponent } from "ionic-selectable";
 import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
-import { Console } from 'console';
 
 @Component({
 	selector: 'app-ordentrabajo', 
