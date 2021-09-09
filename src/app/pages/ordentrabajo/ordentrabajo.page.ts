@@ -201,6 +201,16 @@ export class OrdentrabajoPage implements OnInit {
 			}
 			);
 		let self = this;
+
+
+		await this.storageService.get('ESTADOS').then(
+			(data:any) => {
+				data = JSON.parse(data);
+				this.ESTADOS = data[this.estadopqrid];
+				this.ESTADOS.push({'nuevoestado':this.Arraypqr.estadopqrid,'nombrenuevoestadopqr':this.Arraypqr.nombreestadopqr});
+			}
+			);
+
 		await this.storageService.get('TODOSESTADOS').then(
 			
 			(data:any) => {
