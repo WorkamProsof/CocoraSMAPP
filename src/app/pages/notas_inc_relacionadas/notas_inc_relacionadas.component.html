@@ -1,0 +1,105 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title color="dark">
+			Incidencias Relacionadas
+		</ion-title>
+		<ion-buttons class="btnInicio" slot="end">
+			<ion-icon color="dark" slot='icon-only' size='large' name='close' (click)="cerrarModal()"></ion-icon>
+		</ion-buttons>
+	</ion-toolbar>	
+</ion-header>
+
+<ion-progress-bar *ngIf="searching" type="indeterminate"></ion-progress-bar>
+
+<ion-content class="ion-padding">
+	<form [formGroup]="formAcciones" method="post" autocomplete="off">
+		<ion-item>
+			<ionic-selectable  #selectTipoPQR placeholder="Seleccion Estato" formControlName="estadopqrid" [(ngModel)]="anexosEstado.estadopqrid" itemValueField="id" itemTextField="nombre" [items]="estados" searchPlaceholder="Buscar" [canSearch]="true">
+				<ng-template ionicSelectableHeaderTemplate>
+					<ion-toolbar>
+						<ion-title slot="start" class="ion-text-left ion-no-padding ion-padding-horizontal">Estado Incidencia</ion-title>
+						<ion-buttons slot="end">
+							<ion-button (click)="selectTipoPQR.close()">
+								<ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+							</ion-button>
+						</ion-buttons>
+					</ion-toolbar>
+				</ng-template>
+				<ng-template ionicSelectableSearchFailTemplate>
+					<div class="ion-padding ion-text-center">
+						No hay resultados.
+					</div>
+				</ng-template>
+				<ng-template ionicSelectableIconTemplate>
+					<ion-icon name="caret-down-outline"></ion-icon>
+				</ng-template>
+			</ionic-selectable>
+		</ion-item>
+
+		<ion-item>
+			<ion-grid  class="ion-no-padding ion-padding-vertical">
+				<ion-row>
+					<ion-col size="12">
+						<ion-label color="dark" >Nota</ion-label>
+					</ion-col>
+					<ion-col size="12">
+						<ion-textarea rows="3" class="ion-no-padding"  color="dark" formControlName="descripcion" [(ngModel)]="anexosEstado.descripcion"></ion-textarea>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-item>
+
+		<ion-item>
+			<ion-grid  class="ion-no-padding ion-padding-vertical">
+				<ion-row>
+					<ion-col size="12">
+						<ion-label color="dark">Anexar Archivos:</ion-label>
+					</ion-col>
+					<ion-col size="12">
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" accept="application/msword, application/vnd.ms-excel, text/plain, application/pdf, image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="customFile" formControlName="anexos" [(ngModel)]="anexosEstado.anexos" (change)="onFileChange($event)">
+							<label class="custom-file-label" for="customFile" data-browse="Elegir">{{nombreInputFile}}</label>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-item>
+
+	
+	</form>
+	<ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="accion != 'visualizar'">
+		<ion-fab-button [disabled]="searching" (click)="guardarNotasEstados()" >
+			<ion-icon name="save"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+
+
+	<ion-searchbar  (ionChange)="buscarFiltro($event)" clearIcon="close-sharp" placeholder="Buscar Incidencia" [debounce]="250"></ion-searchbar>
+	<ion-list lines="full" class="ion-no-padding">
+		<ion-item-sliding  *ngFor="let item of incRelacionadas | filtro: 'pqridrelacionada': buscarLista; let i = index;"
+			[id]="'slidingInvitados' + i">
+			<ion-item>
+				<ion-label class="ion-no-margin">
+					<h5>{{ item['pqridrelacionada'] }}</h5>
+					<!-- <p color="primary">{{ item['accion'] }}</p> -->
+					<!-- <ion-text class="ion-text-left" color="primary">
+					<p>{{ item['nombreaccion'] }}</p>
+					</ion-text> -->
+				</ion-label>
+				<ion-text class="ion-text-center" color="primary">
+					<p>{{ item['asunto'] }}</p>
+				</ion-text>
+			</ion-item>
+		</ion-item-sliding>
+	</ion-list>
+	<div class="ion-padding ion-text-center nohayresultado" *ngIf="!incRelacionadas.length && !searching">
+		No tiene Incidencias relacionas.
+	</div>
+
+
+</ion-content>
+
+
+
+
+

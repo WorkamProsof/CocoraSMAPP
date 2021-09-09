@@ -58,9 +58,11 @@ export class DashboardPage implements OnInit {
 	verBusqueda = false;
 	listarIncidencias: any;
 	vehiculo: any;
-	ESTADOS: any = [];
+	ESTADOS       : any = [];
+	ESTADOSESTADOS: any = [];
 	notadetallepqr : any = [];
 	arryayImage    : any = [];
+	incRelacionadas: any = [];
 	tiposParadas: any;
 	repetidos = false;
 	listaRepetidos: any;
@@ -551,18 +553,23 @@ export class DashboardPage implements OnInit {
 		}
 	}
 
+
+
+
 	async guardarMovimientos(){ 
 		this.listarNotadetalle();
 		this.listarArryayImage();
+		this.listarnotasIncRelacionadas();
 		await this.storageService.get('movimientos').then(
 			(data:any) => {
 				data = JSON.parse(data);
-				if(data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0  || this.arryayImage.length > 0 ){
+				if(data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0  || this.arryayImage.length > 0   || this.incRelacionadas.length > 0 ){
 					this.AjaxService.ajax('Dashboard/cMovimientoApp/guardarMovimientos', {
 						INCIOFF: JSON.stringify(this.INCIOFF)
 						,movim: JSON.stringify(data)
 						,notadetallepqr : JSON.stringify(this.notadetallepqr)
 						,arryayImage    : JSON.stringify(this.arryayImage)
+						,incRelacionadas: JSON.stringify(this.incRelacionadas)
 					}).subscribe(
 					(dt:any) => {
 						if(dt.body == 1){
@@ -571,8 +578,8 @@ export class DashboardPage implements OnInit {
 							}
 							
 							this.storageService.remove('movimientos');
+							this.storageService.remove('notasIncRelacionadas');
 							this.storageService.remove('notaDetalle');
-							//this.storageService.remove('arryayImage');
 							this.storageService.set('arryayImage', JSON.stringify(0));
 							
 							this.storageService.remove('INCI');
@@ -584,6 +591,7 @@ export class DashboardPage implements OnInit {
 								this.mostrarProcesados = true;
 								this.procesados = dt.body;
 								this.storageService.remove('movimientos');
+								this.storageService.remove('notasIncRelacionadas');
 								this.storageService.remove('notaDetalle');
 								this.storageService.set('arryayImage', JSON.stringify(0));
 							}
@@ -618,6 +626,17 @@ export class DashboardPage implements OnInit {
 				data = JSON.parse(data);
 				if(data != null){
 					this.arryayImage = data;
+				}
+			}
+			);
+	}
+
+	listarnotasIncRelacionadas(){
+		this.storageService.get('notasIncRelacionadas').then(
+			(data:any) => {
+				data = JSON.parse(data);
+				if(data != null){
+					this.incRelacionadas = data;
 				}
 			}
 			);
@@ -701,6 +720,7 @@ export class DashboardPage implements OnInit {
 
     		this.ESTADOS = data.body.ESTADOS;
     		this.storageService.set('ESTADOS', JSON.stringify(data.body.ESTADOS));
+			this.storageService.set('TODOSESTADOS', JSON.stringify(data.body.TODOSESTADOS));
 
     		this.tiposParadas = data.body.tiposParadas;
     		this.storageService.set('tiposParadas', JSON.stringify(data.body.tiposParadas));

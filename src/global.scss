@@ -25,6 +25,12 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+.ionic-selectable-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+    --border-color: transparent;
+}
+
+
 ion-header {
 	--ion-background-color: #4894d7;
 }
@@ -41,12 +47,12 @@ ion-progress-bar {
 	position: fixed;
 }
 
-ion-searchbar, .searchbar-input{
-	padding: 0;
-	box-shadow: none !important;
-	--box-shadow: none !important;
-	width: 100%;
-	padding: 0 !important;
-	height: 100% !important;
-	box-shadow: none;
-}
+// ion-searchbar, .searchbar-input{
+// 	padding: 0;
+// 	box-shadow: none !important;
+// 	--box-shadow: none !important;
+// 	width: 100%;
+// 	padding: 0 !important;
+// 	height: 100% !important;
+// 	box-shadow: none;
+// }

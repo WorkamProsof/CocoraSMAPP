@@ -14,6 +14,9 @@ import * as moment from 'moment';
 import { timeout } from 'rxjs/operators';
 import { IonicSelectableComponent } from "ionic-selectable";
 import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
+import { NotificacionesService } from 'src/app/services/notificaciones.service';
+import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
+import { Console } from 'console';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -33,7 +36,8 @@ export class OrdentrabajoPage implements OnInit {
 		private cambioclave: CambioClavePage,
 		private localNotifications : LocalNotifications,
 		private modalCtrl : ModalController,
-		private photoLibrary : PhotoLibrary
+		private photoLibrary : PhotoLibrary,
+		private notificaciones: NotificacionesService
 	  //  private callNumber : CallNumber
 
 	  ) {
@@ -45,8 +49,9 @@ export class OrdentrabajoPage implements OnInit {
 		}
 	}
 
-	parametroMultiple : boolean = false;
-	actividadmultiple: string = '';
+	multipleactividadapp : boolean = false;
+	actividadmultiple : string = '';
+	incRelacionadas     : any = [];
 
 
 	validaPausa : boolean = false;
@@ -54,6 +59,7 @@ export class OrdentrabajoPage implements OnInit {
 	buscarLista : string = '';
 	Icon 	: string 	= 'arrow-dropdown-circle';
 	validaObservacion   : boolean = false;
+	proincrelacionadasapp : boolean = false;
 	transicionestadoapp : any;
 	multipleoperarios   : any;
 	tecnicoDisabled     : boolean = false;
@@ -62,6 +68,7 @@ export class OrdentrabajoPage implements OnInit {
 	image               : any;
 	arryayImage         : any = [];
 	arryayImage_aux     : any = [];
+	ESTADOSESTADOS      : any = [];
 	usuario             : any;
 	privado             = '1';
 	datoeEstadoSelet    : any;
@@ -98,6 +105,7 @@ export class OrdentrabajoPage implements OnInit {
 	forNotaHistotial    = false;
 	selectMultiple      = true;
 	arrayTenicosAsignados : any;
+	
 	actividades: Array<Object> = [{
 		id: "Inicio",
 		nombre: "Limpiar lavadora"
@@ -156,6 +164,19 @@ export class OrdentrabajoPage implements OnInit {
 			}
 			);
 
+		
+		await this.storageService.get('proincrelacionadasapp').then(
+			(data:any) => {
+				this.proincrelacionadasapp = data;
+			}
+			);
+
+		await this.storageService.get('multipleactividadapp').then(
+			(data:any) => {
+				this.multipleactividadapp = data;
+			}
+			);
+
 		await this.storageService.get('inciSeleccionado').then(
 			(data:any) => {
 				data = JSON.parse(data);
@@ -170,6 +191,7 @@ export class OrdentrabajoPage implements OnInit {
 				this.datoTecnicoSelet_aux = this.datoTecnicoSelet;
 				this.tecnicoDisabled      = this.Arraypqr.cierre == '1' ? true : false;
 				this.tipoactividades      = this.Arraypqr.actividadPqr;//nueva modificacion
+				this.incRelacionadas      = this.Arraypqr.incRelacionadas;
 			}
 			);
 
@@ -180,12 +202,11 @@ export class OrdentrabajoPage implements OnInit {
 			}
 			);
 		let self = this;
-		await this.storageService.get('ESTADOS').then(
+		await this.storageService.get('TODOSESTADOS').then(
 			
 			(data:any) => {
 				data = JSON.parse(data);
-				this.ESTADOS = data[this.estadopqrid];
-				this.ESTADOS.push({'nuevoestado':this.Arraypqr.estadopqrid,'nombrenuevoestadopqr':this.Arraypqr.nombreestadopqr});
+				this.ESTADOSESTADOS = data;
 			}
 			);
 
@@ -227,24 +248,18 @@ export class OrdentrabajoPage implements OnInit {
 	seleccionActividad(select){
 		this.tipoactividadid  = select.detail.value;
 		this.tipoactividadSel = select.detail.value;
-
-		console.log('tipoactividadid',this.tipoactividadid);
 	}
 
-	
 	iniciar(){
 		this.procesoIniciar = true;
 		this.storageService.get('INCI').then(
 			(data:any) => {
 				data = JSON.parse(data);
 				this.tipoactividades = this.Arraypqr.actividadPqr;
-				console.log('this.tipoactividades',data);
 			}
 			);
 	}
 
-
-	
 	iniciarRuta(){
 		// se continua la operacion
 		var movim = {
@@ -449,8 +464,6 @@ export class OrdentrabajoPage implements OnInit {
 		if(option == 1){
 			this.datoeEstadoSelet  = select.detail.value;
 			let estado = this.ESTADOS.filter(data => data.nuevoestado == this.datoeEstadoSelet);
-			console.log('estadoss',estado[0].cierre);
-			console.log('datoTecnicoSelet',this.datoTecnicoSelet);
 			if(estado[0].cierre == '1'){
 				this.datoTecnicoSelet = this.datoTecnicoSelet_aux;
 				this.tecnicoDisabled = true;
@@ -460,53 +473,60 @@ export class OrdentrabajoPage implements OnInit {
 		}else{
 			this.datoTecnicoSelet  = select.detail.value;
 		}
-		console.log('select.detail.value',select.detail.value);
 	}
 
 	FinalizarIncidencia(){
-		if(this.estadoSelet == false  &&  this.transicionestadoapp == 1){
-			this.estadoSelet = true;
-		}else{
-			if((this.datoTecnicoSelet == undefined || this.datoTecnicoSelet == '') &&  this.transicionestadoapp == 1){
-				this.alertService.presentToast('Seleccione el Tecnico de la Incidencia', 'middle');
-				return;
-			}
-
-			if((this.datoeEstadoSelet == undefined || this.datoeEstadoSelet == '') &&  this.transicionestadoapp == 1){
-				this.alertService.presentToast('Seleccione el Estado de la Incidencia', 'middle');
-			}else{	
-				this.datoTecnicoSelet = this.selectMultiple == true ? this.datoTecnicoSelet : [this.datoTecnicoSelet];
-				this.estadoFinInc       = "";
-				var	movim = {
-						tipo 		        : 'storeLog',
-						accion              : 'finalizar',
-						pqrid   	        : this.Arraypqr.pqrid, 
-						estado 		        : 'P',
-						tipoParada 	        : null,
-						tipoactividadid 	: this.tipoactividadid,
-						inicio 		        : -1,
-						created_at	        : this.getDate(),
-						Tecnicoasignado	    : this.datoTecnicoSelet,
-						coordinadorid       : this.Arraypqr.coordinadorid, 
-						estadopqrid         : this.transicionestadoapp == 1 ? this.datoeEstadoSelet : null,
-					};
-
-				this.llenarMovimientos(movim);
-				this.storageService.get('INCI').then(
-					(data:any) => {
-						data = JSON.parse(data);
-						this.storageService.remove('INCI');
-						this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, 'finalizar',this.tipoactividadid,this.estadopqrid)));
+		let valida = false;
+		this.notificaciones.alerta("¿Desea finalizar la Incidencia " + this.Arraypqr.pqrid + "?").then(({ role, data }) => {
+			if (role == 'aceptar') {
+				if(this.estadoSelet == false  &&  this.transicionestadoapp == 1){
+					this.estadoSelet = true;
+				}else{
+					if((this.datoTecnicoSelet == undefined || this.datoTecnicoSelet == '') &&  this.transicionestadoapp == 1){
+						this.alertService.presentToast('Seleccione el Tecnico de la Incidencia', 'middle');
+						return;
 					}
-					);
-
-				let self = this;
-				this.alertService.presentToast('Finalizó la Incidencia', 'middle');
-				setTimeout(function(){
-					self.irAtras();
-				}, 1500);
+		
+					if((this.datoeEstadoSelet == undefined || this.datoeEstadoSelet == '') &&  this.transicionestadoapp == 1){
+						this.alertService.presentToast('Seleccione el Estado de la Incidencia', 'middle');
+					}else{	
+						this.datoTecnicoSelet = this.selectMultiple == true ? this.datoTecnicoSelet : [this.datoTecnicoSelet];
+						this.estadoFinInc       = "";
+						var	movim = {
+								tipo 		        : 'storeLog',
+								accion              : 'finalizar',
+								pqrid   	        : this.Arraypqr.pqrid, 
+								estado 		        : 'P',
+								tipoParada 	        : null,
+								tipoactividadid 	: this.tipoactividadid,
+								inicio 		        : -1,
+								created_at	        : this.getDate(),
+								Tecnicoasignado	    : this.datoTecnicoSelet,
+								coordinadorid       : this.Arraypqr.coordinadorid, 
+								estadopqrid         : this.transicionestadoapp == 1 ? this.datoeEstadoSelet : null,
+							};
+		
+						this.llenarMovimientos(movim);
+						this.storageService.get('INCI').then(
+							(data:any) => {
+								data = JSON.parse(data);
+								this.storageService.remove('INCI');
+								this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, 'finalizar',this.tipoactividadid,this.estadopqrid)));
+							}
+							);
+		
+						let self = this;
+						this.alertService.presentToast('Finalizó la Incidencia', 'middle');
+						this.estadoSelet = false;
+						setTimeout(function(){
+							self.irAtras();
+						}, 1500);
+					}
+				}
+			} else {
+				valida = true;
 			}
-		}
+		});
 	}
 
 	Setcamera(param){
@@ -621,40 +641,6 @@ export class OrdentrabajoPage implements OnInit {
 				this.storageService.set('movimientos', JSON.stringify(data));
 			}
 		);
-
-		
-
-
-		this.storageService.get('movimiActual').then(
-			(data:any) => {
-				data = JSON.parse(data);
-				var arrDt = [];
-				// data = Items_a_elimianar(data,movim);
-
-		
-				if(data == null){
-					data = arrDt;
-				}
-				data.push(movim);
-				this.storageService.set('movimiActual', JSON.stringify(data));
-			}
-		);
-		let self = this;
-		 setTimeout(function(){
-			self.storageService.get('movimiActual').then(
-				(data:any) => {
-					data = JSON.parse(data);
-					console.log('data',data);
-				}
-				);
-		 },500);
-
-		// function Items_a_elimianar(Lista,sp_Fila) {
-		// 	Lista = Lista.filter(function(elemento){
-		// 	  return elemento.pqrid != sp_Fila.pqrid || elemento.tipoactividadid != sp_Fila.tipoactividadid
-		// 	});
-		// }
-		
 	}
 
 	llenarNotadetalle(notaDetalle){
@@ -745,136 +731,81 @@ export class OrdentrabajoPage implements OnInit {
 
 
 
-	accionActividad(tipo: string, tipoactividadid: number, placa?: string) {
+	accionActividad(nombreaccion:string ,tipo: string, tipoactividadid: number, nombre?: string) {
 		this.searching = true;
 		if(tipo == 'pausar'){
-			this.procesarPausaMultiple(tipo,tipoactividadid);
+			this.procesarPausaMultiple(nombreaccion,tipo,tipoactividadid);
 		}else{
-			this.validaPausa = false;
-			this.actualizarActividades(tipo,tipoactividadid);
-			console.log('llego',tipo, tipoactividadid, placa);
-	
-	
-			var movim = {
-				tipo 		: 'storeLog',
-				accion      : tipo,
-				pqrid   	: this.Arraypqr.pqrid,
-				estado 		: tipo,
-				tipoParada 	: this.tipoParada,
-				tipoactividadid : tipoactividadid,
-				created_at  : this.getDate(),
-			};
-	
-			this.llenarMovimientos(movim);
-	
-			this.storageService.get('INCI').then(
-				(data:any) => {
-					data = JSON.parse(data);
-	
-					this.storageService.remove('INCI');
-					this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, tipo,tipoactividadid,this.estadopqrid)));
-				}
-				);
-	
-			this.alertService.presentToast(tipo + ' la operación', 'middle');
+			let valida = false;
+			if(tipo == 'finalizaractividad'){
+				this.notificaciones.alerta("¿Desea finalizar la actividad " + nombre + "?").then(({ role, data }) => {
+					if (role == 'aceptar') {
+						this.actualizarMovimientoMultiple(nombreaccion,tipo,tipoactividadid);
+					} else {
+						this.searching = false;
+						valida = true;
+					}
+				});
+			}else{
+				this.actualizarMovimientoMultiple(nombreaccion,tipo,tipoactividadid);
+			}
 		}
-		// this.estadoInc = tipo;	
-
-
-		// function Items_a_elimianar(Lista,sp_Fila) {
-		// this.tipoactividades = this.tipoactividades.filter(function(elemento){
-		// 	if(elemento.id == tipoactividadid){
-		// 		elemento.accion = tipo;
-		// 	}
-		// 	return elemento;
-		// });
-		
-		// }
-
-		// return;
-
-
-
-	
-		// switch (tipo) {
-		// 	case 'visualizar':
-		// 	case 'modificar':
-		// 		// this.miVehiculoService.informacion({ idVehiculo }, this.rutaGeneral + 'obtenerVehiculo').then(({ success, datos }) => {
-		// 		// 	if (success) {
-		// 		// 		this.formularioVehiculo(datos, tipo);
-		// 		// 	}
-		// 		// 	this.searching = false;
-		// 		// }, console.error);
-		// 		break;
-		// 	case 'eliminar':
-		// 		// this.notificaciones.alerta("¿Desea eliminar el vehiculo con placa " + placa + "?").then(({ role, data }) => {
-		// 		// 	if (role == 'aceptar') {
-		// 		// 		this.miVehiculoService.informacion({ idVehiculo }, this.rutaGeneral + 'eliminarVehiculo').then(({ success, datos }) => {
-		// 		// 			if (success) {
-		// 		// 				this.obtenerVehiculos();
-		// 		// 			}
-		// 		// 			this.searching = false;
-		// 		// 		}, console.error);
-		// 		// 	} else {
-		// 		// 		this.searching = false;
-		// 		// 	}
-		// 		// });
-		// 		break;
-		// 	default:
-		// 		console.log("EL valor no es valido");
-		// 		break;
-		// }
 	}
 
+	actualizarMovimientoMultiple(nombreaccion,tipo,tipoactividadid){
+		if(tipo == 'pausar'){
+			tipoactividadid  = this.actividadmultiple;
+			this.validaPausa = false;
+		}
+
+		this.validaPausa = false;
+		this.actualizarActividades(nombreaccion,tipo,tipoactividadid);
+		var movim = {
+			tipo 		: 'storeLog',
+			accion      : tipo,
+			pqrid   	: this.Arraypqr.pqrid,
+			estado 		: tipo,
+			tipoParada 	: this.tipoParada,
+			tipoactividadid : tipoactividadid,
+			created_at  : this.getDate(),
+		};
+
+		this.llenarMovimientos(movim);
+
+		this.storageService.get('INCI').then(
+			(data:any) => {
+				data = JSON.parse(data);
+
+				this.storageService.remove('INCI');
+				this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, tipo,tipoactividadid,this.estadopqrid)));
+			}
+			);
+		this.alertService.presentToast(tipo + ' la operación', 'middle');	
+		
+	}
 
 
 	//funciones multiples para el inicio actividaddes mukltiples
-
-
-	procesarPausaMultiple(tipo,id){
+	procesarPausaMultiple(nombreaccion,tipo,id){
 		this.validaPausa = true;
 		this.actividadmultiple = id;
-		this.actualizarActividades(tipo,id);
+		this.actualizarActividades(nombreaccion,tipo,id);
 	}
 
-
 	pausaMultiple(){
-
 		if(this.tipoParada == ''){
 			this.alertService.presentToast('Seleccione el Tipo de Parada', 'middle');
 		}else{
-			var movim = {
-				tipo 		    : 'storeLog',
-				accion          : 'pausar', 
-				pqrid   	    : this.Arraypqr.pqrid, 
-				estado 		    : 'P',
-				tipoParada      : this.tipoParada,
-				tipoactividadid : this.actividadmultiple,
-				inicio 		    : -1,
-				created_at	    : this.getDate(),
-			};
-
-			console.log('movim',movim);
-			this.actualizarActividades('pausar',this.actividadmultiple)
-			
-			this.llenarMovimientos(movim);
-			this.storageService.get('INCI').then(
-				(data:any) => {
-					data = JSON.parse(data);
-					this.storageService.remove('INCI');
-					this.storageService.set('INCI', JSON.stringify(this.actualizarInci(data, this.Arraypqr, 'pausar',this.actividadmultiple,this.estadopqrid)));
-				}
-				);
-		
-			this.alertService.presentToast('Pausó la operación', 'middle');
-			this.validaPausa = false;
+			this.actualizarMovimientoMultiple('Pausada','pausar',this.actividadmultiple);
 		}
 	}
 
-	actualizarActividades(tipo,tipoactividadid){
+	actualizarActividades(nombreaccion,tipo,tipoactividadid){
 		this.tipoactividades = this.tipoactividades.filter(function(elemento){
 				if(elemento.id == tipoactividadid){
 					elemento.accion = tipo;
+					elemento.nombreaccion = nombreaccion;
+					
 				}
 				return elemento;
 			});
@@ -890,13 +821,38 @@ export class OrdentrabajoPage implements OnInit {
 				});
 			}
 		);
-		
+	}
 
-		// dataArray['actividadPqr'] = this.tipoactividades;
 
-		// console.log('llego de nuevo',dataArray);
-
-		
+	// datos de actualizar notas maxivas
+	async formularioInc(accion = "crear") {
+		let componentProps = { 
+			accion, 
+			estados       : this.ESTADOSESTADOS,
+			pqrid         :this.Arraypqr.pqrid,
+			incRelacionadas : this.incRelacionadas
+		};
+		const modal = await this.modalCtrl.create({
+			component: AgregarPqrsfrComponent,
+			backdropDismiss: true,
+			cssClass: 'animate__animated animate__slideInRight animate__faster',
+			componentProps
+		});
+		await modal.present();
+		modal.onWillDismiss().then(({data}) => {
+			if (data == 'listar') {
+				// this.listaPQRSF = [];
+				// let datos = {
+				// 	inicio: this.inicio,
+				// 	fin: this.fin,
+				// 	where: this.buscarLista,
+				// 	fechaInicio: this.fechaInicio,
+				// 	fechaFin: this.fechaFin,
+				// 	tipoReunion: this.tipoReunion
+				// }
+				// this.listaPQR(datos);
+			}
+		}, console.error);
 	}
 }
 
