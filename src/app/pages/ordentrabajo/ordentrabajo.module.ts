@@ -11,7 +11,7 @@ import { OrdentrabajoPageRoutingModule } from './ordentrabajo-routing.module';
 
 import { OrdentrabajoPage } from './ordentrabajo.page';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from 'ionic-selectable'; 
 import { PipesModule } from '../../pipes/pipes.module';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
 
@@ -24,11 +24,11 @@ import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/not
 		OrdentrabajoPageRoutingModule,
 		IonicSelectableModule,
 		PipesModule,
-		
 	],
-	schemas: [NO_ERRORS_SCHEMA],
+	// schemas: [NO_ERRORS_SCHEMA],
 	providers: [CambioClavePage],
 	declarations: [OrdentrabajoPage,AgregarPqrsfrComponent]
+	,entryComponents : [AgregarPqrsfrComponent]
 	
 })
 export class OrdentrabajoPageModule {}
