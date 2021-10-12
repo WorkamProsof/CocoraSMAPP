@@ -805,18 +805,62 @@ export class DashboardPage implements OnInit {
 					
 					let fechapqr = moment(self.listarIncidencias[i + originalLengh].fechapqr).format('DD-MM-YYYY');
 					const el = document.createElement('ion-item');
+					let accion = '';
+					let background  = '';
+					switch (self.listarIncidencias[i + originalLengh].accion) {
+						case 'pausar':
+							background  = '#c85404';	
+						   	accion = 'Pausó';
+						break;
+
+						case 'continuar':
+							background  = '#a1a13b';	
+						   	accion = 'Continuo';
+						break;
+
+						case 'FinalizoRuta':
+							background  = '#0e1b37';	
+						   	accion = 'Finalizo Ruta';
+						break;
+
+						case 'InicioRuta':
+							background  = '#0e1b37';	
+						   	accion = 'Inicio Ruta';
+						break;
+						case 'iniciar':
+							background  = '#10dc60';	
+						   	accion = 'Inicio';
+						break;
+
+						case 'finalizaractividad':
+							background  ='#10dc60';	
+						   	accion = 'Finalizó Actividad';
+						break;
+
+						case 'finalizar':
+							background  ='red';	
+						   	accion = 'Finalizó Incidencia';
+						break;
+					
+						default:
+							background  ='#d6e7f2';	
+						   	accion =  'Sin Iniciar';
+						break;
+					};
+
+					let color = (background == '' ? 'Black': self.getContrastYIQ(background));
+
 					el.innerHTML = '<ion-label>'+
 					`<p style="font-size: 11px;"><strong style="font-size: 11px;"><label style="color: black;"> Inc:</label> </strong> ${self.listarIncidencias[i + originalLengh].pqrid  } <strong><label style="color: black;"> F. Inc:</label></strong> `+fechapqr+`<span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> F.Limite:</label> `+fechalimite+`</strong></span></p>`+
 					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Cliente:</label> ${self.listarIncidencias[i + originalLengh].nombretercero}</strong>  <span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> Sucursal:</label></strong>  ` +nombresucursal+`</span></p>`+
-					
 					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Equipo:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].nombreequipo}</span></p>`+
-					
 					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Serial:</label> ${self.listarIncidencias[i + originalLengh].serialequipo}</strong> <span class="listFecha" style="float: right;font-size: 11px;"> <strong><label style="color: black;"> C.Interno:</label> ${codigointerno}</strong></span></p>`+
 					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Asunto:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].asunto}</span></p>`+
 					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Operación:</label> ${Operacion}</strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;"> Prioridad:</label>   ${Prioridad}</span></p>`+
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Acción: </label></strong><span class="listFecha" style="color:` + color + `;  background:` + background + `; float: right;font-size: 11px;width: 30%;text-align: center;"><strong>` + accion +` </strong></span></p>`+
 					'</ion-label>';
 					this.apend(list, el, i, originalLengh);
-					this.length++;
+					this.length++;	
 				}
 				if(this.length <= this.listarIncidencias.length && this.length == this.listarIncidencias.length){
 					if(self.infiniteScroll != undefined){
@@ -825,6 +869,15 @@ export class DashboardPage implements OnInit {
 					break;
 				}
 			}
+	}
+
+	getContrastYIQ(hexcolor){
+		hexcolor = hexcolor.replace("#","");
+		var r = parseInt(hexcolor.substr(0,2),16);
+		var g = parseInt(hexcolor.substr(2,2),16);
+		var b = parseInt(hexcolor.substr(4,2),16);
+		var yiq = ((r*299)+(g*587)+(b*114))/1000;
+		return (yiq >= 128) ? 'Black' : 'white';
 	}
 
 	async apend(list, el, i, originalLengh) {
