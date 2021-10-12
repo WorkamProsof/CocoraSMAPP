@@ -299,7 +299,6 @@ export class DashboardPage implements OnInit {
 	async leerInc(){
 		await this.storageService.get('INCI').then(
 			(data:any) => {
-				console.log(data);
 			}
 			);
 
