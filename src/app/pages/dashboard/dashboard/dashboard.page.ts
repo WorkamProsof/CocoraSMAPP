@@ -819,10 +819,14 @@ export class DashboardPage implements OnInit {
 						break;
 
 						case 'FinalizoRuta':
-							background  = '#10dc60';	
+							background  = '#0e1b37';	
 						   	accion = 'Finalizo Ruta';
 						break;
 
+						case 'InicioRuta':
+							background  = '#0e1b37';	
+						   	accion = 'Inicio Ruta';
+						break;
 						case 'iniciar':
 							background  = '#10dc60';	
 						   	accion = 'Inicio';
