@@ -156,19 +156,6 @@
 			</ion-col>
 
 			<ion-col *ngIf="estadoFinInc == 'finalizar'">
-			<!-- <ion-item *ngIf="estadoSelet == true">
-				<ion-label position="floating">Estado</ion-label>
-				<ion-select  [value]="estadopqrid" interface="popover" placeholder="Seleccionar Estado" (ionChange)="seleccionEstadopqr($event,1)">
-					<ion-select-option *ngFor="let estado of ESTADOS" value="{{estado.nuevoestado}}">{{estado.nombrenuevoestadopqr}}</ion-select-option>
-				</ion-select>
-			</ion-item>
-
-			<ion-item *ngIf="estadoSelet == true">
-				<ion-label position="floating">Técnico</ion-label>
-				<ion-select  [value]="datoTecnicoSelet" multiple="{{selectMultiple}}" [disabled]="tecnicoDisabled" interface="popover" placeholder="Seleccionar Ténico" (ionChange)="seleccionEstadopqr($event,0)">
-					<ion-select-option *ngFor="let ListUsuario of Arryusuarios"  value="{{ListUsuario.usuarioid}}">{{ListUsuario.nombre}}</ion-select-option>
-				</ion-select>
-			</ion-item> -->
 			
 			<ion-button *ngIf="estadoSelet != true" id="btnFinalizarInc"  color="success" (click)="FinalizarActividad()">
 				Finalizar Actividad
@@ -177,10 +164,6 @@
 			<ion-button *ngIf="estadoSelet != true"  id="btnFinalizarInc"  color="danger-shade" (click)="FinalizarIncidencia()">
 				Finalizar Incidencia
 			</ion-button>
-
-			<!-- <ion-button  *ngIf="estadoSelet == true" id="btnFinalizarInc" style="width: 100% !important;"  color="danger-shade" (click)="FinalizarIncidencia()">
-				Finalizar Incidencia2
-			</ion-button> -->
 			</ion-col>
 		</ion-row>
 	</ion-grid>
