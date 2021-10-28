@@ -14,7 +14,7 @@
 <ion-content class="ion-padding">
 	<form [formGroup]="formAcciones" method="post" autocomplete="off">
 		<ion-item>
-			<ionic-selectable  #selectTipoPQR placeholder="Seleccion Estato" formControlName="estadopqrid" [(ngModel)]="anexosEstado.estadopqrid" itemValueField="id" itemTextField="nombre" [items]="estados" searchPlaceholder="Buscar" [canSearch]="true">
+			<ionic-selectable  #selectTipoPQR placeholder="Seleccion Estato" formControlName="estadopqrid" [(ngModel)]="anexosEstado.estadopqrid" itemValueField="id" itemTextField="nombre" [items]="ESTADOS" searchPlaceholder="Buscar" [canSearch]="true">
 				<ng-template ionicSelectableHeaderTemplate>
 					<ion-toolbar>
 						<ion-title slot="start" class="ion-text-left ion-no-padding ion-padding-horizontal">Estado Incidencia</ion-title>
@@ -84,15 +84,16 @@
 		<ion-item-sliding  *ngFor="let item of incRelacionadas | filtro: 'pqridrelacionada': buscarLista; let i = index;"
 			[id]="'slidingInvitados' + i">
 			<ion-item>
-				<ion-label class="ion-no-margin">
-					<h5>{{ item['pqridrelacionada'] }}</h5>
+				<!-- <ion-label class="ion-no-margin">{{ item['pqridrelacionada'] }} -->
+					<!-- <h5>{{ item['pqridrelacionada'] }}</h5> -->
 					<!-- <p color="primary">{{ item['accion'] }}</p> -->
 					<!-- <ion-text class="ion-text-left" color="primary">
 					<p>{{ item['nombreaccion'] }}</p>
 					</ion-text> -->
-				</ion-label>
-				<ion-text class="ion-text-center" color="primary">
-					<p>{{ item['asunto'] }}</p>
+				<!-- </ion-label> -->
+				<ion-text class="ion-text-left" color="primary">
+					{{ item['pqridrelacionada'] }} - {{ item['asunto'] }} <br>
+					<label><span  [ngStyle]="{'background-color':item['colorhexadecimal']}"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Estado - {{item['nombreestadopqr']}}  </label>
 				</ion-text>
 			</ion-item>
 		</ion-item-sliding>

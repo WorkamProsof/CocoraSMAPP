@@ -65,8 +65,15 @@
 
 	</ion-col>
 	
-	<ion-searchbar *ngIf="!validaPausa && estadoSelet != true && multipleactividadapp != false" (ionChange)="buscarFiltro($event)" clearIcon="close-sharp" placeholder="Buscar Actividad" [debounce]="250"></ion-searchbar>
-	<ion-list lines="full" class="ion-no-padding" *ngIf="!validaPausa && estadoSelet != true && multipleactividadapp != false">
+	<ion-col *ngIf="(estadoInc == 'InicioRuta') &&  !validaPausa && estadoSelet != true && multipleactividadapp != false">
+		<ion-button *ngIf="validarutaapp =='1'"  id="btnRutaFin2" color="danger-shade" (click)="FinalizoRuta()">
+			Finalizo Ruta
+		</ion-button>
+	</ion-col>
+
+	<ion-searchbar *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false" (ionChange)="buscarFiltro($event)" clearIcon="close-sharp" placeholder="Buscar Actividad" [debounce]="250"></ion-searchbar>
+	
+	<ion-list lines="full" class="ion-no-padding" *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false">
 		<ion-item-sliding (click)="slidingVehiculo('slidingInvitados' + i)" *ngFor="let item of tipoactividades | filtro: 'nombre': buscarLista; let i = index;"
 			[id]="'slidingInvitados' + i">
 			<ion-item>
@@ -81,6 +88,8 @@
 					<p>{{ item['accion'] }}</p>
 				</ion-text> -->
 			</ion-item>
+
+			
 			<ion-item-options side="end">
 				
 				<ion-item-option slot="end"  color="warning"
@@ -266,12 +275,12 @@
 		</ion-fab-button>
 
 		<ion-fab-list side="top">
-			<ion-fab-button  color="primary" *ngIf="validarutaapp =='1'"  (click)="iniciarRuta()">
+			<ion-fab-button  color="primary" *ngIf="validarutaapp =='1' && estadoInc != 'InicioRuta' "  (click)="iniciarRuta()">
 				<ion-icon name="bicycle"></ion-icon>
 			</ion-fab-button>
-			<ion-fab-button color="primary" *ngIf="validarutaapp =='1'" (click)="FinalizoRuta()">
+			<!-- <ion-fab-button color="primary" *ngIf="validarutaapp =='1'" (click)="FinalizoRuta()">
 				<ion-icon name="hand"></ion-icon>
-			</ion-fab-button>
+			</ion-fab-button> -->
 			<ion-fab-button color="success" *ngIf="estadoSelet != true" (click)="FinalizarIncidencia()">
 				<ion-icon name="save"></ion-icon>
 			</ion-fab-button>
