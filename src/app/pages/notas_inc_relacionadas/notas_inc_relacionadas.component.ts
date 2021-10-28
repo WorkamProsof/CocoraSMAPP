@@ -6,7 +6,6 @@ import { StorageService } from 'src/app/services/storage.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { rendererTypeName } from '@angular/compiler';
 import { NgForm ,FormGroup,FormControl} from '@angular/forms';
-import { Console } from 'console';
 
 @Component({
   	selector: 'app-notas_inc_relacionadas',
