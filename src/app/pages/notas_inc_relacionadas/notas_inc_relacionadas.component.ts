@@ -6,6 +6,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { rendererTypeName } from '@angular/compiler';
 import { NgForm ,FormGroup,FormControl} from '@angular/forms';
+import { Console } from 'console';
 
 @Component({
   	selector: 'app-notas_inc_relacionadas',
@@ -30,6 +31,10 @@ export class AgregarPqrsfrComponent implements OnInit {
 		,privado     : '1'
 	}
 	
+	ESTADOS             = [];
+	Arraypqr            : any = [];
+	transicionestadoapp : any = [];
+	estadopqrid         : any;
 
 	private file: File;
 	constructor(
@@ -41,21 +46,42 @@ export class AgregarPqrsfrComponent implements OnInit {
 
 	async ngOnInit() {
 		this.configForm();
-
+	
 		await this.storageService.get('notasIncRelacionadas').then(
 			(data:any) => {
 				data = JSON.parse(data);
 			}
 		);
-	}
 
-	// changePrivate(){
-	// 	if(this.anexosEstado.privado == '1'){
-	// 		this.anexosEstado.privado = '0';
-	// 	}else{
-	// 		this.anexosEstado.privado = '1';
-	// 	}
-	// }
+		await this.storageService.get('inciSeleccionado').then(
+			(data:any) => {
+				data = JSON.parse(data);
+				this.Arraypqr             = data;
+				this.estadopqrid          = this.Arraypqr.estadopqrid;
+			}
+		);
+
+		await this.storageService.get('transicionestadoapp').then(
+			(data:any) => {
+				this.transicionestadoapp = data;
+			}
+		);
+
+
+		await this.storageService.get('ESTADOS').then(
+			(data:any) => {
+				data = JSON.parse(data);
+				this.ESTADOS = data[this.estadopqrid];
+				this.ESTADOS.push({'id':this.Arraypqr.estadopqrid,'nombre':this.Arraypqr.nombreestadopqr});
+			}
+		);
+		
+
+		if(this.transicionestadoapp !='1'){
+			this.ESTADOS = this.estados;
+		}
+
+	}
 
   	cerrarModal(datos?) {
 		this.modalController.dismiss(datos);
@@ -71,6 +97,17 @@ export class AgregarPqrsfrComponent implements OnInit {
 		});
 
 	}
+
+	  // valida color de fondo para cambiar color de letra
+  getContrastYIQ(hexcolor){
+    hexcolor = hexcolor.replace("#","");
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? 'Black' : 'white';
+  }
+  
 
 	async guardarNotasEstados() {
 		this.searching = true;
