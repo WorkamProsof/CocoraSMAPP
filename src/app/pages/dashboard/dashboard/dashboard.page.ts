@@ -551,10 +551,7 @@ export class DashboardPage implements OnInit {
 			this.loader(false);
 		}
 	}
-
-
-
-
+	
 	async guardarMovimientos(){ 
 		this.listarNotadetalle();
 		this.listarArryayImage();
@@ -636,6 +633,7 @@ export class DashboardPage implements OnInit {
 				data = JSON.parse(data);
 				if(data != null){
 					this.incRelacionadas = data;
+					console.log('this.incRelacionadas',this.incRelacionadas);
 				}
 			}
 			);
@@ -691,6 +689,10 @@ export class DashboardPage implements OnInit {
 
 				case '6':
 					orderBy += "order by qp.nombre asc";
+				break;
+
+				case '7':
+					orderBy += "order by accion,pq.pqrid::int desc";
 				break;
 			}
 		}
@@ -824,7 +826,7 @@ export class DashboardPage implements OnInit {
 						break;
 
 						case 'InicioRuta':
-							background  = '#0e1b37';	
+							background  = '#0e1b37'; 	
 						   	accion = 'Inicio Ruta';
 						break;
 						case 'iniciar':

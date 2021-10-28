@@ -45,14 +45,13 @@
 <ion-content padding *ngIf="filtro">
 	<ion-button class="ion-margin-bottom" (click)="verOcultarFiltro()">Cancelar Filtro</ion-button>
 	<form #form="ngForm" (ngSubmit)="filtrar(form)" method="post" autocomplete="off">
-
-		
 		<ion-item>
 			<ion-label position="floating">Ordenar Por</ion-label>
 			<ion-select name="ordenadopor"  [value]="FormularioFiltro.ordenadopor" ngModel [(ngModel)]="FormularioFiltro.ordenadopor">
+				<ion-select-option value="7">En proceso estado de App</ion-select-option>
 				<ion-select-option value="1">Sucursal</ion-select-option>
-				<ion-select-option value="2">Incidencia Acendente</ion-select-option>
-				<ion-select-option value="3">Incidencia Decendente</ion-select-option>
+				<ion-select-option value="2">Incidencia Ascendente</ion-select-option>
+				<ion-select-option value="3">Incidencia Descendente</ion-select-option>
 				<ion-select-option value="4">Código Interno</ion-select-option>
 				<ion-select-option value="5">fecha Incidencia</ion-select-option>
 				<ion-select-option value="6">Equipo</ion-select-option>

@@ -23,8 +23,13 @@ export class AgregarPqrsfrComponent implements OnInit {
 	buscarLista           : string  = '';
 	
 	anexosEstado = {
-		estadopqrid : '', anexos : '',  descripcion : '' , pqrid : ''
+		 estadopqrid : ''
+		,anexos      : ''
+		,descripcion : '' 
+		,pqrid       : ''
+		,privado     : '1'
 	}
+	
 
 	private file: File;
 	constructor(
@@ -44,6 +49,14 @@ export class AgregarPqrsfrComponent implements OnInit {
 		);
 	}
 
+	// changePrivate(){
+	// 	if(this.anexosEstado.privado == '1'){
+	// 		this.anexosEstado.privado = '0';
+	// 	}else{
+	// 		this.anexosEstado.privado = '1';
+	// 	}
+	// }
+
   	cerrarModal(datos?) {
 		this.modalController.dismiss(datos);
 	}
@@ -53,7 +66,8 @@ export class AgregarPqrsfrComponent implements OnInit {
 			'estadopqrid' : new FormControl(this.anexosEstado.estadopqrid),
 			'descripcion' : new FormControl(this.anexosEstado.descripcion),
 			'anexos'      : new FormControl(this.anexosEstado.anexos),
-			'nombre'      : new FormControl(this.anexosEstado.pqrid)
+			'nombre'      : new FormControl(this.anexosEstado.pqrid),
+			'privado'     : new FormControl(this.anexosEstado.privado)
 		});
 
 	}
@@ -64,11 +78,11 @@ export class AgregarPqrsfrComponent implements OnInit {
 			const informacion ={}; 
 			this.incRelacionadas.push({pqridrelacionada : this.pqrid,asunto : '', equipo : '' });
 			informacion['pqris']             = this.pqrid; 
-			informacion['estadopqrid']       = this.formAcciones.value.estadopqrid.id; 
+			informacion['estadopqrid']       = this.formAcciones.value.estadopqrid.id ? this.formAcciones.value.estadopqrid.id : null; 
 			informacion['descripcion']       = this.formAcciones.value.descripcion;
+			informacion['privado']           = this.formAcciones.value.privado ? true : this.formAcciones.value.privado;
 			informacion['incRelacionadas']   = this.incRelacionadas;
 			informacion['created_at']        = this.getDate();
-			      
 			
 			if (this.file) {
 				informacion['Archivos']      = await this.getBase64(this.file);
@@ -77,7 +91,8 @@ export class AgregarPqrsfrComponent implements OnInit {
 			} else {
 				informacion['Archivos']      = ''
 			}
-		
+
+	
 			this.storageService.get('notasIncRelacionadas').then(
 				(data:any) => {
 					data = JSON.parse(data);
