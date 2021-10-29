@@ -14,7 +14,7 @@
 <ion-content class="ion-padding">
 	<form [formGroup]="formAcciones" method="post" autocomplete="off">
 		<ion-item>
-			<ionic-selectable  #selectTipoPQR placeholder="Seleccion Estato" formControlName="estadopqrid" [(ngModel)]="anexosEstado.estadopqrid" itemValueField="id" itemTextField="nombre" [items]="ESTADOS" searchPlaceholder="Buscar" [canSearch]="true">
+			<ionic-selectable  #selectTipoPQR placeholder="Seleccion Estado" formControlName="estadopqrid" [(ngModel)]="anexosEstado.estadopqrid" itemValueField="id" itemTextField="nombre" [items]="ESTADOS" searchPlaceholder="Buscar" [canSearch]="true">
 				<ng-template ionicSelectableHeaderTemplate>
 					<ion-toolbar>
 						<ion-title slot="start" class="ion-text-left ion-no-padding ion-padding-horizontal">Estado Incidencia</ion-title>
@@ -81,7 +81,7 @@
 
 	<ion-searchbar  (ionChange)="buscarFiltro($event)" clearIcon="close-sharp" placeholder="Buscar Incidencia" [debounce]="250"></ion-searchbar>
 	<ion-list lines="full" class="ion-no-padding">
-		<ion-item-sliding  *ngFor="let item of incRelacionadas | filtro: 'pqridrelacionada': buscarLista; let i = index;"
+		<ion-item-sliding  *ngFor="let item of ListaincRelacionada | filtro: 'pqridrelacionada': buscarLista; let i = index;"
 			[id]="'slidingInvitados' + i">
 			<ion-item>
 				<!-- <ion-label class="ion-no-margin">{{ item['pqridrelacionada'] }} -->
@@ -98,7 +98,7 @@
 			</ion-item>
 		</ion-item-sliding>
 	</ion-list>
-	<div class="ion-padding ion-text-center nohayresultado" *ngIf="!incRelacionadas.length && !searching">
+	<div class="ion-padding ion-text-center nohayresultado" *ngIf="!ListaincRelacionada.length && !searching">
 		No tiene Incidencias relacionas.
 	</div>
 

@@ -4,6 +4,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LoginService } from './services/login.service';
 import { AlertService } from './services/alert.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
 	selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent {
 		private statusBar: 		StatusBar,
 		private loginService: 	LoginService,
 		private navCtrl: 		NavController,
+		private storageService: StorageService,
 		private alertService: 	AlertService
 		) {
 		this.initializeApp();
@@ -55,4 +57,25 @@ export class AppComponent {
 			}
 		);
 	}
+
+	sincronizarPermisos() {
+		this.loginService.getUsuarios().subscribe(
+			(data:any) => {
+				this.storageService.set('Arryusuarios',data.Usuarios);
+				this.storageService.set('logoempresa', data.logoempresa);
+				this.storageService.set('transicionestadoapp', data.transicionestadoapp);
+				this.storageService.set('validarutaapp', data.validarutaapp);
+				this.storageService.set('proincrelacionadasapp', data.proincrelacionadasapp);
+				this.storageService.set('multipleactividadapp', data.multipleactividadapp);
+				this.storageService.set('multipleoperarios', data.multipleoperarios);
+				this.alertService.presentToast('Sincronización con éxito');
+			},
+			error => {
+				this.alertService.presentToast('Ha ocurrido un problema, pero no te preocupes. No es tu culpa');
+				console.error(error);
+			}
+			);
+	}
+	
+	
 }

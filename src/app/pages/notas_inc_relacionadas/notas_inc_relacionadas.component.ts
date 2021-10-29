@@ -13,14 +13,16 @@ import { NgForm ,FormGroup,FormControl} from '@angular/forms';
   	styleUrls: ['./notas_inc_relacionadas.component.scss'],
 })
 export class AgregarPqrsfrComponent implements OnInit {
+
 	@Input() pqrid        : string;
 	@Input() accion       : string;
 	@Input() estados      : Array<object>;
-	@Input() incRelacionadas: Array<object>;
+	@Input() incRelacionadas:Array<object>;
 	searching             : boolean = false;
 	nombreInputFile       : string  = "Seleccionar Archivo";
 	formAcciones          : FormGroup;  //Fomulario
 	buscarLista           : string  = '';
+	
 	
 	anexosEstado = {
 		 estadopqrid : ''
@@ -34,7 +36,7 @@ export class AgregarPqrsfrComponent implements OnInit {
 	Arraypqr            : any = [];
 	transicionestadoapp : any = [];
 	estadopqrid         : any;
-
+	ListaincRelacionada : any = [];
 	private file: File;
 	constructor(
 		private alertService : AlertService,
@@ -44,6 +46,13 @@ export class AgregarPqrsfrComponent implements OnInit {
 	) {}
 
 	async ngOnInit() {
+		let data : any = this.incRelacionadas;
+		for (let i = 0; i < data.length; i++) {
+			if(data[i].pqridrelacionada != this.pqrid){
+				this.ListaincRelacionada.push(data[i])
+			}
+		}
+
 		this.configForm();
 	
 		await this.storageService.get('notasIncRelacionadas').then(
@@ -70,16 +79,16 @@ export class AgregarPqrsfrComponent implements OnInit {
 		await this.storageService.get('ESTADOS').then(
 			(data:any) => {
 				data = JSON.parse(data);
-				this.ESTADOS = data[this.estadopqrid];
+				for (let i = 0; i < data[this.estadopqrid].length; i++) {
+				this.ESTADOS.push({'id':data[this.estadopqrid][i].nuevoestado,'nombre':data[this.estadopqrid][i].nombrenuevoestadopqr});
+				}
 				this.ESTADOS.push({'id':this.Arraypqr.estadopqrid,'nombre':this.Arraypqr.nombreestadopqr});
 			}
 		);
 		
-
 		if(this.transicionestadoapp !='1'){
 			this.ESTADOS = this.estados;
 		}
-
 	}
 
   	cerrarModal(datos?) {
@@ -112,20 +121,22 @@ export class AgregarPqrsfrComponent implements OnInit {
 		this.searching = true;
 		if(this.formAcciones.value.descripcion != ''){
 			const informacion ={}; 
-			this.incRelacionadas.push({pqridrelacionada : this.pqrid,asunto : '', equipo : '' });
+			
 			informacion['pqris']             = this.pqrid; 
 			informacion['estadopqrid']       = this.formAcciones.value.estadopqrid.id ? this.formAcciones.value.estadopqrid.id : null; 
 			informacion['descripcion']       = this.formAcciones.value.descripcion;
 			informacion['privado']           = this.formAcciones.value.privado ? true : this.formAcciones.value.privado;
-			informacion['incRelacionadas']   = this.incRelacionadas;
+			informacion['incRelacionadas']   = this.ListaincRelacionada;
 			informacion['created_at']        = this.getDate();
+
+			informacion['incRelacionadas'].push({pqridrelacionada : this.pqrid,asunto : '', equipo : '' });
 			
 			if (this.file) {
 				informacion['Archivos']      = await this.getBase64(this.file);
 				informacion['ArchivoNombre'] = this.file.name;
 				informacion['TipoArchivo']   = this.file.type;
 			} else {
-				informacion['Archivos']      = ''
+				informacion['Archivos']      = '';
 			}
 
 	
