@@ -5,28 +5,44 @@
 
 	<ion-content class="ion-padding-horizontal ion-margin-top">
 		<div class="ClasePadre">
-			<div class="DivTop">
+			<!-- <div class="DivTop">
 				<div class="IconoLogin hijo">
 
 				</div>
 				<br>
 				<p class="TituloInicioApp hijo"></p>
-			</div>
-			<div class="DivLogin hijo" [hidden]=contenido>
+			</div> -->
+			<div [hidden]=contenido>
 				<form #form="ngForm" (ngSubmit)="login(form)" method="post">
-					<ion-item>
-					<ion-label position="floating">NIT</ion-label>
-						<ion-input ngModel type="nit" name="nit" required></ion-input>
-					</ion-item>
+					<div class="IconoLogin hijo" style="margin-top: 4%;
+					margin-bottom: 16%;">
 
-					<button type="submit" class="button-test">Ingresar</button>
+					</div>
+
+					<ion-col size="6" size-xs='12' size-lg='6' size-md='6' class="ion-align-self-center" >
+						<ion-item>
+							<ion-label position="floating">NIT</ion-label>
+							<ion-input ngModel type="nit" name="nit" required></ion-input>
+						</ion-item>
+					</ion-col>
+
+					<ion-col size="6" size-xs='12' size-lg='6' size-md='6'  class="ion-align-self-center" style="padding: 0;">
+						<!-- <ion-item> -->
+							<button type="submit" class="button-test">Ingresar</button>
+						<!-- </ion-item> -->
+					</ion-col>
+
+					<!-- <div class="bgLogoCS hijo">
+
+					</div> -->
+					
 				</form>
 			</div>
 		</div>
-		<div class="ClasePadre footer">
+		<!-- <div class="ClasePadre footer">
 			<div class="bgLogoCS hijo">
 
 			</div>
-		</div>
+		</div> -->
 	</ion-content>
 </ion-app>
