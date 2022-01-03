@@ -74,12 +74,12 @@
 		
 		<ion-item>
 			<ion-label position="floating">Fecha Inicial</ion-label>
-			<ion-datetime name="fechainicial"  monthShortNames="{{meses}}" [(ngModel)]="FormularioFiltro.fechainicial"></ion-datetime>
+			<ion-datetime min="2000-01-01" min="{{year}}" name="fechainicial"  monthShortNames="{{meses}}" [(ngModel)]="FormularioFiltro.fechainicial"></ion-datetime>
 		</ion-item>
 		
 		<ion-item>
 			<ion-label position="floating">Fecha Final</ion-label>
-			<ion-datetime name="fechafinal" monthShortNames="{{meses}}"  [(ngModel)]="FormularioFiltro.fechafinal"></ion-datetime>
+			<ion-datetime min="2000-01-01" max="{{year}}" name="fechafinal" monthShortNames="{{meses}}"  [(ngModel)]="FormularioFiltro.fechafinal"></ion-datetime>
     	</ion-item>
     
     	<ion-item>

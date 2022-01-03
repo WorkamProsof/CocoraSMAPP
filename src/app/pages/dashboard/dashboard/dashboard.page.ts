@@ -73,6 +73,12 @@ export class DashboardPage implements OnInit {
 	INCIOFF : any = [];
 
 	INCI : any = [];
+
+	today = new Date();
+	year = this.today.getFullYear()+1;
+
+
+
 	@ViewChild('buscador', null) buscador : any;
 
 	constructor(
