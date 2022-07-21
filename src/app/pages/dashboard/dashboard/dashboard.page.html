@@ -37,12 +37,12 @@
 	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
 </div>
 
-<div padding *ngIf="!filtro && this.isConnected" style="padding: 0px 15px;">
+<div *ngIf="!filtro && this.isConnected" style="padding: 0px 15px;">
 	<ion-button color="success" (click)="verOcultarFiltro()"><ion-icon name="list-box"></ion-icon> Filtro</ion-button>
 	<ion-button color="secondary" (click)="verTodos()">Todos</ion-button>
 </div>
 
-<ion-content padding *ngIf="filtro">
+<ion-content *ngIf="filtro">
 	<ion-button class="ion-margin-bottom" (click)="verOcultarFiltro()">Cancelar Filtro</ion-button>
 	<form #form="ngForm" (ngSubmit)="filtrar(form)" method="post" autocomplete="off">
 		<ion-item>

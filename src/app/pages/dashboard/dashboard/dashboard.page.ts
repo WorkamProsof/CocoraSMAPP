@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MenuController, AlertController, NavController, Platform, IonItemSliding } from '@ionic/angular';
+import { MenuController, AlertController, NavController, Platform } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 import { NgForm } from '@angular/forms';
 import { AjaxService } from 'src/app/services/ajax.service';
@@ -8,17 +8,9 @@ import { StorageService } from 'src/app/services/storage.service';
 import { mapTo } from 'rxjs/operators';
 import { Observable, fromEvent, merge, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { BarcodeScannerOptions, BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { CallNumber } from '@ionic-native/call-number/ngx';
-import { Contacts } from '@ionic-native/contacts/ngx';
-import { SMS } from '@ionic-native/sms/ngx';
-import { ModalController } from "@ionic/angular";
-import { FiltrosPage } from '../modals/filtros/filtros.page';
 import * as moment from 'moment';
-// moment.locale('es');
-//firebase
-//import {FCM} from '@ionic-native/fcm/ngx';
 
 @Component({
 	selector: 'app-dashboard',
@@ -27,59 +19,46 @@ import * as moment from 'moment';
 })
 
 export class DashboardPage implements OnInit {
-	FormularioFiltro = {ordenadopor: '',estadopqrid : '', terceroid : '' , sucursalid : '', fechainicial : '' , fechafinal : ''};
-	
-	dataFiltros : any;
-	meses : any = "Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre";
-	clientes   :any;
-	sucursales :any;
-	estadopqr  :any;
 
-	filtro:any = false;
-	modal :any;
+	@ViewChild('buscador', null) buscador: any;
+	FormularioFiltro = { ordenadopor: '', estadopqrid: '', terceroid: '', sucursalid: '', fechainicial: '', fechafinal: '' };
+	dataFiltros: any;
+	meses: any = "Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre";
+	clientes: any;
+	sucursales: any;
+	estadopqr: any;
+	filtro: any = false;
+	modal: any;
 	infiniteScroll: IonInfiniteScroll;
 	isConnected = true;
 	private online: Observable<boolean> = null;
-
-	myContacts : any;
-	// sms : any;
-	logoempresa      : any;
-	cargando : boolean = false;
+	myContacts: any;
+	logoempresa: any;
+	cargando: boolean = false;
 	contenido: boolean = true;
-
-	barcodeScannerOptions: BarcodeScannerOptions;
-
 	desplazamientoMasivo = false;
 	patioSeleccionado = null;
 	filaSeleccionada = null;
 	columnaSeleccionada = null;
 	letraColumna = null;
-
 	verBusqueda = false;
 	listarIncidencias: any;
 	vehiculo: any;
-	ESTADOS       : any = [];
+	ESTADOS: any = [];
 	ESTADOSESTADOS: any = [];
-	notadetallepqr : any = [];
-	arryayImage    : any = [];
+	notadetallepqr: any = [];
+	arryayImage: any = [];
 	incRelacionadas: any = [];
 	tiposParadas: any;
 	repetidos = false;
 	listaRepetidos: any;
-
 	procesados: any;
 	mostrarProcesados = false;
-
-	INCIOFF : any = [];
-
-	INCI : any = [];
-
+	INCIOFF: any = [];
+	INCI: any = [];
 	today = new Date();
-	year = this.today.getFullYear()+1;
-
-
-
-	@ViewChild('buscador', null) buscador : any;
+	year = this.today.getFullYear() + 1;
+	length = 0;
 
 	constructor(
 		private menu: MenuController,
@@ -91,26 +70,15 @@ export class DashboardPage implements OnInit {
 		private network: Network,
 		private platform: Platform,
 		private http: HttpClient,
-		private barcodeScanner: BarcodeScanner,
-		private contacts : Contacts,
-		private callNumber:CallNumber,
-		private sms : SMS,
-		private modalCtrl : ModalController,
-		//private fcm : FCM
-		) {
-		this.barcodeScannerOptions = {
-			showTorchButton: true,
-			showFlipCameraButton: true
-		}
-
-	
-		if(!(this.platform.is('mobileweb') || this.platform.is('desktop'))){
+		private callNumber: CallNumber,
+	) {
+		if (!(this.platform.is('mobileweb') || this.platform.is('desktop'))) {
 			// On Device 
 
 			this.platform.backButton.subscribe(() => {
-				if(this.patioSeleccionado != null){
+				if (this.patioSeleccionado != null) {
 					this.irAtras();
-				}else if(this.verBusqueda){
+				} else if (this.verBusqueda) {
 					this.volver();
 				}
 			});
@@ -125,36 +93,33 @@ export class DashboardPage implements OnInit {
 				}, 2000);
 			});
 
-			try{
-				this.getNetworkTestRequest().subscribe(
-					success => {
-						//con internet
-						this.isConnected = true;
-						return;
-					}, error => {
-						//sin internet
-						this.isConnected = false;
-						return;
-					}
-					);
-			}catch(err){
+			try {
+				this.getNetworkTestRequest().subscribe(success => {
+					//con internet
+					this.isConnected = true;
+					return;
+				}, error => {
+					//sin internet
+					this.isConnected = false;
+					return;
+				});
+			} catch (err) {
 				this.isConnected = false;
 				return;
 			}
-		}else{
-
+		} else {
 			// On Browser 
 			this.online = merge(
-				of(navigator.onLine), 
+				of(navigator.onLine),
 				fromEvent(window, 'online').pipe(mapTo(true)),
 				fromEvent(window, 'offline').pipe(mapTo(false))
-				);
+			);
 
 			//valida si esta en linea o no 
 			this.online.subscribe((isOnline) => {
-				if(isOnline){
-					this.isConnected = true;  
-				}else{
+				if (isOnline) {
+					this.isConnected = true;
+				} else {
 					//no esta en linea
 					this.isConnected = false;
 				}
@@ -163,76 +128,66 @@ export class DashboardPage implements OnInit {
 		this.menu.enable(true);
 	}
 
-	async ngOnInit(){
+	async ngOnInit() {
 		this.setdataFiltros();
 	}
 
-	async setdataFiltros(){
-		await this.storageService.get('dataFiltros').then(
-			(data:any) => {
-				if(data == null){
-					this.dataFiltros = {estadopqrid : '', terceroid : '' , sucursalid : '', fechainicial : '' , fechafinal : ''};
-				}else{
-					this.dataFiltros = data;
-				}
-			} 
-		);
+	async setdataFiltros() {
+		await this.storageService.get('dataFiltros').then((data: any) => {
+			if (data == null) {
+				this.dataFiltros = { estadopqrid: '', terceroid: '', sucursalid: '', fechainicial: '', fechafinal: '' };
+			} else {
+				this.dataFiltros = data;
+			}
+		});
 	}
 
-	async call(){
+	async call() {
 		let telefonocoordinador;
-		await this.storageService.get('usuarios').then(
-			(data:any) => {
-				telefonocoordinador = data.telefonocoordinador;
-			}
-			);
-	
-			if(telefonocoordinador){
-				this.callNumber.callNumber(telefonocoordinador,true)
-				.then(res => console.log('Laucher Dialer!',res))
-				.catch(err => console.log('Error Laucher Dialer',err));
-			}else{
-				this.alertService.presentToast('El Tecnico no tiene télefono de coordinador Asociado');
-			}
+		await this.storageService.get('usuarios').then((data: any) => {
+			telefonocoordinador = data.telefonocoordinador;
+		});
+
+		if (telefonocoordinador) {
+			this.callNumber.callNumber(telefonocoordinador, true)
+				.then(res => console.log('Laucher Dialer!', res))
+				.catch(err => console.log('Error Laucher Dialer', err));
+		} else {
+			this.alertService.presentToast('El Tecnico no tiene télefono de coordinador Asociado');
+		}
 	}
 
 	async ionViewWillEnter() {
-		await this.storageService.get('logoempresa').then(
-			(data:any) => {
-				this.logoempresa = data;
-			}
-			);
+		await this.storageService.get('logoempresa').then((data: any) => {
+			this.logoempresa = data;
+		});
 
 		this.menu.close();
 
-		await this.storageService.get('INCIOFF').then(
-			(data:any) => {
-				if(data != null) {
-					data = JSON.parse(data);
-					this.INCIOFF = data;
-				}
+		await this.storageService.get('INCIOFF').then((data: any) => {
+			if (data != null) {
+				data = JSON.parse(data);
+				this.INCIOFF = data;
 			}
-			);
+		});
 
-		await this.storageService.get('INCI').then(
-			(data:any) => {
-				if(data != null) {
-					data = JSON.parse(data);
-					this.INCI = data;
-				}
+		await this.storageService.get('INCI').then((data: any) => {
+			if (data != null) {
+				data = JSON.parse(data);
+				this.INCI = data;
 			}
-			);
+		});
 
 		document.getElementById('lista').innerHTML = '';
 		var self = this;
-		setTimeout(function(){
-			self.actualizarInformacion();
+		this.actualizarInformacion();
+		setTimeout(function () {
 		}, 2000);
 
 		this.storageService.remove('inciSeleccionado');
 	}
 
-	doRefresh(event){
+	doRefresh(event) {
 		var self = this;
 		setTimeout(() => {
 			event.target.complete();
@@ -240,20 +195,19 @@ export class DashboardPage implements OnInit {
 		}, 2000);
 	}
 
-	volver(){
+	volver() {
 		this.verBusqueda = false;
-		if(this.INCI != null){
+		if (this.INCI != null) {
 			this.listarIncidencias = this.INCI;
-
 			document.getElementById('lista').innerHTML = '';
-			if(this.listarIncidencias.length > 0){
+			if (this.listarIncidencias.length > 0) {
 				this.length = 0;
 				this.appendItems(20);
 			}
 		}
 	}
 
-	mostrarBusqueda(){
+	mostrarBusqueda() {
 		this.verBusqueda = true;
 		setTimeout(() => {
 			this.buscador.setFocus();
@@ -261,53 +215,46 @@ export class DashboardPage implements OnInit {
 	}
 
 	async buscarVin(form: NgForm) {
-		if(form.value.pqrid != ''){
-			
+		if (form.value.pqrid != '') {
+
 			this.length = 0;
 			this.listarIncidencias = this.INCI;
 
 			document.getElementById('lista').innerHTML = '';
 
-			if(this.listarIncidencias.length > 0){
+			if (this.listarIncidencias.length > 0) {
 				var lista = this.listarIncidencias;
 				var list = [];
-				for(var i = 0; i < lista.length; i++){
+				for (var i = 0; i < lista.length; i++) {
 					var vin = lista[i].pqrid;
 					var buscar = form.value.pqrid;
 
-					if(vin.toLowerCase().indexOf(buscar.toLowerCase()) != -1){
+					if (vin.toLowerCase().indexOf(buscar.toLowerCase()) != -1) {
 						list.push(lista[i]);
 					}
 				}
 
-				if(list.length == 0){
+				if (list.length == 0) {
 					this.alertService.presentToast('No se encontraron coincidencias', 'middle');
-				}else{
+				} else {
 					this.listarIncidencias = list;
-
 					this.appendItems(20);
 				}
 			}
-		}else{
+		} else {
 			this.listarIncidencias = this.INCI;
 		}
 	}
 
-	buscarLote(repetido){
-		if(this.patioSeleccionado != null){
+	buscarLote(repetido) {
+		if (this.patioSeleccionado != null) {
 			this.vehiculo = repetido;
-		}else{
+		} else {
 			this.busquedaVin('NULL', repetido.Numerolote);
 		}
-	
 	}
 
-	async leerInc(){
-		await this.storageService.get('INCI').then(
-			(data:any) => {
-			}
-			);
-
+	async leerInc() {
 		const alert = await this.alertController.create({
 			header: 'Incidencia',
 			message: 'Por favor digite el número de la Incidencia',
@@ -316,37 +263,37 @@ export class DashboardPage implements OnInit {
 				type: 'text',
 				placeholder: 'INC'
 			}],
-			buttons:[
-			{
-				text: 'Cancelar',
-				role: 'cancel',
-				cssClass: 'secondary',
-				handler: () => {
-				}
-			},
-			{
-				text: 'Ok',
-				handler: (value) => {
-					var data : any = this.INCI;
-					if(value.INC.length > 0){
-						this.search('pqrid', value.INC, data).then((valor:any) => {
-								if(this.isConnected){
+			buttons: [
+				{
+					text: 'Cancelar',
+					role: 'cancel',
+					cssClass: 'secondary',
+					handler: () => {
+					}
+				},
+				{
+					text: 'Ok',
+					handler: (value) => {
+						var data: any = this.INCI;
+						if (value.INC.length > 0) {
+							this.search('pqrid', value.INC, data).then((valor: any) => {
+								if (this.isConnected) {
 									this.busquedaVin(value.INC, 'NULL');
-								}else{
-									if(valor != undefined && valor.length > 0){
-										if(valor.length == 1){
+								} else {
+									if (valor != undefined && valor.length > 0) {
+										if (valor.length == 1) {
 											this.ordentrabajo(valor[0]);
 										}
-									}else{
+									} else {
 										this.busquedaIncOffline(value.INC);
 									}
 								}
 							});
-					}else{
-						this.alertService.presentToast('No se encontraron coincidencias', 'middle');
+						} else {
+							this.alertService.presentToast('No se encontraron coincidencias', 'middle');
+						}
 					}
 				}
-			}
 			]
 		});
 		await alert.present().then(() => {
@@ -358,40 +305,37 @@ export class DashboardPage implements OnInit {
 		});
 	}
 
-	async verOcultarFiltro(){
-		if(this.filtro == false){
+	async verOcultarFiltro() {
+		if (this.filtro == false) {
 			this.filtro = true;
 			this.DtosInicialesFiltro();
-		}else{
+		} else {
 			this.filtro = false;
 			this.actualizarInformacion();
 		}
-
 	}
 
-	   //Carga el listado de la incidencias
-	async filtrar(form:NgForm){
+	//Carga el listado de la incidencias
+	async filtrar(form: NgForm) {
 		this.cargarInformacion(form.value);
-    }
+	}
 
-	async verTodos(){
+	async verTodos() {
 		this.filtro = false;
-		this.dataFiltros = {estadopqrid : '', terceroid : '' , sucursalid : '', fechainicial : '' , fechafinal : ''};
+		this.dataFiltros = { estadopqrid: '', terceroid: '', sucursalid: '', fechainicial: '', fechafinal: '' };
 		this.storageService.remove('dataFiltros');
 		this.storageService.set('dataFiltros', this.dataFiltros);
 		this.actualizarInformacion();
 	}
 
-	async changeSucursal(e){
+	async changeSucursal(e) {
 		this.FormularioFiltro.sucursalid = null;
 		this.AjaxService.ajax('Dashboard/cMovimientoApp/changeSucursal', {
 			param: e
-		}).subscribe(
-		(resp:any) => {
-		
-			if(resp.body == 1){
+		}).subscribe((resp: any) => {
+			if (resp.body == 1) {
 				this.alertService.presentToast('No se encontraron coincidencias', 'middle');
-			}else{
+			} else {
 				this.sucursales = resp.body.SUCURSALES;
 				this.FormularioFiltro.terceroid = this.dataFiltros.terceroid;
 				setTimeout(() => {
@@ -402,194 +346,161 @@ export class DashboardPage implements OnInit {
 					this.FormularioFiltro.estadopqrid = this.dataFiltros.estadopqrid;
 				}, 500);
 			}
-		},
-		error => {
+		}, error => {
 			this.alertService.presentToast('Ha ocurrido un ploblema');
 			console.error(error);
-		},
-		() => {
-		}
-		);
+		}, () => {
+		});
 	}
 
-	async DtosInicialesFiltro(){
+	async DtosInicialesFiltro() {
 		this.setdataFiltros();
-		this.FormularioFiltro = {ordenadopor : '', estadopqrid : '', terceroid : '' , sucursalid : '', fechainicial : '' , fechafinal : ''};
+		this.FormularioFiltro = { ordenadopor: '', estadopqrid: '', terceroid: '', sucursalid: '', fechainicial: '', fechafinal: '' };
 		this.AjaxService.ajax('Dashboard/cMovimientoApp/DtosInicialesFiltro', {
 			param: '0'
-		}).subscribe(
-		(resp:any) => {
-		
-			if(resp.body == 1){
+		}).subscribe((resp: any) => {
+			if (resp.body == 1) {
 				this.alertService.presentToast('No se encontraron coincidencias', 'middle');
-			}else{
+			} else {
 				this.estadopqr = resp.body.ESTADOS;
 				this.clientes = resp.body.CLIENTES;
-				if(this.dataFiltros.terceroid != ''){
+				if (this.dataFiltros.terceroid != '') {
 					this.changeSucursal(this.dataFiltros.terceroid);
-				}else{
+				} else {
 					setTimeout(() => {
 						this.FormularioFiltro = this.dataFiltros;
 					}, 500);
 				}
 			}
-		},
-		error => {
+		}, error => {
 			this.alertService.presentToast('Ha ocurrido un ploblema');
 			console.error(error);
-		},
-		() => {
-		}
-		);
+		}, () => {
+		});
 	}
 
-	async busquedaIncOffline(vin){
+	async busquedaIncOffline(vin) {
 		this.alertService.presentToast('Ejecutando consulta fuera de línea');
-		await this.storageService.get('INCI').then(
-			(data:any) => {
-				var retornar = 1;
-				if(data != null) {
-					var listaINC = data;
-					if(listaINC.length > 0){
-						var BIMS = [];
-						for (var i = 0; i < listaINC.length; i++) {
-							if(listaINC[i].Barras == vin.toUpperCase()){
-								BIMS.push(listaINC[i]);
-								retornar = 0;
-							}
-						}
-						if(BIMS.length == 1){
-							this.storageService.set('trasladoVin', JSON.stringify(BIMS[0]));
-							this.navCtrl.navigateRoot('/trasladar');
-						}else{
-							this.listaRepetidos = BIMS;
-							this.repetidos = true;
+		await this.storageService.get('INCI').then((data: any) => {
+			var retornar = 1;
+			if (data != null) {
+				var listaINC = data;
+				if (listaINC.length > 0) {
+					var BIMS = [];
+					for (var i = 0; i < listaINC.length; i++) {
+						if (listaINC[i].Barras == vin.toUpperCase()) {
+							BIMS.push(listaINC[i]);
+							retornar = 0;
 						}
 					}
-				}
-				if(retornar == 1){
-					this.alertService.presentToast('No se encontraron coincidencias, Intente descargar las Incidencias primero');
-					return false;
+					if (BIMS.length == 1) {
+						this.storageService.set('trasladoVin', JSON.stringify(BIMS[0]));
+						this.navCtrl.navigateRoot('/trasladar');
+					} else {
+						this.listaRepetidos = BIMS;
+						this.repetidos = true;
+					}
 				}
 			}
-			);
+			if (retornar == 1) {
+				this.alertService.presentToast('No se encontraron coincidencias, Intente descargar las Incidencias primero');
+				return false;
+			}
+		});
 	}
 
-	busquedaVin(Inc, nLote){
+	busquedaVin(Inc, nLote) {
 		this.AjaxService.ajax('Dashboard/cMovimientoApp/busquedaINC', {
-			pqrid : Inc,
-		}).subscribe(
-		(resp:any) => {
-			if(resp.body == 1){
+			pqrid: Inc,
+		}).subscribe((resp: any) => {
+			if (resp.body == 1) {
 				this.alertService.presentToast('No se encontraron coincidencias', 'middle');
-			}else{
-				if(resp.body.INCI.length > 0){
+			} else {
+				if (resp.body.INCI.length > 0) {
 					this.ordentrabajo(resp.body.INCI[0]);
 				}
 			}
-		},
-		error => {
+		}, error => {
 			this.alertService.presentToast('Ha ocurrido un ploblema');
 			console.error(error);
-		},
-		() => {
-		}
-		);
+		}, () => { });
 	}
 
-
-	ordentrabajo(vehiculo){
+	ordentrabajo(vehiculo) {
 		this.storageService.set('inciSeleccionado', JSON.stringify(vehiculo)).then(() => {
 			this.navCtrl.navigateRoot('/ordentrabajo');
 		});
 	}
 
-	ocultarProcesados(){
+	ocultarProcesados() {
 		this.mostrarProcesados = false;
 		this.procesados = [];
 	}
 
-	async actualizarInformacion(){
+	async actualizarInformacion() {
 		this.repetidos = false;
-		if(this.isConnected){
+		if (this.isConnected) {
 			await this.guardarMovimientos().then(() => {
 				setTimeout(() => {
 					this.cargarInformacion(this.dataFiltros);
 				}, 500);
 			});
-		}else{
+		} else {
 			await this.storageService.get('INCI').then(
-				(data:any) => {
+				(data: any) => {
 					data = JSON.parse(data);
-					if(data != null){
+					if (data != null) {
 						this.INCI = data;
 						this.listarIncidencias = data;
 
 						document.getElementById('lista').innerHTML = '';
-						if(this.listarIncidencias.length > 0){
+						if (this.listarIncidencias.length > 0) {
 							this.length = 0;
 							this.appendItems(20);
 						}
 					}
 				}
-				);
+			);
 
-			await this.storageService.get('tiposParadas').then(
-				(data:any) => {
-					data = JSON.parse(data);
-					
-					if(data != null){
-						this.tiposParadas = data;
-					}
-				}
-				);
+			this.listArryaStorage('tiposParadas', 'tiposParadas');
 
-			await this.storageService.get('ESTADOS').then(
-				(data:any) => {
-					data = JSON.parse(data);
-					
-					if(data != null){
-						this.ESTADOS = data;
-					}
-				}
-				);
+			this.listArryaStorage('ESTADOS', 'ESTADOS');
 
 			this.loader(false);
 		}
 	}
-	
-	async guardarMovimientos(){ 
-		this.listarNotadetalle();
-		this.listarArryayImage();
-		this.listarnotasIncRelacionadas();
-		await this.storageService.get('movimientos').then(
-			(data:any) => {
-				data = JSON.parse(data);
-				if(data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0  || this.arryayImage.length > 0   || this.incRelacionadas.length > 0 ){
-					this.AjaxService.ajax('Dashboard/cMovimientoApp/guardarMovimientos', {
-						INCIOFF: JSON.stringify(this.INCIOFF)
-						,movim: JSON.stringify(data)
-						,notadetallepqr : JSON.stringify(this.notadetallepqr)
-						,arryayImage    : JSON.stringify(this.arryayImage)
-						,incRelacionadas: JSON.stringify(this.incRelacionadas)
-					}).subscribe(
-					(dt:any) => {
-						if(dt.body == 1){
-							if(data == null){
+
+	async guardarMovimientos() {
+		this.listArryaStorage('notaDetalle', 'notadetallepqr');
+		this.listArryaStorage('arryayImage', 'arryayImage');
+		this.listArryaStorage('notasIncRelacionadas', 'incRelacionadas');
+		await this.storageService.get('movimientos').then((data: any) => {
+			data = JSON.parse(data);
+			if (data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0 || this.arryayImage.length > 0 || this.incRelacionadas.length > 0) {
+				this.AjaxService.ajax('Dashboard/cMovimientoApp/guardarMovimientos', {
+					INCIOFF: JSON.stringify(this.INCIOFF)
+					, movim: JSON.stringify(data)
+					, notadetallepqr: JSON.stringify(this.notadetallepqr)
+					, arryayImage: JSON.stringify(this.arryayImage)
+					, incRelacionadas: JSON.stringify(this.incRelacionadas)
+				}).subscribe(
+					(dt: any) => {
+						if (dt.body == 1) {
+							if (data == null) {
 								this.listarIncidencias = [];
 							}
-							
+
 							this.storageService.remove('movimientos');
 							this.storageService.remove('notasIncRelacionadas');
 							this.storageService.remove('notaDetalle');
 							this.storageService.set('arryayImage', JSON.stringify(0));
-							
+
 							this.storageService.remove('INCI');
 							this.storageService.remove('INCIOFF');
-						}else if(dt.body == 0){
+						} else if (dt.body == 0) {
 							this.alertService.presentToast('Ocurrio un error al procesar la información');
-						}else{
-							if(dt.body.length > 0){
+						} else {
+							if (dt.body.length > 0) {
 								this.mostrarProcesados = true;
 								this.procesados = dt.body;
 								this.storageService.remove('movimientos');
@@ -603,288 +514,252 @@ export class DashboardPage implements OnInit {
 						this.alertService.presentToast('Ha ocurrido un ploblema');
 						console.error(error);
 					},
-					() => {
-					}
-					)
-				}
+					() => { }
+				)
 			}
-		);
+		});
 	}
 
-	listarNotadetalle(){
-		this.storageService.get('notaDetalle').then(
-			(data:any) => {
-				data = JSON.parse(data);
-				if(data != null){
-					this.notadetallepqr = data;
-				}
+	listArryaStorage(key, vari) {
+		this.storageService.get(key).then((data: any) => {
+			data = JSON.parse(data);
+			if (data != null) {
+				this[vari] = data;
 			}
-			);
+		});
 	}
 
-	listarArryayImage(){
-		this.storageService.get('arryayImage').then(
-			(data:any) => {
-				data = JSON.parse(data);
-				if(data != null){
-					this.arryayImage = data;
-				}
-			}
-			);
-	}
-
-	listarnotasIncRelacionadas(){
-		this.storageService.get('notasIncRelacionadas').then(
-			(data:any) => {
-				data = JSON.parse(data);
-				if(data != null){
-					this.incRelacionadas = data;
-					console.log('this.incRelacionadas',this.incRelacionadas);
-				}
-			}
-			);
-	}
-
-    //Carga el listado de la incidencias
-    async cargarInformacion(dataFiltros){
+	//Carga el listado de la incidencias
+	async cargarInformacion(dataFiltros) {
 		this.filtro = false;
 		let datofiltro = '';
-		let orderBy    = '';
-		
-		if(dataFiltros.estadopqrid){
-			datofiltro +=" pq.estadopqrid = '"+dataFiltros.estadopqrid+"' and ";
+		let orderBy = '';
+
+		if (dataFiltros.estadopqrid) {
+			datofiltro += " pq.estadopqrid = '" + dataFiltros.estadopqrid + "' and ";
 		}
 
-		if(dataFiltros.terceroid){ 
-			datofiltro += " pq.terceroid = '"+dataFiltros.terceroid+"' and ";
+		if (dataFiltros.terceroid) {
+			datofiltro += " pq.terceroid = '" + dataFiltros.terceroid + "' and ";
 		}
 
-		if(dataFiltros.sucursalid){
-			datofiltro += " pq.sucursalid = '"+dataFiltros.sucursalid+"' and ";
+		if (dataFiltros.sucursalid) {
+			datofiltro += " pq.sucursalid = '" + dataFiltros.sucursalid + "' and ";
 		}
 
-		if(dataFiltros.fechainicial){
-			datofiltro += " af.fecha >= '"+dataFiltros.fechainicial+"' and ";
-		}
-		
-		if(dataFiltros.fechafinal){
-			datofiltro += " af.fechafinal <= '"+dataFiltros.fechafinal+"' and ";
+		if (dataFiltros.fechainicial) {
+			datofiltro += " af.fecha >= '" + dataFiltros.fechainicial + "' and ";
 		}
 
-		if(dataFiltros.ordenadopor){
+		if (dataFiltros.fechafinal) {
+			datofiltro += " af.fechafinal <= '" + dataFiltros.fechafinal + "' and ";
+		}
+
+		if (dataFiltros.ordenadopor) {
 			switch (dataFiltros.ordenadopor) {
 				case '1':
 					orderBy += "order by pq.sucursalid asc";
-				break;
+					break;
 
 				case '2':
 					orderBy += "order by pq.pqrid::int asc";
-				break;
+					break;
 
 				case '3':
 					orderBy += "order by pq.pqrid::int desc";
-				break;
+					break;
 
 				case '4':
 					orderBy += "order by it.codigointerno asc";
-				break;
+					break;
 
 				case '5':
 					orderBy += "order by pq.fechapqr asc";
-				break;
+					break;
 
 				case '6':
 					orderBy += "order by qp.nombre asc";
-				break;
+					break;
 
 				case '7':
 					orderBy += "order by accion,pq.pqrid::int desc";
-				break;
+					break;
 			}
 		}
 
 		this.storageService.remove('dataFiltros');
 		this.storageService.set('dataFiltros', dataFiltros);
 
-
-    	this.loader(true);
+		this.loader(true);
 
 		await this.AjaxService.ajax('Dashboard/cMovimientoApp/busquedaExistFiltro', {
-    		filtro : datofiltro,
+			filtro: datofiltro,
 			orderBy: orderBy,
-    	}).subscribe(
-    	(data:any) => {
-    		this.storageService.remove('INCI');
-			this.listarIncidencias = data.body.INCI; 
-    		this.INCI = this.listarIncidencias;
-    		this.storageService.set('INCI', JSON.stringify(this.listarIncidencias)).then(() => {
-    			document.getElementById('lista').innerHTML = '';
-    			if(this.listarIncidencias.length > 0){
-    				this.length = 0;
-    				this.appendItems(20);
-    			}
-    		});
+		}).subscribe((data: any) => {
+			this.storageService.remove('INCI');
+			this.listarIncidencias = data.body.INCI;
+			this.INCI = this.listarIncidencias;
+			this.storageService.set('INCI', JSON.stringify(this.listarIncidencias)).then(() => {
+				document.getElementById('lista').innerHTML = '';
+				if (this.listarIncidencias.length > 0) {
+					this.length = 0;
+					this.appendItems(20);
+				}
+			});
 
-    		this.ESTADOS = data.body.ESTADOS;
-    		this.storageService.set('ESTADOS', JSON.stringify(data.body.ESTADOS));
+			this.ESTADOS = data.body.ESTADOS;
+			this.storageService.set('ESTADOS', JSON.stringify(data.body.ESTADOS));
 			this.storageService.set('TODOSESTADOS', JSON.stringify(data.body.TODOSESTADOS));
 
-    		this.tiposParadas = data.body.tiposParadas;
-    		this.storageService.set('tiposParadas', JSON.stringify(data.body.tiposParadas));
-    	},
-    	error => {
-    		this.alertService.presentToast('Ha ocurrido un ploblema');
-    		console.error(error);
-    		this.loader(false);
-    	},
-    	() => {
-    		this.loader(false);
-    	}
-    	);
-    }
+			this.tiposParadas = data.body.tiposParadas;
+			this.storageService.set('tiposParadas', JSON.stringify(data.body.tiposParadas));
+		}, error => {
+			this.alertService.presentToast('Ha ocurrido un ploblema');
+			console.error(error);
+			this.loader(false);
+		}, () => {
+			this.loader(false);
+		});
+	}
 
+	async search(key, nameKey, myArray) {
+		var arr = [];
+		for (var i = 0; i < myArray.length; i++) {
+			if (myArray[i][key] == nameKey.toUpperCase()) {
+				arr.push(myArray[i]);
+			}
+		}
+		return arr;
+	}
 
+	getNetworkTestRequest() {
+		return this.http.get('https://jsonplaceholder.typicode.com/todos/1');
+	}
 
-    async search(key, nameKey, myArray) {
-    	var arr = [];
-    	for (var i = 0; i < myArray.length; i++) {
-    		if(myArray[i][key] == nameKey.toUpperCase()) {
-    			arr.push(myArray[i]);
-    		}
-    	}
-    	return arr; 
-    }
+	loader(estado: boolean) {
+		this.cargando = estado === true ? false : true;
+		this.contenido = estado === true ? true : false;
+	}
 
-    getNetworkTestRequest(){
-    	return this.http.get('https://jsonplaceholder.typicode.com/todos/1'); 
-    }
-
-    loader(estado : boolean) {
-    	this.cargando = estado === true ? false : true;
-    	this.contenido = estado === true ? true : false;
-    }
-
-    length = 0;
-
-    loadData(event){
-    	var self = this;
-    	self.infiniteScroll = event;
-    	setTimeout(() => {
-    		event.target.complete();
-    		self.appendItems(20);
-    	}, 1000);
-    }
+	loadData(event) {
+		var self = this;
+		self.infiniteScroll = event;
+		setTimeout(() => {
+			event.target.complete();
+			self.appendItems(20);
+		}, 1000);
+	}
 
 
 	//recorre el listado de las incidencias para opintarlas en la vista
-	appendItems(number){
-			var originalLengh = this.length;
-			var list = document.getElementById('lista');
-			var self = this;
-			for (var i = 0; i < number; i++){
-				if(this.listarIncidencias[i + originalLengh] != undefined && this.listarIncidencias[i + originalLengh].finalizo != 1){
-				
-					let Prioridad ='--';
-					if(self.listarIncidencias[i + originalLengh].prioridadid != null){
-						Prioridad = self.listarIncidencias[i + originalLengh].prioridadid
-					} 
+	appendItems(number) {
+		var originalLengh = this.length;
+		var list = document.getElementById('lista');
+		var self = this;
+		for (var i = 0; i < number; i++) {
+			if (this.listarIncidencias[i + originalLengh] != undefined && this.listarIncidencias[i + originalLengh].finalizo != 1) {
 
-					let Operacion ='--';
-					if(self.listarIncidencias[i + originalLengh].operacion != null){
-						Operacion = self.listarIncidencias[i + originalLengh].operacion
-					} 
+				let Prioridad = '--';
+				if (self.listarIncidencias[i + originalLengh].prioridadid != null) {
+					Prioridad = self.listarIncidencias[i + originalLengh].prioridadid
+				}
 
-					let codigointerno ='--';
-					if(self.listarIncidencias[i + originalLengh].codigointerno != null){
-						codigointerno = self.listarIncidencias[i + originalLengh].codigointerno
-					}
-				
-					let nombresucursal ='--';
-					if(self.listarIncidencias[i + originalLengh].nombresucursal != null){
-						nombresucursal = self.listarIncidencias[i + originalLengh].nombresucursal;
-					}
-					
-					let fechalimite ='--';
-					let colorfechalimite = ''
-					if(self.listarIncidencias[i + originalLengh].fechalimite != null){
-						colorfechalimite       = self.listarIncidencias[i + originalLengh].colorfechalimite;
-						fechalimite = self.listarIncidencias[i + originalLengh].fechalimite;	
-					}
-					
-					let fechapqr = moment(self.listarIncidencias[i + originalLengh].fechapqr).format('DD-MM-YYYY');
-					const el = document.createElement('ion-item');
-					let accion = '';
-					let background  = '';
-					switch (self.listarIncidencias[i + originalLengh].accion) {
-						case 'pausar':
-							background  = '#c85404';	
-						   	accion = 'Pausó';
+				let Operacion = '--';
+				if (self.listarIncidencias[i + originalLengh].operacion != null) {
+					Operacion = self.listarIncidencias[i + originalLengh].operacion
+				}
+
+				let codigointerno = '--';
+				if (self.listarIncidencias[i + originalLengh].codigointerno != null) {
+					codigointerno = self.listarIncidencias[i + originalLengh].codigointerno
+				}
+
+				let nombresucursal = '--';
+				if (self.listarIncidencias[i + originalLengh].nombresucursal != null) {
+					nombresucursal = self.listarIncidencias[i + originalLengh].nombresucursal;
+				}
+
+				let fechalimite = '--';
+				let colorfechalimite = ''
+				if (self.listarIncidencias[i + originalLengh].fechalimite != null) {
+					colorfechalimite = self.listarIncidencias[i + originalLengh].colorfechalimite;
+					fechalimite = self.listarIncidencias[i + originalLengh].fechalimite;
+				}
+
+				let fechapqr = moment(self.listarIncidencias[i + originalLengh].fechapqr).format('DD-MM-YYYY');
+				const el = document.createElement('ion-item');
+				let accion = '';
+				let background = '';
+				switch (self.listarIncidencias[i + originalLengh].accion) {
+					case 'pausar':
+						background = '#c85404';
+						accion = 'Pausó';
 						break;
 
-						case 'continuar':
-							background  = '#a1a13b';	
-						   	accion = 'Continuo';
+					case 'continuar':
+						background = '#a1a13b';
+						accion = 'Continuo';
 						break;
 
-						case 'FinalizoRuta':
-							background  = '#0e1b37';	
-						   	accion = 'Finalizo Ruta';
+					case 'FinalizoRuta':
+						background = '#0e1b37';
+						accion = 'Finalizo Ruta';
 						break;
 
-						case 'InicioRuta':
-							background  = '#0e1b37'; 	
-						   	accion = 'Inicio Ruta';
+					case 'InicioRuta':
+						background = '#0e1b37';
+						accion = 'Inicio Ruta';
 						break;
-						case 'iniciar':
-							background  = '#10dc60';	
-						   	accion = 'Inicio';
-						break;
-
-						case 'finalizaractividad':
-							background  ='#10dc60';	
-						   	accion = 'Finalizó Actividad';
+					case 'iniciar':
+						background = '#10dc60';
+						accion = 'Inicio';
 						break;
 
-						case 'finalizar':
-							background  ='red';	
-						   	accion = 'Finalizó Incidencia';
+					case 'finalizaractividad':
+						background = '#10dc60';
+						accion = 'Finalizó Actividad';
 						break;
-					
-						default:
-							background  ='#d6e7f2';	
-						   	accion =  'Sin Iniciar';
+
+					case 'finalizar':
+						background = 'red';
+						accion = 'Finalizó Incidencia';
 						break;
-					};
 
-					let color = (background == '' ? 'Black': self.getContrastYIQ(background));
+					default:
+						background = '#d6e7f2';
+						accion = 'Sin Iniciar';
+						break;
+				};
 
-					el.innerHTML = '<ion-label>'+
-					`<p style="font-size: 11px;"><strong style="font-size: 11px;"><label style="color: black;"> Inc:</label> </strong> ${self.listarIncidencias[i + originalLengh].pqrid  } <strong><label style="color: black;"> F. Inc:</label></strong> `+fechapqr+`<span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> F.Limite:</label> `+fechalimite+`</strong></span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Cliente:</label> ${self.listarIncidencias[i + originalLengh].nombretercero}</strong>  <span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> Sucursal:</label></strong>  ` +nombresucursal+`</span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Equipo:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].nombreequipo}</span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Serial:</label> ${self.listarIncidencias[i + originalLengh].serialequipo}</strong> <span class="listFecha" style="float: right;font-size: 11px;"> <strong><label style="color: black;"> C.Interno:</label> ${codigointerno}</strong></span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Asunto:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].asunto}</span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Operación:</label> ${Operacion}</strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;"> Prioridad:</label>   ${Prioridad}</span></p>`+
-					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Acción: </label></strong><span class="listFecha" style="color:` + color + `;  background:` + background + `; float: right;font-size: 11px;width: 30%;text-align: center;"><strong>` + accion +` </strong></span></p>`+
+				let color = (background == '' ? 'Black' : self.getContrastYIQ(background));
+
+				el.innerHTML = '<ion-label>' +
+					`<p style="font-size: 11px;"><strong style="font-size: 11px;"><label style="color: black;"> Inc:</label> </strong> ${self.listarIncidencias[i + originalLengh].pqrid} <strong><label style="color: black;"> F. Inc:</label></strong> ` + fechapqr + `<span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> F.Limite:</label> ` + fechalimite + `</strong></span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Cliente:</label> ${self.listarIncidencias[i + originalLengh].nombretercero}</strong>  <span class="listFecha" style="float: right;font-size: 11px;"><strong><label style="color: black;"> Sucursal:</label></strong>  ` + nombresucursal + `</span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Equipo:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].nombreequipo}</span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Serial:</label> ${self.listarIncidencias[i + originalLengh].serialequipo}</strong> <span class="listFecha" style="float: right;font-size: 11px;"> <strong><label style="color: black;"> C.Interno:</label> ${codigointerno}</strong></span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Asunto:</label></strong><span class="listFecha" style="float: right;font-size: 11px;"> ${self.listarIncidencias[i + originalLengh].asunto}</span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Operación:</label> ${Operacion}</strong> <span class="listFecha" style="float: right;font-size: 11px;"><label style="color: black;"> Prioridad:</label>   ${Prioridad}</span></p>` +
+					`<p style="margin: 0px;"><strong style="font-size: 11px;"><label style="color: black;"> Acción: </label></strong><span class="listFecha" style="color:` + color + `;  background:` + background + `; float: right;font-size: 11px;width: 30%;text-align: center;"><strong>` + accion + ` </strong></span></p>` +
 					'</ion-label>';
-					this.apend(list, el, i, originalLengh);
-					this.length++;	
-				}
-				if(this.length <= this.listarIncidencias.length && this.length == this.listarIncidencias.length){
-					if(self.infiniteScroll != undefined){
-						self.infiniteScroll.disabled = true;
-					}
-					break;
-				}
+				this.apend(list, el, i, originalLengh);
+				this.length++;
 			}
+			if (this.length <= this.listarIncidencias.length && this.length == this.listarIncidencias.length) {
+				if (self.infiniteScroll != undefined) {
+					self.infiniteScroll.disabled = true;
+				}
+				break;
+			}
+		}
 	}
 
-	getContrastYIQ(hexcolor){
-		hexcolor = hexcolor.replace("#","");
-		var r = parseInt(hexcolor.substr(0,2),16);
-		var g = parseInt(hexcolor.substr(2,2),16);
-		var b = parseInt(hexcolor.substr(4,2),16);
-		var yiq = ((r*299)+(g*587)+(b*114))/1000;
+	getContrastYIQ(hexcolor) {
+		hexcolor = hexcolor.replace("#", "");
+		var r = parseInt(hexcolor.substr(0, 2), 16);
+		var g = parseInt(hexcolor.substr(2, 2), 16);
+		var b = parseInt(hexcolor.substr(4, 2), 16);
+		var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
 		return (yiq >= 128) ? 'Black' : 'white';
 	}
 
@@ -892,14 +767,14 @@ export class DashboardPage implements OnInit {
 		list.appendChild(el);
 		var self = this;
 		el.disabled = self.listarIncidencias[i + originalLengh].disabled;
-		el.onclick = function(event){
+		el.onclick = function (event) {
 			//carga la orden de trabajo segun la incidencia seleccionada
 			self.ordentrabajo(self.listarIncidencias[i + originalLengh]);
 		};
 		return;
 	}
 
-	async irAtras(){
+	async irAtras() {
 		await this.storageService.remove('patioSeleccionado');
 		await this.storageService.remove('filaSeleccionada');
 		await this.storageService.remove('columnaSeleccionada');
