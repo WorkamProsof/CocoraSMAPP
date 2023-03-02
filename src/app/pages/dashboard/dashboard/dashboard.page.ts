@@ -59,6 +59,7 @@ export class DashboardPage implements OnInit {
 	today = new Date();
 	year = this.today.getFullYear() + 1;
 	length = 0;
+	listaChequeoEjecutada: any[] = [];
 
 	constructor(
 		private menu: MenuController,
@@ -347,7 +348,7 @@ export class DashboardPage implements OnInit {
 				}, 500);
 			}
 		}, error => {
-			this.alertService.presentToast('Ha ocurrido un ploblema');
+			this.alertService.presentToast('Ha ocurrido un problema');
 			console.error(error);
 		}, () => {
 		});
@@ -426,8 +427,8 @@ export class DashboardPage implements OnInit {
 		}, () => { });
 	}
 
-	ordentrabajo(vehiculo) {
-		this.storageService.set('inciSeleccionado', JSON.stringify(vehiculo)).then(() => {
+	ordentrabajo(incidencia) {
+		this.storageService.set('inciSeleccionado', JSON.stringify(incidencia)).then(() => {
 			this.navCtrl.navigateRoot('/ordentrabajo');
 		});
 	}
@@ -474,15 +475,17 @@ export class DashboardPage implements OnInit {
 		this.listArryaStorage('notaDetalle', 'notadetallepqr');
 		this.listArryaStorage('arryayImage', 'arryayImage');
 		this.listArryaStorage('notasIncRelacionadas', 'incRelacionadas');
+		this.listArryaStorage('listaChequeoEjecutada', 'listaChequeoEjecutada');
 		await this.storageService.get('movimientos').then((data: any) => {
 			data = JSON.parse(data);
-			if (data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0 || this.arryayImage.length > 0 || this.incRelacionadas.length > 0) {
+			if (data != null || this.INCIOFF.length > 0 || this.notadetallepqr.length > 0 || this.arryayImage.length > 0 || this.incRelacionadas.length > 0 || this.listaChequeoEjecutada.length > 0) {
 				this.AjaxService.ajax('Dashboard/cMovimientoApp/guardarMovimientos', {
 					INCIOFF: JSON.stringify(this.INCIOFF)
 					, movim: JSON.stringify(data)
 					, notadetallepqr: JSON.stringify(this.notadetallepqr)
 					, arryayImage: JSON.stringify(this.arryayImage)
 					, incRelacionadas: JSON.stringify(this.incRelacionadas)
+					, listaChequeoEjecutada: JSON.stringify(this.listaChequeoEjecutada)
 				}).subscribe(
 					(dt: any) => {
 						if (dt.body == 1) {
@@ -493,10 +496,12 @@ export class DashboardPage implements OnInit {
 							this.storageService.remove('movimientos');
 							this.storageService.remove('notasIncRelacionadas');
 							this.storageService.remove('notaDetalle');
+							this.storageService.remove('listaChequeoEjecutada');
 							this.storageService.set('arryayImage', JSON.stringify(0));
 
 							this.storageService.remove('INCI');
 							this.storageService.remove('INCIOFF');
+							this.listaChequeoEjecutada = [];
 						} else if (dt.body == 0) {
 							this.alertService.presentToast('Ocurrio un error al procesar la información');
 						} else {
@@ -506,7 +511,9 @@ export class DashboardPage implements OnInit {
 								this.storageService.remove('movimientos');
 								this.storageService.remove('notasIncRelacionadas');
 								this.storageService.remove('notaDetalle');
+								this.storageService.remove('listaChequeoEjecutada');
 								this.storageService.set('arryayImage', JSON.stringify(0));
+								this.listaChequeoEjecutada = [];
 							}
 						}
 					},
@@ -780,5 +787,9 @@ export class DashboardPage implements OnInit {
 		await this.storageService.remove('columnaSeleccionada');
 		await this.storageService.remove('letraColumna');
 		this.navCtrl.navigateRoot('/desplazamientomasivo');
+	}
+
+	navegarEjecutarListaChequeo() {
+		this.navCtrl.navigateRoot('/ejecutar-lista-chequeo');
 	}
 }

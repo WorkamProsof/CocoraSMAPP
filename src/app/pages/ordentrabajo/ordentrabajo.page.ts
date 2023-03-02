@@ -16,6 +16,7 @@ import { IonicSelectableComponent } from "ionic-selectable";
 import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
+import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -849,6 +850,7 @@ export class OrdentrabajoPage implements OnInit {
 		});
 		await modal.present();
 		modal.onWillDismiss().then(({data}) => {
+			console.log(data);
 			if (data == 'listar') {
 				// this.listaPQRSF = [];
 				// let datos = {
@@ -861,6 +863,22 @@ export class OrdentrabajoPage implements OnInit {
 				// }
 				// this.listaPQR(datos);
 			}
+		}, console.error);
+	}
+
+	// Mostar modal para listas de chequeo
+	async listasChequeo() {
+		const modal = await this.modalCtrl.create({
+			component:  ListaChequeoComponent,
+			componentProps: { 
+				listasChequeo	: this.Arraypqr.listaCheck,
+				listaChequeoHTML: this.Arraypqr.listaCheckHTML,
+				pqrid: this.Arraypqr.pqrid,
+				itemequipoid: this.Arraypqr.itemequipoid,
+			}
+		});
+		await modal.present();
+		modal.onWillDismiss().then(({data}) => {
 		}, console.error);
 	}
 }

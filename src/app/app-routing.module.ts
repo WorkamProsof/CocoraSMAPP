@@ -39,6 +39,10 @@ const routes: Routes = [
 		path: 'filtros',
 		loadChildren: () => import('./pages/dashboard/modals/filtros/filtros.module').then( m => m.FiltrosPageModule)
 	},
+  	{
+  	  path: 'ejecutar-lista-chequeo',
+  	  loadChildren: () => import('./pages/ejecutar-lista-chequeo/ejecutar-lista-chequeo.module').then( m => m.EjecutarListaChequeoPageModule)
+  	},
 	];
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],

@@ -1,0 +1,44 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons class="btnInicio" slot="start">
+			<ion-button (click)="irAtras()">
+				<ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+		<ion-title>Listas de chequeo</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<form [formGroup]="formulario" id="formularioBusquedaEquipo" autocomplete="off">
+
+		<ion-item>
+			<ion-label position="floating">Cliente</ion-label>
+			<ion-select  [interfaceOptions]="customInterface" name="terceroid" formControlName="terceroid" (ionChange)="seleccionCliente($event.target.value)" [disabled]="inHabilitarCampos">
+				<ion-select-option *ngFor="let cliente of clientes" value="{{cliente.terceroid}}">{{cliente.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Sucursal</ion-label>
+			<ion-select [interfaceOptions]="customInterface" name="sucursalid" id="sucursalid" [disabled]="inHabilitarCampos" formControlName="sucursalid"
+				(ionChange)="seleccionSucursal()">
+				<ion-select-option *ngFor="let sucursal of sucursales"
+					value="{{sucursal.sucursalid}}">{{sucursal.nombre}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Equipo</ion-label>
+			<ion-select [interfaceOptions]="customInterface" name="equipoid" id="equipoid" [disabled]="inHabilitarCampos" formControlName="equipoid"
+				(ionChange)="seleccionEquipo($event.target.value)">
+				<ion-select-option *ngFor="let equipo of equipos" value="{{equipo.itemequipoid}}">{{ equipo.nombre }}</ion-select-option>
+			</ion-select>
+		</ion-item>
+
+	</form>
+	<div style="margin: 2rem 0">
+		<ion-button class="ion-margin-bottom" expand="block" style="margin: 1rem" (click)="limpiarCampos()">Limpiar Campos</ion-button>
+		<ion-button type="button" expand="block" color="primary" style="margin: 1rem" (click)="cargarListasChequeo()" *ngIf="formulario.valid">Cargar listas de chequeo</ion-button>
+	</div>
+</ion-content>

@@ -19,6 +19,7 @@
 		</ion-buttons>
 	</ion-toolbar>
 
+	<!-- INPUT BUSCADOR TOOLBAR -->
 	<form #form="ngForm" method="post" autocomplete="off" *ngIf="verBusqueda" style="background-color: white !important;">
 		<ion-toolbar>
 			<ion-buttons slot="start" id="content-back">
@@ -31,17 +32,24 @@
 		</ion-toolbar>
 	</form>
 	<ion-progress-bar type="indeterminate" [hidden]=cargando></ion-progress-bar>
+	<!--FIN INPUT BUSCADOR TOOLBAR -->
 	
 </ion-header>
+
+<!-- LOGO EMPRESA -->
 <div style="text-align: center;margin-top: 5px;">
 	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
 </div>
+<!-- FIN LOGO EMPRESA -->
 
+<!-- BOTON FILTRO -->
 <div *ngIf="!filtro && this.isConnected" style="padding: 0px 15px;">
 	<ion-button color="success" (click)="verOcultarFiltro()"><ion-icon name="list-box"></ion-icon> Filtro</ion-button>
 	<ion-button color="secondary" (click)="verTodos()">Todos</ion-button>
 </div>
+<!--FIN BOTON FILTRO -->
 
+<!-- FORMULARIO FILTRO -->
 <ion-content *ngIf="filtro">
 	<ion-button class="ion-margin-bottom" (click)="verOcultarFiltro()">Cancelar Filtro</ion-button>
 	<form #form="ngForm" (ngSubmit)="filtrar(form)" method="post" autocomplete="off">
@@ -93,8 +101,10 @@
 		<ion-button type="submit" expand="full" color="primary">Filtrar</ion-button>
 	</form>
 </ion-content>
-<ion-content *ngIf="!filtro">
+<!-- FIN FORMULARIO FILTRO -->
 
+
+<ion-content *ngIf="!filtro">
 
 	<ion-refresher class="refresh" slot="fixed" pullFactor="0.5" pullMin="35" pullMax="150" (ionRefresh)="doRefresh($event)">
 		<ion-refresher-content 
@@ -119,9 +129,21 @@
 		</div>
 	</div>
 
-	<ion-fab  vertical="bottom" horizontal="end" slot="fixed">
-		<ion-fab-button (click)="call()">
-			<ion-icon name="call"></ion-icon>
+	<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+
+		<ion-fab-button>
+			<ion-icon name="options"></ion-icon>
 		</ion-fab-button>
+
+		<ion-fab-list side="top">
+			<ion-fab-button (click)="call()">
+				<ion-icon name="call"></ion-icon>
+			</ion-fab-button>
+	
+			<ion-fab-button *ngIf="this.isConnected" (click)="navegarEjecutarListaChequeo()">
+				<ion-icon name="ios-list-box"></ion-icon>
+			</ion-fab-button>
+		</ion-fab-list>
+
 	</ion-fab>
 </ion-content>

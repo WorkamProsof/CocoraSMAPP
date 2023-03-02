@@ -19,6 +19,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 import { ModalimagenPageModule} from  "./modalimagen/modalimagen.module";
 import { FiltrosPageModule } from './dashboard/modals/filtros/filtros.module';
+import { LoginService } from './services/login.service';
 
 
 //firebase
@@ -47,6 +48,7 @@ import { FiltrosPageModule } from './dashboard/modals/filtros/filtros.module';
 		Contacts,
 		SMS,
 		LocalNotifications,
+		LoginService,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 		
 	],

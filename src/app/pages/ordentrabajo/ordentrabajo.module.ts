@@ -14,6 +14,7 @@ import { OrdentrabajoPage } from './ordentrabajo.page';
 import { IonicSelectableModule } from 'ionic-selectable'; 
 import { PipesModule } from '../../pipes/pipes.module';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
+import { ListaChequeoModule } from '../lista-chequeo/lista-chequeo.module';
 
 @NgModule({
 	imports: [
@@ -24,6 +25,7 @@ import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/not
 		OrdentrabajoPageRoutingModule,
 		IonicSelectableModule,
 		PipesModule,
+		ListaChequeoModule
 	],
 	// schemas: [NO_ERRORS_SCHEMA],
 	providers: [CambioClavePage],

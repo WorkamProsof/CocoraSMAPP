@@ -9,6 +9,7 @@
 </ion-header>
 
 <ion-content>
+	<!-- INFORMACIÓN DE LA INCIDENCIA -->
 	<ion-list *ngIf="Arraypqr" style="padding: 0;"> 
 		<ion-item>
 			<ion-label>
@@ -29,7 +30,7 @@
 			<ion-note id="expandWrapper" [innerHtml]="Arraypqr.operacion ? Arraypqr.observacion : '--'" ></ion-note> 
 		</ion-item>
 	</ion-list>
-
+	<!-- FIN INFORMACIÓN DE LA INCIDENCIA -->
 	
 	<ion-grid *ngIf="validaPausa">
 		<ion-item>
@@ -71,8 +72,13 @@
 		</ion-button>
 	</ion-col>
 
-	<ion-searchbar *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false" (ionChange)="buscarFiltro($event)" clearIcon="close-sharp" placeholder="Buscar Actividad" [debounce]="250"></ion-searchbar>
+	<!-- BARRA BUSQUEDA -->
+	<ion-searchbar *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false" (ionChange)="buscarFiltro($event)" clearIcon="close-sharp"
+		placeholder="Buscar Actividad" [debounce]="250">
+	</ion-searchbar>
+	<!-- FIN BARRA BUSQUEDA -->
 	
+	<!-- LISTA ACTIVIDADES -->
 	<ion-list lines="full" class="ion-no-padding" *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false">
 		<ion-item-sliding (click)="slidingVehiculo('slidingInvitados' + i)" *ngFor="let item of tipoactividades | filtro: 'nombre': buscarLista; let i = index;"
 			[id]="'slidingInvitados' + i">
@@ -118,7 +124,8 @@
 	<div class="ion-padding ion-text-center nohayresultado" *ngIf="!tipoactividades?.length">
 		No tiene actividades asignadas.
 	</div>
-	
+	<!-- FIN LISTA ACTIVIDADES -->
+
 	<ion-grid *ngIf="!forNota && !forNotaHistotial && multipleactividadapp == false">
 		<ion-row>
 			<ion-col *ngIf="(estadoInc == 'FinalizoRuta' || estadoInc == 'finalizaractividad' || estadoInc == null || estadoInc == 'finalizar') && !procesoIniciar"  >
@@ -241,6 +248,7 @@
 		</ion-item> 
 	</ion-grid>
 
+	<!-- BOTON DERECHO INFERIORDESPLIEGA NOTAS, HISTORIAL NOTAS, INCIDENCIAS RELACIONADAS -->
 	<ion-fab *ngIf="!forNota && !forNotaHistotial" vertical="bottom" horizontal="end" slot="fixed">
 
 		<ion-fab-button>
@@ -255,6 +263,10 @@
 				<ion-icon name="paper"></ion-icon>
 			</ion-fab-button>
 
+			<ion-fab-button (click)="listasChequeo()">
+				<ion-icon name="ios-list-box"></ion-icon>
+			</ion-fab-button>
+
 			<ion-fab-button color="primary" *ngIf="proincrelacionadasapp == true" (click)="formularioInc()">
 				<ion-icon name="add"></ion-icon>
 			</ion-fab-button>
@@ -262,6 +274,7 @@
 		</ion-fab-list>
 
 	</ion-fab>
+	<!-- FIN BOTON DERECHO INFERIORDESPLIEGA NOTAS, HISTORIAL NOTAS, INCIDENCIAS RELACIONADAS -->
 
 	<ion-fab *ngIf="forNota || forNotaHistotial" vertical="bottom" horizontal="end" slot="fixed">
 		<ion-fab-button (click)="cerrarNota();">

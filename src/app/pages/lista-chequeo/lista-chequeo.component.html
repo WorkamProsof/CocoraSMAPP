@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="dark">
+      Listas de chequeo
+    </ion-title>
+    <ion-buttons class="btnInicio" slot="end">
+      <ion-icon color="dark" slot='icon-only' size='large' name='close' (click)="cerrarModal()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-progress-bar *ngIf="searching" type="indeterminate"></ion-progress-bar>
+
+<ion-content class="ion-padding">
+  <ion-list id="listas" lines="full" class="ion-no-padding">
+    <ion-item *ngFor="let listaChequeo of listasChequeo">
+      <ion-label>{{ listaChequeo.nombre }}</ion-label>
+      <ion-checkbox slot="end" (click)="seleccionLista(listaChequeo)"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-button *ngIf="auxiliarSelecccioLista" (click)="mostrarListasChequeo()">Continuar</ion-button>
+  <ion-button *ngIf="!auxiliarSelecccioLista && listasSeleccionadas.length > 0" (click)="volverSeleccionlista()">Selecionar Listas</ion-button>
+  <!-- <ion-scroll scrollX="true" scrollY="true"> -->
+    <div id="formulario" class="hide">
+      <div *ngIf="listasChequeo.length" id="contenidoHtml"></div>
+    </div>
+  <!-- </ion-scroll> -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!auxiliarSelecccioLista && listasSeleccionadas.length > 0">
+      <ion-fab-button>
+        <ion-icon name="save" (click)="submitListas()"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+</ion-content>
+
+<!-- <div class="contendor-lista" *ngFor="let listaChequeo of listasSeleccionadas">
+    <h3>{{ listaChequeo.nombre }}</h3>
+    <div>
+      <div *ngFor="let listaChequeoItem of listaChequeo.listachequeoitem">
+        <p>{{ listaChequeoItem.descripcion }}</p>
+        <select *ngIf="listaChequeoItem.tipo === 'L' && listaChequeoItem.seleccionmultiple === '0'">
+          <option *ngFor="let item of listaChequeoItem.opcionrespuesta" value="{{ item.valortexto || item.valorentero || item.valorreal || item.valorfecha }}" >{{ item.valortexto || item.valorentero || item.valorreal || item.valorfecha }}</option>
+        </select>
+        <div *ngIf="listaChequeoItem.tipo === 'L' && listaChequeoItem.seleccionmultiple === '1'">
+          <div *ngFor="let item of listaChequeoItem.opcionrespuesta">
+            <label for="">{{ item.valortexto || item.valorentero || item.valorreal || item.valorfecha }}</label>
+            <input type="checkbox">
+          </div>
+        </div>
+        <div *ngIf="listaChequeoItem.tipo === 'A'">
+          <input type="text" *ngIf="listaChequeoItem.tipodato === 'TEXTO'">
+          <input type="number" *ngIf="listaChequeoItem.tipodato === 'REAL'">
+          <input type="date" *ngIf="listaChequeoItem.tipodato === 'FECHA'">
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+<!-- <p *ngFor="let item of listaChequeoItem.opcionrespuesta">
+  <strong>{{ item.opcionrespuestaid }}</strong>
+  {{ item.valortexto || item.valorentero || item.valorreal || item.valorfecha }}
+</p> -->

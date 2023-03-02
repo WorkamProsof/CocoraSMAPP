@@ -18,7 +18,10 @@ export class LoginService {
 		private http: HttpClient,
 		private env: EnvService,
 		private storage: StorageService,
-	) { }
+	) {
+		this.getToken();
+		this.getTokenNIT();
+	}
 
 	validarNIT(nit: String) {
 		return this.http.post(this.env.API_URL + 'Login/ValidarNIT', {
@@ -86,8 +89,8 @@ export class LoginService {
 		)
 	}
 
-	getToken() {
-		return this.storage.get('token').then(
+	async getToken() {
+		return await this.storage.get('token').then(
 			data => {
 				this.getTokenNIT();
 				this.token = data;
@@ -104,8 +107,8 @@ export class LoginService {
 		);
 	}
 
-	getTokenNIT() {
-		return this.storage.get('tokenNIT').then(
+	async getTokenNIT() {
+		return await this.storage.get('tokenNIT').then(
 			data => {
 				this.tokenNIT     = data;
 				if(this.tokenNIT != null) {

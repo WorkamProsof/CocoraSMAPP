@@ -10,18 +10,14 @@ import { LoginService } from './login.service';
 })
 export class AjaxService {
 
+	settings: any;
+
 	constructor(
 		private http: HttpClient,
 		private env: EnvService,
 		private storage: StorageService,
 		private loginService: LoginService
-	) { }
-
-	NIT(){
-		return this.loginService.tokenNIT;
-	}
-
-	ajax(url: string, data: object, customHeaders : any = null) {
+	) {
 		const headers = new HttpHeaders({
 			NIT: this.loginService.tokenNIT,
 			Token: this.loginService.token,
@@ -29,26 +25,35 @@ export class AjaxService {
 			"Content-Type": "application/json; charset=utf-8",
 			// "Access-Control-Expose-Headers": "Token"
 		});
-		var settings : any = {
+
+		this.settings = {
 			headers: headers,
 			observe: 'response'
 		};
+	}
 
-		for(var attrname in customHeaders){
-			settings[attrname] = customHeaders[attrname];
+	NIT() {
+		return this.loginService.tokenNIT;
+	}
+
+	ajax(url: string, data: object, customHeaders: any = null) {
+
+		for (var attrname in customHeaders) {
+			this.settings[attrname] = customHeaders[attrname];
 			delete customHeaders[attrname];
 		}
-
-		return this.http.post(this.env.API_URL + url, data, settings).pipe(
+		console.log('settins', this.settings)
+		return this.http.post(this.env.API_URL + url, data, this.settings).pipe(
 			tap(data => {
-				if(data.hasOwnProperty('headers')){
-					if(data['headers'].get('Token')){
-						if(data['headers'].get('Token') == '0'){
+				if (data.hasOwnProperty('headers')) {
+					if (data['headers'].get('Token')) {
+						if (data['headers'].get('Token') == '0') {
 							// console.error('El usuario no está logeado');
 						}
 					}
 				}
 			})
 		)
-	}	
+
+	}
 }

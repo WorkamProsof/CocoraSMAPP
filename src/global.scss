@@ -30,6 +30,20 @@
     --border-color: transparent;
 }
 
+/* Estilos para imputs lista chequeo */
+.sc-ion-alert-md-h {
+	--max-width: 98% !important;
+}
+.custom-alert {
+	.alert-wrapper {
+		width: 100%;
+
+		.alert-radio-group {
+			max-height: 100%;
+		}
+	}
+}
+/* Fin Estilos para imputs lista chequeo */
 
 ion-header {
 	--ion-background-color: #4894d7;
