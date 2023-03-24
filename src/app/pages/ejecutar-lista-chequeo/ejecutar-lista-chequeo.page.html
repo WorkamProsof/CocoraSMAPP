@@ -12,11 +12,13 @@
 <ion-content>
 	<form [formGroup]="formulario" id="formularioBusquedaEquipo" autocomplete="off">
 
-		<ion-item>
-			<ion-label position="floating">Cliente</ion-label>
-			<ion-select  [interfaceOptions]="customInterface" name="terceroid" formControlName="terceroid" (ionChange)="seleccionCliente($event.target.value)" [disabled]="inHabilitarCampos">
-				<ion-select-option *ngFor="let cliente of clientes" value="{{cliente.terceroid}}">{{cliente.nombre}}</ion-select-option>
-			</ion-select>
+		<ion-item *ngIf="clienteSeleccionado.nombre == ''">
+			<ion-button style="width: 100%; height: 60%;" (click)="modalSeleccionCliente()" [disabled]="inHabilitarCampos"><ion-label>Cliente</ion-label></ion-button>
+		</ion-item>
+
+		<ion-item *ngIf="clienteSeleccionado.nombre != ''">
+			<div style="font-size: 0.7rem;">{{ clienteSeleccionado.nombre }}</div>
+			<ion-button slot="end" (click)="cancelarSeleccionCliente()" [disabled]="inHabilitarCampos">X</ion-button>
 		</ion-item>
 
 		<ion-item>

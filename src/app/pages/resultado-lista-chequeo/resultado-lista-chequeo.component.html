@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="dark">
+      Listas de chequeo
+    </ion-title>
+    <ion-buttons class="btnInicio" slot="end">
+      <ion-icon color="dark" slot='icon-only' size='large' name='close' (click)="cerrarModal()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="!mostrarResultado" id="listasResultado" lines="full" class="ion-no-padding">
+    <div class="resultados-listas-card" *ngFor="let listaChequeo of listasChequeoEjecutadas">
+      <p>LISTA CHEQUEO:</p>
+      <span>{{ listaChequeo.nombre }}</span>
+      <p>EJECUCIÓN ID:</p>
+      <span>{{ listaChequeo.ejecucionid }}</span>
+      <p>FECHA REGISTRO:</p>
+      <span>{{ listaChequeo.fecharegistro }}</span>
+      <ion-button (click)="verResultadosListaChequeoEjecutada(listaChequeo)"><ion-icon slot='start' name="eye"></ion-icon>Ver</ion-button>
+    </div>
+  </ion-list>
+  <div class="div-ver-resultados" *ngIf="mostrarResultado" id="contenidoHTMLResultado"></div>
+  <div *ngIf="noTieneListas" style="margin-top: 3rem; text-align: center; font-size: 2rem;">No tiene Listas de chequeo disponibles para visualizar</div>
+</ion-content>

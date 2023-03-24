@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { AlertService } from 'src/app/services/alert.service';
 import { StorageService } from 'src/app/services/storage.service';
@@ -26,6 +27,7 @@ export class ListaChequeoComponent implements OnInit {
     private modalController: ModalController,
     private storageService: StorageService,
     private alertService: AlertService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -149,7 +151,7 @@ export class ListaChequeoComponent implements OnInit {
     this.alertService.presentToast('La lista de chequeo fue registrada con exito', 'middle');
     this.searching = false;
     this.cerrarModal();
-
+      this.router.navigate(['dashboard']);
   }
 
   cargarDatos(data: any, elements: any) {

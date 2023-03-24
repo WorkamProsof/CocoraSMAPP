@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AjaxService } from 'src/app/services/ajax.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { SeleccionClienteComponent } from '../seleccion-cliente/seleccion-cliente.component';
 
 @Component({
   selector: 'app-ejecutar-lista-chequeo',
@@ -21,6 +22,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
   equipos: any[];
   listasChequeo: any[];
   listaChequeoHTML: any[];
+  clienteSeleccionado: { terceroid: string, nombre: string} = { terceroid: '', nombre: ''};
 
   formulario = new FormGroup({
     terceroid: new FormControl('', [Validators.required]),
@@ -71,7 +73,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
     this.formulario.controls.equipoid.reset();
     this.formulario.controls.sucursalid.reset();
     this.equipos = [];
-    if (e != undefined) {
+    if (e != undefined || e != null) {
       this.AjaxService.ajax('Dashboard/cMovimientoApp/changeSucursal', {
         param: e
       }).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
@@ -79,9 +81,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
           this.alertService.presentToast('No se encontraron coincidencias', 'middle');
         } else {
           this.sucursales = resp.body.SUCURSALES;
-          if (this.sucursales.length <= 0) {
-            this.obtenerEquipos();
-          }
+          this.obtenerEquipos();
         }
       }, error => {
         this.alertService.presentToast('Ha ocurrido un problema al obtener las sucursales');
@@ -108,6 +108,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
     this.sucursales = [];
     this.equipos = [];
     this.inHabilitarCampos = false;
+    this.clienteSeleccionado = { terceroid: '', nombre: ''};
     this.DtosInicialesFiltro();
   }
 
@@ -116,7 +117,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
       itemequipoid: this.formulario.controls.equipoid.value
     }).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
       if (resp.body == 1) {
-        this.alertService.presentToast('No se encontraron listasde  chequeo', 'middle');
+        this.alertService.presentToast('No se encontraron listas de  chequeo', 'middle');
       } else {
         if (resp.body.listaChequeo.length > 0) {
           this.listasChequeo = resp.body.listaChequeo;
@@ -137,7 +138,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
 
   obtenerEquipos() {
     this.AjaxService.ajax('Dashboard/cMovimientoApp/obtenerEquipoTercerosSucursal', {
-      terceroid: this.formulario.controls.terceroid.value == undefined ? '' : this.formulario.controls.terceroid.value,
+      terceroid: this.clienteSeleccionado.terceroid == '' ? '' : this.clienteSeleccionado.terceroid,
       sucursalid: this.formulario.controls.sucursalid.value == undefined ? '' : this.formulario.controls.sucursalid.value
     }).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
       if (resp.body == 1) {
@@ -165,6 +166,29 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
     await modal.present();
     modal.onWillDismiss().then(({ data }) => {
     }, console.error);
+  }
+
+    // Mostar modal para escoger cliente
+  async modalSeleccionCliente() {
+    const modal = await this.modalCtrl.create({
+      component: SeleccionClienteComponent,
+      componentProps: {
+        listaClientes: this.clientes,
+      }
+    });
+    await modal.present();
+    const {data, role} = await modal.onWillDismiss();
+    if (role === 'confirmar') {
+      this.clienteSeleccionado = data;
+      this.formulario.controls.terceroid.setValue(data.terceroid);
+      this.seleccionCliente(data.terceroid);
+    }
+    
+  }
+
+  cancelarSeleccionCliente() {
+    this.clienteSeleccionado = { terceroid: '', nombre: ''};
+    this.inHabilitarCampos = false;
   }
 
   ngOnDestroy(): void {

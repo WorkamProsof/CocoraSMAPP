@@ -121,6 +121,7 @@
 		</ion-item-sliding>
 	
 	</ion-list>
+	
 	<div class="ion-padding ion-text-center nohayresultado" *ngIf="!tipoactividades?.length">
 		No tiene actividades asignadas.
 	</div>
@@ -265,6 +266,10 @@
 
 			<ion-fab-button (click)="listasChequeo()">
 				<ion-icon name="ios-list-box"></ion-icon>
+			</ion-fab-button>
+
+			<ion-fab-button *ngIf="isConnected" (click)="resultadosListasChequeo()">
+				<ion-icon name="eye"></ion-icon>
 			</ion-fab-button>
 
 			<ion-fab-button color="primary" *ngIf="proincrelacionadasapp == true" (click)="formularioInc()">

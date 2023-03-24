@@ -70,3 +70,21 @@ ion-progress-bar {
 // 	height: 100% !important;
 // 	box-shadow: none;
 // }
+
+$font-size-ion-select: 0.7rem;
+
+.searchbar-input.sc-ion-searchbar-md {
+    background: none;
+}
+
+.item.sc-ion-label-md-h, .item .sc-ion-label-md-h {
+	font-size: $font-size-ion-select;
+}
+
+.alert-radio-label.sc-ion-alert-md {
+	font-size: $font-size-ion-select;
+}
+
+ion-select {
+	font-size: $font-size-ion-select;
+}

@@ -11,12 +11,16 @@ import { CallNumber     } from '@ionic-native/call-number/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { ModalimagenPage } from '../../modalimagen/modalimagen.page';
 import * as moment from 'moment';
-import { timeout } from 'rxjs/operators';
+import { mapTo, timeout } from 'rxjs/operators';
 import { IonicSelectableComponent } from "ionic-selectable";
 import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
 import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resultado-lista-chequeo.component';
+import { fromEvent, merge, Observable, of } from 'rxjs';
+import { Network } from '@ionic-native/network/ngx';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -37,7 +41,9 @@ export class OrdentrabajoPage implements OnInit {
 		private localNotifications : LocalNotifications,
 		private modalCtrl : ModalController,
 		private photoLibrary : PhotoLibrary,
-		private notificaciones: NotificacionesService
+		private notificaciones: NotificacionesService,
+		private network: Network,
+		private http: HttpClient,
 	  //  private callNumber : CallNumber
 
 	  ) {
@@ -105,6 +111,8 @@ export class OrdentrabajoPage implements OnInit {
 	forNotaHistotial    = false;
 	selectMultiple      = true;
 	arrayTenicosAsignados : any;
+	isConnected			= true;
+	private online: Observable<boolean>;
 	
 	actividades: Array<Object> = [{
 		id: "Inicio",
@@ -115,8 +123,53 @@ export class OrdentrabajoPage implements OnInit {
 	}];
 
 	async ngOnInit() {
-		this.alertas();
+		if (!(this.platform.is('mobileweb') || this.platform.is('desktop'))) {
+			// On Device 
+
+			this.network.onDisconnect().subscribe(() => {
+				this.isConnected = false;
+			});
+
+			this.network.onConnect().subscribe(() => {
+				setTimeout(() => {
+					this.isConnected = true;
+				}, 2000);
+			});
+
+			try {
+				this.getNetworkTestRequest().subscribe(success => {
+					//con internet
+					this.isConnected = true;
+					return;
+				}, error => {
+					//sin internet
+					this.isConnected = false;
+					return;
+				});
+			} catch (err) {
+				this.isConnected = false;
+				return;
+			}
+		} else {
+			// On Browser 
+			this.online = merge(
+				of(navigator.onLine),
+				fromEvent(window, 'online').pipe(mapTo(true)),
+				fromEvent(window, 'offline').pipe(mapTo(false))
+			);
+
+			//valida si esta en linea o no 
+			this.online.subscribe((isOnline) => {
+				if (isOnline) {
+					this.isConnected = true;
+				} else {
+					//no esta en linea
+					this.isConnected = false;
+				}
+			});
+		}
 		
+		this.alertas();
 		this.menu.enable(false);
 		this.menu.close();
 
@@ -232,6 +285,10 @@ export class OrdentrabajoPage implements OnInit {
 				}
 			}
 		);
+	}
+
+	private getNetworkTestRequest() {
+		return this.http.get('https://jsonplaceholder.typicode.com/todos/1');
 	}
 
 	alertas(){
@@ -880,6 +937,17 @@ export class OrdentrabajoPage implements OnInit {
 		await modal.present();
 		modal.onWillDismiss().then(({data}) => {
 		}, console.error);
+	}
+
+	async resultadosListasChequeo() {
+		const modal = await this.modalCtrl.create({
+			component:  ResultadoListaChequeoComponent,
+			componentProps: { 
+				listasChequeo	: this.Arraypqr.listaCheck,
+				pqrid: this.Arraypqr.pqrid,
+			}
+		});
+		await modal.present();
 	}
 }
 
