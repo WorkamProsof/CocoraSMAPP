@@ -7,6 +7,7 @@ import { SeleccionClienteModule } from '../seleccion-cliente/seleccion-cliente.m
 import { EjecutarListaChequeoPageRoutingModule } from './ejecutar-lista-chequeo-routing.module';
 
 import { EjecutarListaChequeoPage } from './ejecutar-lista-chequeo.page';
+import { SeleccionClienteComponent } from '../seleccion-cliente/seleccion-cliente.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { EjecutarListaChequeoPage } from './ejecutar-lista-chequeo.page';
     ListaChequeoModule,
     SeleccionClienteModule
   ],
-  declarations: [EjecutarListaChequeoPage]
+  declarations: [EjecutarListaChequeoPage],
+  entryComponents: [SeleccionClienteComponent]
 })
 export class EjecutarListaChequeoPageModule {}

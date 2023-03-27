@@ -14,6 +14,8 @@ import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/not
 import { ListaChequeoModule } from '../lista-chequeo/lista-chequeo.module';
 import { ResultadoListaChequeoModule } from '../resultado-lista-chequeo/resultado-lista-chequeo.module';
 import { Network } from '@ionic-native/network/ngx';
+import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resultado-lista-chequeo.component';
 
 @NgModule({
 	imports: [
@@ -29,8 +31,8 @@ import { Network } from '@ionic-native/network/ngx';
 	],
 	// schemas: [NO_ERRORS_SCHEMA],
 	providers: [CambioClavePage, Network],
-	declarations: [OrdentrabajoPage,AgregarPqrsfrComponent]
-	,entryComponents : [AgregarPqrsfrComponent]
+	declarations: [OrdentrabajoPage,AgregarPqrsfrComponent],
+	entryComponents : [AgregarPqrsfrComponent, ListaChequeoComponent, ResultadoListaChequeoComponent]
 	
 })
 export class OrdentrabajoPageModule {}

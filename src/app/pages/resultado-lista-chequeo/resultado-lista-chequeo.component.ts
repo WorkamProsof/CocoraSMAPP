@@ -29,7 +29,6 @@ export class ResultadoListaChequeoComponent implements OnInit {
         if (resp.body.length > 0) {
           this.listasChequeoEjecutadas = [...this.listasChequeoEjecutadas, ...resp.body];
         } else {
-          console.log('no tiene listas');
           this.noTieneListas = true;
         }
       }, error => {
