@@ -193,14 +193,14 @@ export class ListaChequeoComponent implements OnInit {
                 }
               }
             } else if (element.options && element.multiple) {
-              data[element.getAttribute('listachequeoid')][element.name]['opcionrespuestaid'] = element.getAttribute('opcionid');
+              data[element.getAttribute('listachequeoid')][element.name]['opcionrespuestaid'] = document.getElementsByName(element.name)[i].getAttribute('opcionid');
               data[element.getAttribute('listachequeoid')][element.name]['res'] = this.getSelectValues(element);
             } else if (element.type == 'radio') {
               if (typeof data[element.getAttribute('listachequeoid')][element.name]['value'] === 'undefined') {
                 data[element.getAttribute('listachequeoid')][element.name]['value'] = '';
                 for (var i = 0; i < document.getElementsByName(element.name).length; i++) {
                   if (document.getElementsByName(element.name)[i]['checked']) {
-                    data[element.getAttribute('listachequeoid')][element.name]['opcionrespuestaid'] = element.getAttribute('opcionid');
+                    data[element.getAttribute('listachequeoid')][element.name]['opcionrespuestaid'] = document.getElementsByName(element.name)[i].getAttribute('opcionid');
                     data[element.getAttribute('listachequeoid')][element.name]['value'] = document.getElementsByName(element.name)[i]['value'];
                     break;
                   }
