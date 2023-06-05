@@ -444,7 +444,7 @@ export class DashboardPage implements OnInit {
 			await this.guardarMovimientos().then(() => {
 				setTimeout(() => {
 					this.cargarInformacion(this.dataFiltros);
-				}, 500);
+				}, 1000);
 			});
 		} else {
 			await this.storageService.get('INCI').then(

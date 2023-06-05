@@ -89,6 +89,12 @@ export class ResultadoListaChequeoComponent implements OnInit {
     for (var i = 0; i < resultadoCheck.length; i++) {
       let dato = resultadoCheck[i];
       let observacion = observaciones[observaciones.length - (i+1+resultado.length)];
+
+      if (dato.observacion != null) {
+        const fila = document.getElementsByName(dato.preguntaid).length;
+        document.getElementsByName(dato.preguntaid)[fila - 1].innerHTML = dato.observacion;
+      }
+
       if (dato.opcionid != null) {
         if (document.getElementById(dato.preguntaid+dato.opcionid).getAttribute('name') == dato.preguntaid) {
           document.getElementById(dato.preguntaid+dato.opcionid).setAttribute('checked', 'true');
