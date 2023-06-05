@@ -42,7 +42,6 @@ export class AjaxService {
 			this.settings[attrname] = customHeaders[attrname];
 			delete customHeaders[attrname];
 		}
-
 		return this.http.post(this.env.API_URL + url, data, this.settings).pipe(
 			tap(data => {
 				if (data.hasOwnProperty('headers')) {
