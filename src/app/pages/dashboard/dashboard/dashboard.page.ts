@@ -442,9 +442,9 @@ export class DashboardPage implements OnInit {
 		this.repetidos = false;
 		if (this.isConnected) {
 			await this.guardarMovimientos().then(() => {
-				setTimeout(() => {
-					this.cargarInformacion(this.dataFiltros);
-				}, 1000);
+				// setTimeout(() => {
+				// 	this.cargarInformacion(this.dataFiltros);
+				// }, 1000);
 			});
 		} else {
 			await this.storageService.get('INCI').then(
@@ -516,6 +516,7 @@ export class DashboardPage implements OnInit {
 								this.listaChequeoEjecutada = [];
 							}
 						}
+						this.cargarInformacion(this.dataFiltros);
 					},
 					error => {
 						this.alertService.presentToast('Ha ocurrido un ploblema');
@@ -523,6 +524,8 @@ export class DashboardPage implements OnInit {
 					},
 					() => { }
 				)
+			} else {
+				this.cargarInformacion(this.dataFiltros);
 			}
 		});
 	}
