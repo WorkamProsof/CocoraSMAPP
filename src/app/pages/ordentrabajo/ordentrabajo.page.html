@@ -35,7 +35,7 @@
 	<ion-grid *ngIf="validaPausa">
 		<ion-item>
 			<ion-label position="floating">Tipo Stop</ion-label>
-			<ion-select  interface="popover" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
+			<ion-select  interface="action-sheet" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
 				<ion-select-option *ngFor="let tipoParada of tiposParadas" value="{{tipoParada.tipoparadaid}}">{{tipoParada.nombre}}</ion-select-option>
 			</ion-select>
 		</ion-item>
@@ -48,14 +48,14 @@
 	<ion-col *ngIf="estadoSelet == true">
 		<ion-item *ngIf="estadoSelet == true">
 			<ion-label position="floating">Estado</ion-label>
-			<ion-select  [value]="estadopqrid" interface="popover" placeholder="Seleccionar Estado" (ionChange)="seleccionEstadopqr($event,1)">
+			<ion-select  [value]="estadopqrid" interface="action-sheet" placeholder="Seleccionar Estado" (ionChange)="seleccionEstadopqr($event,1)">
 				<ion-select-option *ngFor="let estado of ESTADOS" value="{{estado.nuevoestado}}">{{estado.nombrenuevoestadopqr}}</ion-select-option>
 			</ion-select>
 		</ion-item>
 
 		<ion-item *ngIf="estadoSelet == true">
 			<ion-label position="floating">Técnico</ion-label>
-			<ion-select  [value]="datoTecnicoSelet" multiple="{{selectMultiple}}" [disabled]="tecnicoDisabled" interface="popover" placeholder="Seleccionar Ténico" (ionChange)="seleccionEstadopqr($event,0)">
+			<ion-select  [value]="datoTecnicoSelet" multiple="{{selectMultiple}}" [disabled]="tecnicoDisabled" interface="action-sheet" placeholder="Seleccionar Ténico" (ionChange)="seleccionEstadopqr($event,0)">
 				<ion-select-option *ngFor="let ListUsuario of Arryusuarios"  value="{{ListUsuario.usuarioid}}">{{ListUsuario.nombre}}</ion-select-option>
 			</ion-select>
 		</ion-item>
@@ -77,7 +77,7 @@
 		placeholder="Buscar Actividad" [debounce]="250">
 	</ion-searchbar>
 	<!-- FIN BARRA BUSQUEDA -->
-	
+
 	<!-- LISTA ACTIVIDADES -->
 	<ion-list lines="full" class="ion-no-padding" *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false">
 		<ion-item-sliding (click)="slidingVehiculo('slidingInvitados' + i)" *ngFor="let item of tipoactividades | filtro: 'nombre': buscarLista; let i = index;"
@@ -189,14 +189,14 @@
 	
 		<ion-item *ngIf="tiposParadas && procesoPausa && !procesoFin">
 			<ion-label position="floating">Tipo Stop</ion-label>
-			<ion-select  interface="popover" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
+			<ion-select  interface="action-sheet" placeholder="Seleccionar Tipo Stop" (ionChange)="seleccionTipoParada($event)">
 				<ion-select-option *ngFor="let tipoParada of tiposParadas" value="{{tipoParada.tipoparadaid}}">{{tipoParada.nombre}}</ion-select-option>
 			</ion-select>
 		</ion-item>
 
 		<ion-item *ngIf="tipoactividades && procesoIniciar">
 			<ion-label position="floating">Actividad</ion-label>
-			<ion-select style="width:90%" interface="popover" placeholder="Selecciona actividad a realizar" (ionChange)="seleccionActividad($event)">
+			<ion-select style="width:90%" interface="action-sheet" placeholder="Selecciona actividad a realizar" (ionChange)="seleccionActividad($event)">
 				<ion-select-option style="font-size: 10PX;" *ngFor="let tipoactividades of tipoactividades" value="{{tipoactividades.id}}">{{tipoactividades.nombre}}</ion-select-option>
 			</ion-select>
 		</ion-item>
@@ -264,7 +264,7 @@
 				<ion-icon name="paper"></ion-icon>
 			</ion-fab-button>
 
-			<ion-fab-button (click)="listasChequeo()">
+			<ion-fab-button *ngIf="isConnected" (click)="listasChequeo()">
 				<ion-icon name="ios-list-box"></ion-icon>
 			</ion-fab-button>
 

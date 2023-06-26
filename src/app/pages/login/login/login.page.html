@@ -9,11 +9,11 @@
 <div style="text-align: center;margin-top: 5px;">
 	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
 </div>
-<ion-content padding [hidden]=contenido>
+<ion-content [hidden]=contenido>
 	<form #form="ngForm" (ngSubmit)="login(form)" method="post" autocomplete="off">
 		<ion-item>
 			<ion-label position="floating">Usuario</ion-label>
-			<ion-select name="user" id="usuario" required interface="popover" ngModel>
+			<ion-select name="user" id="usuario" required interface="action-sheet" ngModel>
 				<ion-select-option *ngFor="let usuario of usuarios" value="{{usuario.usuarioid}}">{{usuario.nombre}}</ion-select-option>
 			</ion-select>
 		</ion-item>

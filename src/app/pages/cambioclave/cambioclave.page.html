@@ -9,7 +9,7 @@
 <div style="text-align: center;margin-top: 5px;">
 	<img style="width: 50%" *ngIf="logoempresa" [src]="logoempresa">	
 </div>
-<ion-content padding [hidden]=contenido>
+<ion-content [hidden]=contenido>
 	<form #form="ngForm" (ngSubmit)="cambioClave(form)" method="post" autocomplete="off">
 		<ion-item>
 			<ion-label position="floating">Usuario</ion-label>
