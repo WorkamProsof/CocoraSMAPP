@@ -16,11 +16,12 @@ import { IonicSelectableComponent } from "ionic-selectable";
 import { FiltroListaPipe } from 'src/app/pipes/filtro-lista/filtro-lista.pipe';
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
-import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { ListaChequeoComponent } from '../../components/lista-chequeo/lista-chequeo.component';
 import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resultado-lista-chequeo.component';
 import { fromEvent, merge, Observable, of } from 'rxjs';
 import { Network } from '@ionic-native/network/ngx';
 import { HttpClient } from '@angular/common/http';
+import { ConsumirInsumoComponent } from 'src/app/components/consumir-insumo/consumir-insumo.component';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -799,9 +800,13 @@ export class OrdentrabajoPage implements OnInit {
 
 
 	accionActividad(nombreaccion:string ,tipo: string, tipoactividadid: number, nombre?: string) {
+		// console.log(nombreaccion);
+		// console.log(tipo);
+		// console.log(tipoactividadid);
+		// console.log(nombre);
 		this.searching = true;
 		if(tipo == 'pausar'){
-			this.procesarPausaMultiple(nombreaccion,tipo,tipoactividadid);
+			// this.procesarPausaMultiple(nombreaccion,tipo,tipoactividadid);
 		}else{
 			let valida = false;
 			if(tipo == 'finalizaractividad'){
@@ -820,6 +825,9 @@ export class OrdentrabajoPage implements OnInit {
 	}
 
 	actualizarMovimientoMultiple(nombreaccion,tipo,tipoactividadid){
+		console.log(nombreaccion);
+		console.log(tipo);
+		console.log(tipoactividadid);
 		if(tipo == 'pausar'){
 			tipoactividadid  = this.actividadmultiple;
 			this.validaPausa = false;
@@ -945,6 +953,34 @@ export class OrdentrabajoPage implements OnInit {
 			componentProps: { 
 				listasChequeo	: this.Arraypqr.listaCheck,
 				pqrid: this.Arraypqr.pqrid,
+			}
+		});
+		await modal.present();
+	}
+
+	// Mostar pagina para usar insumos incidencia
+	async descargarInsumos() {
+		// this.navCtrl.navigateRoot(`/insumos-pqr/${this.Arraypqr.pqrid}`);
+		const modal = await this.modalCtrl.create({
+			component:  ConsumirInsumoComponent,
+			componentProps: { 
+				almacenDescarga	: this.Arraypqr.almacendescarga,
+				pqrid			: this.Arraypqr.pqrid,
+				requisicion		: false
+			}
+		});
+		await modal.present();
+	}
+
+	// Mostar pagina para usar insumos incidencia
+	async requerirInsumos() {
+		// this.navCtrl.navigateRoot(`/insumos-pqr/${this.Arraypqr.pqrid}`);
+		const modal = await this.modalCtrl.create({
+			component:  ConsumirInsumoComponent,
+			componentProps: { 
+				almacenDescarga	: this.Arraypqr.almacendescarga,
+				pqrid			: this.Arraypqr.pqrid,
+				requisicion		: true
 			}
 		});
 		await modal.present();

@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="btnInicio" slot="start">
+      <ion-button (click)="irAtras()">
+        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+    <ion-title>Insumos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-button style="width: 100%;" (click)="onAgregarInsumo()" [disabled]="inhabilitarCambioCantidad"><ion-label>Agregar insumo</ion-label></ion-button>
+
+  <form [formGroup]="formulario" *ngIf="agregarInsumo && !inhabilitarCambioCantidad">
+    <ion-item>
+        <ion-button color="primary" (click)="modalSeleccionProducto()">Insumos</ion-button>
+			  <ion-input name="nombre" formControlName="nombre"></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label>Cantidad Solicitada</ion-label>
+      <ion-button (click)="restarInsumoPedido()" [disabled]="formulario.controls.cantfin.value <= 0 || inhabilitarCambioCantidad">
+        <ion-icon slot="icon-only" name="remove"></ion-icon>
+      </ion-button>
+      <ion-input style="width: 30px; text-align: center;" name="cantfin" formControlName="cantfin"></ion-input>
+      <ion-button (click)="sumarInsumoPedido()" [disabled]="inhabilitarCambioCantidad">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+		</ion-item>
+
+    <ion-item>
+      <ion-label>Unidad</ion-label>
+      <ion-input name="unidad" formControlName="unidad"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Disponibilidad</ion-label>
+      <ion-input name="cantidadDisponible" formControlName="cantidadDisponible"></ion-input>
+    </ion-item>
+
+		<ion-button type="submit" color="success" (click)="agregarInsumoALista()" [disabled]="formulario.invalid">Agregar</ion-button>
+		<ion-button type="button" color="danger" (click)="cancelarAgregarInsumo()">Cancelar</ion-button>
+  </form>
+  
+  <ion-item-group *ngFor="let insumo of insumosPqr">
+
+      <ion-item-divider style="background-color: #e4edff; padding: 0 5px">
+        <ion-label>
+          <h3>{{ insumo.producto }}</h3>
+        </ion-label>
+        <ion-checkbox slot="end" (click)="seleccionLista(insumo)"></ion-checkbox>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Unidad</ion-label>
+        <span>{{ insumo.unidad }}</span>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Cantidad Sugerida</ion-label>
+        <ion-input type="number" [value]="insumo.cantini" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Cantidad Usada o Requerida</ion-label>
+        <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin == 0 || inhabilitarCambioCantidad">
+          <ion-icon slot="icon-only" name="remove"></ion-icon>
+        </ion-button>
+        <input type="number" style="width: 30px; text-align: center;" [value]="insumo.cantfin" disabled min="0">
+        <ion-button (click)="sumarInsumo(insumo)" [disabled]="inhabilitarCambioCantidad">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </ion-item>
+  </ion-item-group>
+  
+  <ion-button style="width: 100%;" color="success" (click)="enviarInsumo()" [disabled]="!inhabilitarCambioCantidad" ><ion-label>{{ requisicion ? 'Requerir' : 'Descargar' }} insumos seleccionados</ion-label></ion-button>
+
+</ion-content>
