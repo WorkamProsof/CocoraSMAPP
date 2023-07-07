@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ListaChequeoModule } from '../lista-chequeo/lista-chequeo.module';
-import { SeleccionClienteModule } from '../seleccion-cliente/seleccion-cliente.module';
+import { SeleccionItemModule } from '../seleccion-item/seleccion-item.module';
 import { EjecutarListaChequeoPageRoutingModule } from './ejecutar-lista-chequeo-routing.module';
 
 import { EjecutarListaChequeoPage } from './ejecutar-lista-chequeo.page';
-import { SeleccionClienteComponent } from '../seleccion-cliente/seleccion-cliente.component';
+import { SeleccionItemComponent } from '../seleccion-item/seleccion-item.component';
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import { SeleccionClienteComponent } from '../seleccion-cliente/seleccion-client
     ReactiveFormsModule,
     EjecutarListaChequeoPageRoutingModule,
     ListaChequeoModule,
-    SeleccionClienteModule
+    SeleccionItemModule
   ],
   declarations: [EjecutarListaChequeoPage],
-  entryComponents: [SeleccionClienteComponent]
+  entryComponents: [SeleccionItemComponent]
 })
 export class EjecutarListaChequeoPageModule {}

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="cerrarModal()">Cancel</ion-button>
     </ion-buttons>
-    <ion-title>Clientes</ion-title>
+    <ion-title>{{ titulo }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cerrarModal()">Ok</ion-button>
     </ion-buttons>
@@ -13,9 +13,9 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let cliente of clientesfiltrados">
-      <ion-label>{{ cliente.nombre }}</ion-label>
-      <ion-radio [value]="cliente.terceroid" (ionFocus)="seleccionCliente(cliente)"></ion-radio>
+    <ion-item *ngFor="let item of itemsFiltrados" class="item-equipo">
+      <ion-label>{{ item.nombre }}</ion-label>
+      <ion-radio [value]="item.id" (ionFocus)="seleccionCliente(item)"></ion-radio>
     </ion-item>
   </ion-list>
 </ion-content>

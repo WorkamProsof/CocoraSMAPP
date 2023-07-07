@@ -88,3 +88,7 @@ $font-size-ion-select: 0.7rem;
 ion-select {
 	font-size: $font-size-ion-select;
 }
+
+ion-label {
+	text-wrap: wrap !important;
+}
