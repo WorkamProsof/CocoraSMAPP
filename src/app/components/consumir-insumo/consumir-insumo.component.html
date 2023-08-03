@@ -9,7 +9,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content *ngIf="!almacenDescarga">
+  <h2 style="text-align: center;">No cuenta con almacen para descargar insumos</h2>
+</ion-content>
+
+<ion-content class="ion-padding" *ngIf="almacenDescarga">
 
   <ion-button style="width: 100%;" (click)="onAgregarInsumo()" [disabled]="inhabilitarCambioCantidad"><ion-label>Agregar insumo</ion-label></ion-button>
 
