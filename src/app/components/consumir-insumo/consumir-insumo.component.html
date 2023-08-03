@@ -24,7 +24,7 @@
       <ion-button (click)="restarInsumoPedido()" [disabled]="formulario.controls.cantfin.value <= 0 || inhabilitarCambioCantidad">
         <ion-icon slot="icon-only" name="remove"></ion-icon>
       </ion-button>
-      <ion-input style="width: 30px; text-align: center;" name="cantfin" formControlName="cantfin"></ion-input>
+      <input style="width: 30px; text-align: center;" name="cantfin" formControlName="cantfin" disabled min="0">
       <ion-button (click)="sumarInsumoPedido()" [disabled]="inhabilitarCambioCantidad">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
@@ -50,7 +50,6 @@
         <ion-label>
           <h3>{{ insumo.producto }}</h3>
         </ion-label>
-        <ion-checkbox slot="end" (click)="seleccionLista(insumo)"></ion-checkbox>
       </ion-item-divider>
 
       <ion-item>
@@ -64,6 +63,11 @@
       </ion-item>
 
       <ion-item>
+        <ion-label>Cantidad Disponible</ion-label>
+        <ion-input type="number" [value]="insumo.cantidadDisponible" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
         <ion-label>Cantidad Usada o Requerida</ion-label>
         <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin == 0 || inhabilitarCambioCantidad">
           <ion-icon slot="icon-only" name="remove"></ion-icon>
@@ -73,8 +77,9 @@
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </ion-item>
+
   </ion-item-group>
   
-  <ion-button style="width: 100%;" color="success" (click)="enviarInsumo()" [disabled]="!inhabilitarCambioCantidad" ><ion-label>{{ requisicion ? 'Requerir' : 'Descargar' }} insumos seleccionados</ion-label></ion-button>
+  <ion-button style="width: 100%;" color="success" (click)="enviarInsumo()"><ion-label>Descargar insumos</ion-label></ion-button>
 
 </ion-content>

@@ -959,32 +959,17 @@ export class OrdentrabajoPage implements OnInit {
 	}
 
 	// Mostar pagina para usar insumos incidencia
-	async descargarInsumos() {
-		// this.navCtrl.navigateRoot(`/insumos-pqr/${this.Arraypqr.pqrid}`);
+	async verInsumos() {
 		const modal = await this.modalCtrl.create({
 			component:  ConsumirInsumoComponent,
 			componentProps: { 
 				almacenDescarga	: this.Arraypqr.almacendescarga,
-				pqrid			: this.Arraypqr.pqrid,
-				requisicion		: false
+				pqrid			: this.Arraypqr.pqrid
 			}
 		});
 		await modal.present();
 	}
 
-	// Mostar pagina para usar insumos incidencia
-	async requerirInsumos() {
-		// this.navCtrl.navigateRoot(`/insumos-pqr/${this.Arraypqr.pqrid}`);
-		const modal = await this.modalCtrl.create({
-			component:  ConsumirInsumoComponent,
-			componentProps: { 
-				almacenDescarga	: this.Arraypqr.almacendescarga,
-				pqrid			: this.Arraypqr.pqrid,
-				requisicion		: true
-			}
-		});
-		await modal.present();
-	}
 }
 
 	

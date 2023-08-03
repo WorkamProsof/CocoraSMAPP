@@ -43,7 +43,6 @@ export class SeleccionProductoComponent implements OnInit, OnDestroy {
   }
 
   seleccionProducto(producto) {
-    console.log(producto);
     this.modalController.dismiss(producto, 'confirmar');
   }
 

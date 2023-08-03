@@ -78,9 +78,6 @@
 	</ion-searchbar>
 	<!-- FIN BARRA BUSQUEDA -->
 
-	<ion-button (click)="descargarInsumos()">Descargas insumos</ion-button>
-	<ion-button (click)="requerirInsumos()">Requerir insumos</ion-button>
-
 	<!-- LISTA ACTIVIDADES -->
 	<ion-list lines="full" class="ion-no-padding" *ngIf="estadoInc != 'InicioRuta' &&  !validaPausa && estadoSelet != true && multipleactividadapp != false">
 		<ion-item-sliding (click)="slidingVehiculo('slidingInvitados' + i)" *ngFor="let item of tipoactividades | filtro: 'nombre': buscarLista; let i = index;"
@@ -275,13 +272,10 @@
 				<ion-icon name="eye"></ion-icon>
 			</ion-fab-button>
 
-			<ion-fab-button *ngIf="isConnected" (click)="descargarInsumos()">
+			<ion-fab-button *ngIf="isConnected" (click)="verInsumos()">
 				<ion-icon name="construct"></ion-icon>
 			</ion-fab-button>
 
-			<ion-fab-button *ngIf="isConnected" (click)="requerirInsumos()">
-				<ion-icon name="wallet"></ion-icon>
-			</ion-fab-button>
 
 			<ion-fab-button color="primary" *ngIf="proincrelacionadasapp == true" (click)="formularioInc()">
 				<ion-icon name="add"></ion-icon>
