@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cerrarModal()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Clientes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()">Ok</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+    <ion-searchbar (ionInput)="busquedaCliente($event)"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let cliente of clientesfiltrados">
+      <ion-label>{{ cliente.nombre }}</ion-label>
+      <ion-radio [value]="cliente.terceroid" (ionFocus)="seleccionCliente(cliente)"></ion-radio>
+    </ion-item>
+  </ion-list>
+</ion-content>

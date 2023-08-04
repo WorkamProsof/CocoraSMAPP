@@ -11,11 +11,13 @@ import { OrdentrabajoPage } from './ordentrabajo.page';
 import { IonicSelectableModule } from 'ionic-selectable'; 
 import { PipesModule } from '../../pipes/pipes.module';
 import { AgregarPqrsfrComponent } from 'src/app/pages/notas_inc_relacionadas/notas_inc_relacionadas.component';
-import { ListaChequeoModule } from '../lista-chequeo/lista-chequeo.module';
+import { ListaChequeoModule } from '../../components/lista-chequeo/lista-chequeo.module';
 import { ResultadoListaChequeoModule } from '../resultado-lista-chequeo/resultado-lista-chequeo.module';
 import { Network } from '@ionic-native/network/ngx';
-import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { ListaChequeoComponent } from '../../components/lista-chequeo/lista-chequeo.component';
 import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resultado-lista-chequeo.component';
+import { ConsumirInsumoModule } from 'src/app/components/consumir-insumo/consumir-insumo.module';
+import { ConsumirInsumoComponent } from 'src/app/components/consumir-insumo/consumir-insumo.component';
 
 @NgModule({
 	imports: [
@@ -27,12 +29,13 @@ import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resul
 		IonicSelectableModule,
 		PipesModule,
 		ListaChequeoModule,
-		ResultadoListaChequeoModule
+		ResultadoListaChequeoModule,
+		ConsumirInsumoModule
 	],
 	// schemas: [NO_ERRORS_SCHEMA],
 	providers: [CambioClavePage, Network],
 	declarations: [OrdentrabajoPage,AgregarPqrsfrComponent],
-	entryComponents : [AgregarPqrsfrComponent, ListaChequeoComponent, ResultadoListaChequeoComponent]
+	entryComponents : [AgregarPqrsfrComponent, ListaChequeoComponent, ResultadoListaChequeoComponent, ConsumirInsumoComponent]
 	
 })
 export class OrdentrabajoPageModule {}
