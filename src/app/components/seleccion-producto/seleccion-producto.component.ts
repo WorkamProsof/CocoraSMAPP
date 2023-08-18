@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AjaxService } from 'src/app/services/ajax.service';
-import { ModalController } from '@ionic/angular';
+import { IonSearchbar, ModalController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AlertService } from 'src/app/services/alert.service';
@@ -13,6 +13,7 @@ import { AlertService } from 'src/app/services/alert.service';
 export class SeleccionProductoComponent implements OnInit, OnDestroy {
 
   @Input() almacenDescarga: Array<any>;
+  @ViewChild(IonSearchbar, { static: true }) searchbar: IonSearchbar;
 
   listaProductos    : any = [];
   productosfiltrados: any;
@@ -28,6 +29,10 @@ export class SeleccionProductoComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {}
+
+  ionViewDidEnter() {
+    this.searchbar.setFocus();
+  }
 
   onNombreProducto(event) {
     this.nombreProducto = event.target.value;

@@ -1,14 +1,14 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button style="width: 82px;" (click)="cerrarModal()">Cancel</ion-button>
+      <ion-button style="width: 82px;" (click)="cerrarModal()">Cancelar</ion-button>
     </ion-buttons>
     <ion-title style="text-align: center;">Insumos</ion-title>
     <ion-buttons slot="end">
       <ion-button style="width: 82px; justify-content: flex-end;" (click)="busquedaProducto()">Buscar</ion-button>
     </ion-buttons>
   </ion-toolbar>
-    <ion-searchbar (ionInput)="onNombreProducto($event)" (keyup)="$event.keyCode == 13 ? busquedaProducto() : null"></ion-searchbar>
+    <ion-searchbar (ionInput)="onNombreProducto($event)" (keyup)="$event.keyCode == 13 ? busquedaProducto() : null" placeholder="Buscar"></ion-searchbar>
 </ion-header>
 
 <ion-content>
