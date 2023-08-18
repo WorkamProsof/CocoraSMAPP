@@ -8,14 +8,21 @@
       <ion-button style="width: 82px; justify-content: flex-end;" (click)="busquedaProducto()">Buscar</ion-button>
     </ion-buttons>
   </ion-toolbar>
-    <ion-searchbar (ionInput)="onNombreProducto($event)"></ion-searchbar>
-    <!-- <ion-searchbar [debounce]="1000" (ionChange)="filtrarProducto($event)"></ion-searchbar> -->
+    <ion-searchbar (ionInput)="onNombreProducto($event)" (keyup)="$event.keyCode == 13 ? busquedaProducto() : null"></ion-searchbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <div *ngIf="buscando" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-spinner></ion-spinner>
+  </div>
+  <div *ngIf="!buscando && listaProductos.length <= 0" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-text color="primary">
+      <h2>No se encontraron insumos</h2>
+    </ion-text>
+  </div>
+  <ion-list *ngIf="!buscando && listaProductos.length > 0">
     <ion-item *ngFor="let producto of listaProductos">
-      <ion-label>{{ producto.nombre }}</ion-label>
+      <ion-label>{{ producto.productoid }} => {{ producto.nombre }}</ion-label>
       <ion-radio [value]="producto.productoid" (ionFocus)="seleccionProducto(producto)"></ion-radio>
     </ion-item>
   </ion-list>

@@ -1,0 +1,27 @@
+.label-insumo {
+    font-size: 0.7rem;
+    text-align: center;
+    display: block;
+    width: 100%;
+}
+
+.p-insumo {
+    text-align: center;
+}
+
+.div-insumo-inputs {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.requerir {
+    background-color: #ffd7d7;
+}
+
+.input-insumo {
+    width: 100%;
+    text-align: center;
+    border: #bbbbbb 1px solid;
+    border-radius: 3px;
+}

@@ -17,10 +17,11 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   @Input() pqrid: string;
   @Input() almacenDescarga: string;
 
-  insumosPqr: any = [];
-  listaInsumosSeleccionados: any = [];
-  inhabilitarCambioCantidad: boolean = false;
-  agregarInsumo: boolean = false;
+  insumosPqr                : any = [];
+  listaInsumosSeleccionados : any = [];
+  inhabilitarCambioCantidad : boolean = false;
+  agregarInsumo             : boolean = false;
+  descargarInsumos          : boolean = false;
 
   insumo: {
     cantfin           : number,
@@ -39,7 +40,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
 
   formulario = new FormGroup({
     productoid: new FormControl('', [Validators.required]),
-    cantfin: new FormControl(0, [Validators.required, Validators.min(0)]),
+    cantfin: new FormControl(1, [Validators.required, Validators.min(1)]),
     nombre: new FormControl(''),
     unidad: new FormControl(''),
     cantidadDisponible: new FormControl(0),
@@ -64,7 +65,13 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   cargarInsumos() {
     this.AjaxService.ajax('Dashboard/insumosPqr/listaInsumosPqr', { pqrid: this.pqrid, almacenDescarga: this.almacenDescarga}).subscribe((resp: any) => {
       if(resp) {
-        this.insumosPqr = resp.body.listaInsumos.map(insumo => ({...insumo, cantfin: parseInt(insumo.cantfin), cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidadDisponible)}));
+        this.insumosPqr = resp.body.listaInsumos.map(insumo => (
+          {...insumo,
+            cantfin : parseInt(insumo.cantidaddescargada) == 0 ? insumo.cantfin : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
+            cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidadDisponible),
+            cantidaddescargada  : parseInt(insumo.cantidaddescargada)
+          }
+        ));
       }
     });
   }
@@ -75,9 +82,13 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
 
   onAgregarInsumo() {
     this.agregarInsumo = !this.agregarInsumo;
+    if (this.formulario.controls.productoid.value === '') {
+      this.modalSeleccionProducto();
+    }
   }
 
   agregarInsumoALista() {
+    this.insumo.cantini = this.formulario.controls.cantfin.value;
     this.insumo.cantfin = this.formulario.controls.cantfin.value;
     if (this.insumosPqr.find(insumo => insumo.productoid === this.formulario.controls.productoid.value)) {
       this.alertService.presentToast('El insumo ya se encuentra en la lista', 'middle');
@@ -129,7 +140,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     this.formulario.controls.cantfin.setValue(parseInt(this.formulario.controls.cantfin.value) - 1);
   }
 
-  async enviarInsumo() {
+  async descargarInsumo() {
     const alert = await this.alertController.create({
       header: 'Alerta',
       subHeader: 'Las cantidades faltantes se enviaran para solicitud de requisición',
@@ -140,15 +151,19 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     await alert.present();
 		const {data, role} = await alert.onWillDismiss();
     if (role === 'confirmar') {
+      this.descargarInsumos = true;
       let listaRequeridos = [];
       let listaDescargar = [];
       listaRequeridos = this.insumosPqr.filter(insumo => (insumo.cantfin > insumo.cantidadDisponible || insumo.cantidadDisponible <= 0)).map(i => ({ ...i, cantfin: i.cantfin - i.cantidadDisponible }));
-      listaDescargar = this.insumosPqr.filter(insumo => (insumo.cantidadDisponible > 0)).map(i => ({  ...i, cantfin: i.cantidadDisponible >= i.cantfin ? i.cantfin : i.cantidadDisponible }));
+      listaDescargar = this.insumosPqr.filter(insumo => (insumo.cantidadDisponible > 0 && insumo.cantfin > 0)).map(i => ({  ...i, cantfin: i.cantidadDisponible >= i.cantfin ? i.cantfin : i.cantidadDisponible }));
   
       this.AjaxService.ajax('Dashboard/insumosPqr/descargarInsumoERPFive', {listaRequeridos, listaDescargar}).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
-        if(resp.body == 1) {
-          this.modalController.dismiss(null, 'cancelar');
+        if(resp.body.error) {
+          this.alertService.presentToast(resp.body.mensaje, 'middle');
+        } else {
+          this.alertService.presentToast(resp.body.mensaje, 'middle');
         }
+        this.descargarInsumos = false;
       });
     }
   }
@@ -179,12 +194,18 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         unidad            : data.unidad
       };
     }
+
+    if (role === 'cancelar') {
+      if (this.formulario.controls.productoid.value === '') {
+        this.agregarInsumo = false;
+      }
+    }
     
   }
 
   iniciarFormulario() {
     this.formulario.controls.productoid.setValue('');
-    this.formulario.controls.cantfin.setValue(0);
+    this.formulario.controls.cantfin.setValue(1);
     this.formulario.controls.nombre.setValue('');
     this.formulario.controls.unidad.setValue('');
     this.formulario.controls.cantidadDisponible.setValue('');

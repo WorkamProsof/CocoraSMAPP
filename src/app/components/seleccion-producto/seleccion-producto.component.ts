@@ -17,6 +17,7 @@ export class SeleccionProductoComponent implements OnInit, OnDestroy {
   listaProductos    : any = [];
   productosfiltrados: any;
   nombreProducto    : any = '';
+  buscando          : boolean = false;
 
   private destroy$ = new Subject();
 
@@ -33,12 +34,16 @@ export class SeleccionProductoComponent implements OnInit, OnDestroy {
   }
 
   busquedaProducto(){
-    if(this.nombreProducto.length <= 3){
+    if(this.nombreProducto.length <= 2){
       this.alertService.presentToast('Debe introducir minimo 3 letras');
       return;
     }
+    this.buscando = true;
     this.AjaxService.ajax('Dashboard/insumosPqr/listaInsumos', { almacenDescarga: this.almacenDescarga, nombreProducto: this.nombreProducto}).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
-      this.listaProductos = resp.body;
+      if (resp.body) {
+        this.listaProductos = resp.body;
+      }
+      this.buscando = false;
     });
   }
 
