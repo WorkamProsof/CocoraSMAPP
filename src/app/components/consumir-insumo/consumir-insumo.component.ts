@@ -56,7 +56,6 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.formulario.controls.cantfin.disable();
     this.formulario.controls.unidad.disable();
     this.formulario.controls.cantidadDisponible.disable();
     this.cargarInsumos();
