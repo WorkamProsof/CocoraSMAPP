@@ -18,6 +18,8 @@ import { ListaChequeoComponent } from '../../components/lista-chequeo/lista-cheq
 import { ResultadoListaChequeoComponent } from '../resultado-lista-chequeo/resultado-lista-chequeo.component';
 import { ConsumirInsumoModule } from 'src/app/components/consumir-insumo/consumir-insumo.module';
 import { ConsumirInsumoComponent } from 'src/app/components/consumir-insumo/consumir-insumo.component';
+import { RegistroFotograficoComponent } from 'src/app/components/registro-fotografico/registro-fotografico.component';
+import { RegistroFotograficoModule } from 'src/app/components/registro-fotografico/registro-fotografico.module';
 
 @NgModule({
 	imports: [
@@ -30,12 +32,13 @@ import { ConsumirInsumoComponent } from 'src/app/components/consumir-insumo/cons
 		PipesModule,
 		ListaChequeoModule,
 		ResultadoListaChequeoModule,
-		ConsumirInsumoModule
+		ConsumirInsumoModule,
+		RegistroFotograficoModule
 	],
 	// schemas: [NO_ERRORS_SCHEMA],
 	providers: [CambioClavePage, Network],
 	declarations: [OrdentrabajoPage,AgregarPqrsfrComponent],
-	entryComponents : [AgregarPqrsfrComponent, ListaChequeoComponent, ResultadoListaChequeoComponent, ConsumirInsumoComponent]
+	entryComponents : [AgregarPqrsfrComponent, ListaChequeoComponent, ResultadoListaChequeoComponent, ConsumirInsumoComponent, RegistroFotograficoComponent]
 	
 })
 export class OrdentrabajoPageModule {}

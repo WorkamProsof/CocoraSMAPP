@@ -22,6 +22,7 @@ import { fromEvent, merge, Observable, of } from 'rxjs';
 import { Network } from '@ionic-native/network/ngx';
 import { HttpClient } from '@angular/common/http';
 import { ConsumirInsumoComponent } from 'src/app/components/consumir-insumo/consumir-insumo.component';
+import { RegistroFotograficoComponent } from 'src/app/components/registro-fotografico/registro-fotografico.component';
 
 @Component({
 	selector: 'app-ordentrabajo', 
@@ -964,6 +965,17 @@ export class OrdentrabajoPage implements OnInit {
 			component:  ConsumirInsumoComponent,
 			componentProps: { 
 				almacenDescarga	: this.Arraypqr.almacendescarga,
+				pqrid			: this.Arraypqr.pqrid
+			}
+		});
+		await modal.present();
+	}
+
+	// Mostar pagina para ver evidencia fotografica
+	async verEvidenciasFotograficas() {
+		const modal = await this.modalCtrl.create({
+			component:  RegistroFotograficoComponent,
+			componentProps: { 
 				pqrid			: this.Arraypqr.pqrid
 			}
 		});

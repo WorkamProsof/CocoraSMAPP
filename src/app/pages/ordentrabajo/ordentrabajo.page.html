@@ -280,6 +280,9 @@
 				<ion-icon name="construct"></ion-icon>
 			</ion-fab-button>
 
+			<ion-fab-button *ngIf="isConnected" (click)="verEvidenciasFotograficas()">
+				<ion-icon name="photos"></ion-icon>
+			</ion-fab-button>
 
 			<ion-fab-button color="primary" *ngIf="proincrelacionadasapp == true" (click)="formularioInc()">
 				<ion-icon name="add"></ion-icon>
