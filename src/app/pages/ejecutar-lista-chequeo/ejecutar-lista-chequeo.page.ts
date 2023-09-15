@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AjaxService } from 'src/app/services/ajax.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { ListaChequeoComponent } from '../../components/lista-chequeo/lista-chequeo.component';
-import { SeleccionClienteComponent } from '../../components/seleccion-cliente/seleccion-cliente.component';
+import { SeleccionItemComponent } from '../seleccion-item/seleccion-item.component';
 
 @Component({
   selector: 'app-ejecutar-lista-chequeo',
@@ -23,6 +23,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
   listasChequeo: any[];
   listaChequeoHTML: any[];
   clienteSeleccionado: { terceroid: string, nombre: string} = { terceroid: '', nombre: ''};
+  equipoSeleccionado: { itemequipoid: string, nombre: string} = { itemequipoid: '', nombre: ''};
 
   formulario = new FormGroup({
     terceroid: new FormControl('', [Validators.required]),
@@ -109,6 +110,7 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
     this.equipos = [];
     this.inHabilitarCampos = false;
     this.clienteSeleccionado = { terceroid: '', nombre: ''};
+    this.equipoSeleccionado = { itemequipoid: '', nombre: ''};
     this.DtosInicialesFiltro();
   }
 
@@ -171,9 +173,10 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
     // Mostar modal para escoger cliente
   async modalSeleccionCliente() {
     const modal = await this.modalCtrl.create({
-      component: SeleccionClienteComponent,
+      component: SeleccionItemComponent,
       componentProps: {
-        listaClientes: this.clientes,
+        listaItems: this.clientes,
+        titulo    : 'Clientes'
       }
     });
     await modal.present();
@@ -184,6 +187,23 @@ export class EjecutarListaChequeoPage implements OnInit, OnDestroy {
       this.seleccionCliente(data.terceroid);
     }
     
+  }
+
+  async modalSeleccionEquipo() {
+    const modal = await this.modalCtrl.create({
+      component: SeleccionItemComponent,
+      componentProps: {
+        listaItems: this.equipos,
+        titulo    : 'Equipos'
+      }
+    });
+    await modal.present();
+    const {data, role} = await modal.onWillDismiss();
+    if (role === 'confirmar') {
+      this.equipoSeleccionado = data;
+      this.formulario.controls.equipoid.setValue(data.itemequipoid);
+      this.seleccionEquipo();
+    }
   }
 
   cancelarSeleccionCliente() {

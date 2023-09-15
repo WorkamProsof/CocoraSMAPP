@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="btnInicio" slot="start">
+      <ion-button (click)="irAtras()">
+        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+    <ion-title>Registro Fotografico Inc: {{ pqrid }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="buscando">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+
+  <h2 *ngIf="imagenes.length <= 0 && !buscando" style="max-width: 240px; text-align: center; margin: 6rem auto; color: #4793d7;">
+    <strong>No tiene evidencias fotograficas</strong>
+  </h2>
+
+  <ion-card *ngFor="let imagen of imagenes">
+    <ion-card-content>
+      <ion-img 
+        [src]="imagen.contenido"
+      ></ion-img>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
