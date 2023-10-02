@@ -22,6 +22,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   inhabilitarCambioCantidad : boolean = false;
   agregarInsumo             : boolean = false;
   descargarInsumos          : boolean = false;
+  procesando                : boolean = false;
 
   insumo: {
     cantfin           : number,
@@ -66,7 +67,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
       if(resp) {
         this.insumosPqr = resp.body.listaInsumos.map(insumo => (
           {...insumo,
-            cantfin : parseInt(insumo.cantidaddescargada) == 0 ? insumo.cantfin : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
+            cantfin : parseInt(insumo.cantidaddescargada) == 0 ? parseInt(insumo.cantfin) : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
             cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidadDisponible),
             cantidaddescargada  : parseInt(insumo.cantidaddescargada)
           }
@@ -87,12 +88,15 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   }
 
   agregarInsumoALista() {
+    this.procesando = true;
     this.insumo.cantini = this.formulario.controls.cantfin.value;
     this.insumo.cantfin = this.formulario.controls.cantfin.value;
     if (this.insumosPqr.find(insumo => insumo.productoid === this.formulario.controls.productoid.value)) {
       this.alertService.presentToast('El insumo ya se encuentra en la lista', 'middle');
     } else {
       this.AjaxService.ajax('Dashboard/insumosPqr/agregarInsumoAPqr', this.insumo).subscribe((resp: any) => {
+        this.procesando = false;
+        this.agregarInsumo = false;
         if(!resp.body.error) {
           this.cargarInsumos();
           this.alertService.presentToast(resp.body.mensaje, 'middle');
