@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button style="width: 82px;" (click)="cerrarModal()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title style="text-align: center;">Insumos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button style="width: 82px; justify-content: flex-end;" (click)="busquedaProducto()">Buscar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+    <ion-searchbar (ionInput)="onNombreProducto($event)" (keyup)="$event.keyCode == 13 ? busquedaProducto() : null" placeholder="Buscar"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="buscando" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-spinner></ion-spinner>
+  </div>
+  <div *ngIf="!buscando && listaProductos.length <= 0" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-text color="primary">
+      <h2>No se encontraron insumos</h2>
+    </ion-text>
+  </div>
+  <ion-list *ngIf="!buscando && listaProductos.length > 0">
+    <ion-item *ngFor="let producto of listaProductos">
+      <ion-label>{{ producto.productoid }} => {{ producto.nombre }}</ion-label>
+      <ion-radio [value]="producto.productoid" (ionFocus)="seleccionProducto(producto)"></ion-radio>
+    </ion-item>
+  </ion-list>
+</ion-content>

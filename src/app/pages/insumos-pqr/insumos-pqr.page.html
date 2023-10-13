@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="btnInicio" slot="start">
+      <ion-button (click)="irAtras()">
+        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+    <ion-title>Insumos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-button style="width: 100%;" (click)="onAgregarInsumo()"><ion-label>Agregar insumo</ion-label></ion-button>
+
+  <!-- <form [formGroup]="formulario"> -->
+    <!-- <form [formGroup]="formulario" [ngClass]="agregarInsumo ? 'hide' : '' "> -->
+    <ion-item>
+			<!-- <ion-label position="floating">Insumo</ion-label> -->
+        <ion-button color="primary" (click)="modalSeleccionProducto()">Insumos</ion-button>
+			  <!-- <ion-input type="number" name="productoid" formControlName="productoid"></ion-input> -->
+			<!-- <ion-select name="user" [value]="user" required ngModel>
+				<ion-select-option *ngFor="let usuario of usuarios"  value="{{usuario.user}}">{{usuario.nombreusuario}}</ion-select-option>
+			</ion-select> -->
+		</ion-item>
+
+		<ion-item>
+			<ion-label position="floating">Cantidad Solicitada</ion-label>
+			<!-- <ion-input type="number" name="cantfin" formControlName="cantfin"></ion-input> -->
+		</ion-item>
+
+		<ion-button type="submit" color="success">Agregar</ion-button>
+		<ion-button type="button" color="danger">Cancelar</ion-button>
+  <!-- </form> -->
+  
+  <ion-item-group *ngFor="let insumo of listaInsumos">
+
+      <ion-item-divider>
+          <ion-label>
+          <h3>{{ insumo.producto }}</h3>
+        </ion-label>
+        <ion-checkbox slot="end" (click)="seleccionLista(insumo)"></ion-checkbox>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Cantidad Sugerida</ion-label>
+        <ion-input type="number" [value]="insumo.cantini" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Cantidad Usada o Requerida</ion-label>
+        <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin == 0 || inhabilitarCambioCantidad">
+          <ion-icon slot="icon-only" name="remove"></ion-icon>
+        </ion-button>
+        <input type="number" style="width: 30px; text-align: center;" [value]="insumo.cantfin" disabled min="0">
+        <ion-button (click)="sumarInsumo(insumo)" [disabled]="inhabilitarCambioCantidad">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </ion-item>
+  </ion-item-group>
+  
+  <ion-button style="width: 100%;" (click)="agregarInsumo()"><ion-label>Insumos usados en la Actividad</ion-label></ion-button>
+  <ion-button style="width: 100%;" (click)="agregarInsumo()"><ion-label>Enviar Insumos Seleccionados para Requisición</ion-label></ion-button>
+
+</ion-content>

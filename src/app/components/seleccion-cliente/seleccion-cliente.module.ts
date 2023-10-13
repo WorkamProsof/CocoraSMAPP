@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
-import { ListaChequeoRoutingModule } from './lista-chequeo-routing.module';
+import { SeleccionClienteComponent } from './seleccion-cliente.component';
+
 
 @NgModule({
   imports: [
@@ -11,9 +11,8 @@ import { ListaChequeoRoutingModule } from './lista-chequeo-routing.module';
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
-    ListaChequeoRoutingModule
   ],
-  declarations: [ListaChequeoComponent],
-  exports: [ListaChequeoComponent]
+  declarations: [SeleccionClienteComponent],
+  exports: [SeleccionClienteComponent]
 })
-export class ListaChequeoModule {}
+export class SeleccionClienteModule {}

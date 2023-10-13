@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="btnInicio" slot="start">
+      <ion-button (click)="irAtras()">
+        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+    <ion-title>Insumos Incidencia: {{ pqrid }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!almacenDescarga && !descargarInsumos">
+  <ion-text color="primary">
+    <h2 style="text-align: center;">No cuenta con almacen para descargar insumos</h2>
+  </ion-text>
+</ion-content>
+
+<ion-content *ngIf="almacenDescarga && descargarInsumos || procesando">
+  <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-spinner></ion-spinner>
+  </div>
+</ion-content>
+
+<ion-content class="ion-padding" *ngIf="almacenDescarga && !descargarInsumos && !procesando">
+
+  <ion-button style="width: 100%;" (click)="onAgregarInsumo()" [disabled]="inhabilitarCambioCantidad"><ion-label>Agregar insumo</ion-label></ion-button>
+
+  <form [formGroup]="formulario" *ngIf="agregarInsumo && !inhabilitarCambioCantidad">
+
+    <ion-card>
+      <ion-card-content>
+        <ion-row style="margin-bottom: 1rem;">
+          <ion-button color="primary" expand="block" style="width: 100%;" (click)="modalSeleccionProducto()">Insumos</ion-button>
+        </ion-row>
+
+        <ion-row style="align-items: center;">
+          <ion-col size="6">
+            <label class="label-insumo">Insumo:</label>
+            <ion-input name="nombre" formControlName="nombre" disabled></ion-input>
+          </ion-col>
+
+          <ion-col size="3">
+            <label class="label-insumo">Unidad:</label>
+            <ion-input style="text-align: center;" name="unidad" formControlName="unidad"></ion-input>
+          </ion-col>
+
+          <ion-col size="3">
+           <label class="label-insumo">Cantidad Disponible</label>
+           <ion-input name="cantidadDisponible" formControlName="cantidadDisponible"></ion-input>
+          </ion-col>
+        </ion-row>
+
+        <ion-row style="margin-bottom: 1rem;">
+          <div style="width: 100%; display: flex; align-items: center;">
+            <label class="">Cantidad Requerida</label>
+            <div class="div-insumo-inputs">
+              <ion-button (click)="restarInsumoPedido()" [disabled]="formulario.controls.cantfin.value <= 1 || inhabilitarCambioCantidad">
+                <ion-icon slot="icon-only" name="remove"></ion-icon>
+              </ion-button>
+              <input type="number" class="input-insumo" formControlName="cantfin" min="1" oninput="validity.valid||(value=1)">
+              <ion-button (click)="sumarInsumoPedido()" [disabled]="inhabilitarCambioCantidad">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-row>
+      
+        <ion-row>
+          <ion-col>
+            <ion-button type="submit" color="success" style="width: 100%;" (click)="agregarInsumoALista()" [disabled]="formulario.invalid">Agregar</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button type="button" color="danger" style="width: 100%;" (click)="cancelarAgregarInsumo()">Cancelar</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </form>
+  
+  <ion-card *ngFor="let insumo of insumosPqr" [ngClass]="insumo.cantidadDisponible <= 0 || insumo.cantfin > insumo.cantidadDisponible ? 'requerir' : ''">
+
+    <ion-card-content>
+      <ion-row>
+        <ion-col style="text-align: center;">
+          <h3 style="font-size: 0.8rem; color: black;">{{ insumo.producto }}</h3>
+          <p style="font-size: 0.6rem;">{{ insumo.unidad }}</p>
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="justify-content: center">
+        <ion-col size="3">
+          <label class="label-insumo">Cantidad Sugerida</label>
+          <p class="p-insumo">{{ insumo.cantini }}</p>
+        </ion-col>
+        
+        <ion-col size="3" style="min-width: 71px;">
+          <label class="label-insumo">Cantidad Descargada</label>
+          <p class="p-insumo">{{ insumo.cantidaddescargada }}</p>
+        </ion-col>
+        
+        <ion-col size="3">
+          <label class="label-insumo">Cantidad Disponible</label>
+          <p class="p-insumo">{{ insumo.cantidadDisponible }}</p>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <div style="width: 100%; display: flex; align-items: center;">
+          <label class="">Cantidad Usada o Requerida</label>
+          <div class="div-insumo-inputs">
+            <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin == 0 || inhabilitarCambioCantidad">
+              <ion-icon slot="icon-only" name="remove"></ion-icon>
+            </ion-button>
+            <input type="number" class="input-insumo" [(ngModel)]="insumo.cantfin" min="0" oninput="validity.valid||(value=0)">
+            <ion-button (click)="sumarInsumo(insumo)" [disabled]="inhabilitarCambioCantidad">
+              <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+ 
+  <ion-button style="width: 100%;" color="success" (click)="descargarInsumo()"><ion-label>Descargar insumos</ion-label></ion-button>
+
+</ion-content>

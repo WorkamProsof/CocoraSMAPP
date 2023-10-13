@@ -127,6 +127,7 @@
 	</div>
 	<!-- FIN LISTA ACTIVIDADES -->
 
+	<!-- BLOQUE INICIO Y PAUSA INICIO RUTA -->
 	<ion-grid *ngIf="!forNota && !forNotaHistotial && multipleactividadapp == false">
 		<ion-row>
 			<ion-col *ngIf="(estadoInc == 'FinalizoRuta' || estadoInc == 'finalizaractividad' || estadoInc == null || estadoInc == 'finalizar') && !procesoIniciar"  >
@@ -184,6 +185,7 @@
 			</ion-col>
 		</ion-row>
 	</ion-grid>
+	<!-- FIN BLOQUE INICIO Y PAUSA INICIO RUTA -->
 
 	<ion-grid *ngIf="!forNota">
 	
@@ -214,6 +216,7 @@
 		</ion-grid>
 	</ion-grid>
 
+	<!-- BLOQUE NOTAS -->
 	<ion-grid *ngIf="forNota">
 		<ion-card id="notas">
 			<form #form="ngForm" (ngSubmit)="submitNotaDetalle(form)" method="post" autocomplete="off">
@@ -234,6 +237,7 @@
 
 		</ion-card>
 	</ion-grid>
+	<!-- FIN  BLOQUE NOTAS-->
 
 	<ion-grid *ngIf="forNotaHistotial"><h3 style="text-align: center;margin: 0px;"><span>Historial Notas</span></h3>
 		<ion-item *ngFor="let item of ArraypqrNotas">
@@ -270,6 +274,14 @@
 
 			<ion-fab-button *ngIf="isConnected" (click)="resultadosListasChequeo()">
 				<ion-icon name="eye"></ion-icon>
+			</ion-fab-button>
+
+			<ion-fab-button *ngIf="isConnected" (click)="verInsumos()">
+				<ion-icon name="construct"></ion-icon>
+			</ion-fab-button>
+
+			<ion-fab-button *ngIf="isConnected" (click)="verEvidenciasFotograficas()">
+				<ion-icon name="photos"></ion-icon>
 			</ion-fab-button>
 
 			<ion-fab-button color="primary" *ngIf="proincrelacionadasapp == true" (click)="formularioInc()">

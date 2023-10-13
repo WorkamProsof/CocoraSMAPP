@@ -40,9 +40,14 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/dashboard/modals/filtros/filtros.module').then( m => m.FiltrosPageModule)
 	},
   	{
-  	  path: 'ejecutar-lista-chequeo',
-  	  loadChildren: () => import('./pages/ejecutar-lista-chequeo/ejecutar-lista-chequeo.module').then( m => m.EjecutarListaChequeoPageModule)
+  	  	path: 'ejecutar-lista-chequeo',
+  	  	loadChildren: () => import('./pages/ejecutar-lista-chequeo/ejecutar-lista-chequeo.module').then( m => m.EjecutarListaChequeoPageModule)
   	},
+  	{
+  	  	path: 'insumos-pqr/:pqrid',
+  	  	loadChildren: () => import('./pages/insumos-pqr/insumos-pqr.module').then( m => m.InsumosPqrPageModule)
+  	},
+
 	];
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AjaxService } from 'src/app/services/ajax.service';
 import { AlertService } from 'src/app/services/alert.service';
-import { ListaChequeoComponent } from '../lista-chequeo/lista-chequeo.component';
+import { ListaChequeoComponent } from '../../components/lista-chequeo/lista-chequeo.component';
 import { SeleccionItemComponent } from '../seleccion-item/seleccion-item.component';
 
 @Component({
