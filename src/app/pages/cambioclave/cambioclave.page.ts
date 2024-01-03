@@ -92,7 +92,7 @@ export class CambioClavePage implements OnInit {
 			return;
 		}
 
-		this.AjaxService.ajax('Dashboard/cVentas/CambioClave', {
+		this.AjaxService.ajax('Login/CambioClave', {
 			user            : form.value.user,
 			password        : form.value.password,
 			nuevaContrasena : form.value.nuevaContrasena

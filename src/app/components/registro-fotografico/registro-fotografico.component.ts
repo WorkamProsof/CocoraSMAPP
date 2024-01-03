@@ -26,7 +26,8 @@ export class RegistroFotograficoComponent implements OnInit {
     this.AjaxService.ajax('Dashboard/cMovimientoApp/obtenerEvidenciaFotografica', { pqrid: this.pqrid }).subscribe((resp: any) => {
       this.buscando = false;
       if(resp.ok) {
-        this.imagenes = resp.body.map((i) => ({...i, contenido: `data:image/jpg;base64,${i.contenido}`}));
+        // this.imagenes = resp.body.map((i) => ({...i, contenido: `data:image/jpg;base64,${i.contenido}`}));
+        this.imagenes = resp.body.map((i) => ({...i, contenido: `${i.contenido}`})); // Sed eja asi para poder mostrar imagenes
       } else {
         this.alertService.presentToast('Error al obtener imagenes', 'middle');
       }

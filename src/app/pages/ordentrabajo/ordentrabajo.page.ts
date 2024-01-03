@@ -807,7 +807,7 @@ export class OrdentrabajoPage implements OnInit {
 		// console.log(nombre);
 		this.searching = true;
 		if(tipo == 'pausar'){
-			// this.procesarPausaMultiple(nombreaccion,tipo,tipoactividadid);
+			this.procesarPausaMultiple(nombreaccion,tipo,tipoactividadid);
 		}else{
 			let valida = false;
 			if(tipo == 'finalizaractividad'){

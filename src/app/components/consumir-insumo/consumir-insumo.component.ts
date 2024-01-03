@@ -67,7 +67,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
       if(resp) {
         this.insumosPqr = resp.body.listaInsumos.map(insumo => (
           {...insumo,
-            cantfin : parseInt(insumo.cantidaddescargada) == 0 ? parseInt(insumo.cantfin) : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
+            cantfin : insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidaddescargada) == 0 ? parseInt(insumo.cantfin) : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
             cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidadDisponible),
             cantidaddescargada  : parseInt(insumo.cantidaddescargada)
           }
@@ -88,12 +88,12 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   }
 
   agregarInsumoALista() {
-    this.procesando = true;
     this.insumo.cantini = this.formulario.controls.cantfin.value;
     this.insumo.cantfin = this.formulario.controls.cantfin.value;
     if (this.insumosPqr.find(insumo => insumo.productoid === this.formulario.controls.productoid.value)) {
       this.alertService.presentToast('El insumo ya se encuentra en la lista', 'middle');
     } else {
+      this.procesando = true;
       this.AjaxService.ajax('Dashboard/insumosPqr/agregarInsumoAPqr', this.insumo).subscribe((resp: any) => {
         this.procesando = false;
         this.agregarInsumo = false;
@@ -188,8 +188,8 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         cantini           : 0,
         costo             : data.costo,
         headpqrinsumoid   : null,
-        operacion         : this.insumosPqr[0].operacion,
-        operacionid       : this.insumosPqr[0].operacionid,
+        operacion         : this.insumosPqr.length > 0 ? this.insumosPqr[0].operacion : null,
+        operacionid       : this.insumosPqr.length > 0 ? this.insumosPqr[0].operacionid : null,
         pqrid             : this.pqrid,
         producto          : data.nombre,
         productoid        : data.productoid,
