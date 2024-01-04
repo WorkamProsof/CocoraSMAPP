@@ -143,23 +143,60 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     this.formulario.controls.cantfin.setValue(parseInt(this.formulario.controls.cantfin.value) - 1);
   }
 
+  async eliminarInsumo(insumo) {
+    const alert = await this.alertController.create({
+      header: 'Alerta',
+      subHeader: 'Seguro desea eliminar el insumo ? Solo se eliminará las cantidades pendientes por requerir',
+      buttons: [{ text:'Cancelar', role: 'cancelar' }, { text:'Ok', role: 'confirmar' }],
+    });
+
+    await alert.present();
+		const {data, role} = await alert.onWillDismiss();
+    if (role === 'confirmar') {
+      this.descargarInsumos = true;
+
+      this.AjaxService.ajax('Dashboard/insumosPqr/eliminarInsumoAPqr', insumo).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
+        if(!resp.body.error) {
+          this.cargarInsumos();
+          this.alertService.presentToast(resp.body.mensaje, 'middle');
+          this.iniciarFormulario();
+          this.insumo = {
+            cantfin           : 0,
+            cantidadDisponible: 0,
+            cantini           : 0,
+            costo             : '',
+            headpqrinsumoid   : null,
+            operacion         : '',
+            operacionid       : '',
+            pqrid             : '',
+            producto          : '',
+            productoid        : '',
+            tipo              : '',
+            unidad            : ''
+          };
+        } else {
+          this.alertService.presentToast(resp.body.mensaje, 'middle');
+        }
+        this.descargarInsumos = false;
+      });
+    }
+  }
+
   async descargarInsumo() {
     const alert = await this.alertController.create({
       header: 'Alerta',
       subHeader: 'Las cantidades faltantes se enviaran para solicitud de requisición',
       buttons: [{ text:'Cancelar', role: 'cancelar' }, { text:'Ok', role: 'confirmar' }],
-    }).then(
-    
-    );
+    });
+
     await alert.present();
 		const {data, role} = await alert.onWillDismiss();
     if (role === 'confirmar') {
       this.descargarInsumos = true;
       let listaRequeridos = [];
       let listaDescargar = [];
-      listaRequeridos = this.insumosPqr.filter(insumo => (insumo.cantfin > insumo.cantidadDisponible || insumo.cantidadDisponible <= 0)).map(i => ({ ...i, cantfin: i.cantfin - i.cantidadDisponible }));
+      listaRequeridos = this.insumosPqr.filter((insumo => (insumo.cantfin > insumo.cantidadDisponible || insumo.cantidadDisponible <= 0) && insumo.cantfin !== 0)).map(i => ({ ...i, cantfin: i.cantfin - i.cantidadDisponible }));
       listaDescargar = this.insumosPqr.filter(insumo => (insumo.cantidadDisponible > 0 && insumo.cantfin > 0)).map(i => ({  ...i, cantfin: i.cantidadDisponible >= i.cantfin ? i.cantfin : i.cantidadDisponible }));
-  
       this.AjaxService.ajax('Dashboard/insumosPqr/descargarInsumoERPFive', {listaRequeridos, listaDescargar}).pipe(takeUntil(this.destroy$)).subscribe((resp: any) => {
         if(resp.body.error) {
           this.alertService.presentToast(resp.body.mensaje, 'middle');
