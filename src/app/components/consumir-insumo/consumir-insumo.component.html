@@ -80,9 +80,10 @@
   <ion-card *ngFor="let insumo of insumosPqr" [ngClass]="insumo.cantidadDisponible <= 0 || insumo.cantfin > insumo.cantidadDisponible ? 'requerir' : ''">
 
     <ion-card-content>
-      <ion-button color="danger" style="position: absolute; top: -4px; right: -2px;" (click)="eliminarInsumo(insumo)">
+      <ion-button color="danger" style="position: absolute; top: -4px; right: -2px; z-index: 1000;" (click)="eliminarInsumo(insumo)">
         <ion-icon name="trash"></ion-icon>
       </ion-button>
+
       <ion-row>
         <ion-col style="text-align: center;">
           <h3 style="font-size: 0.8rem; color: black; margin-right: 32px;">{{ insumo.producto }}</h3>
