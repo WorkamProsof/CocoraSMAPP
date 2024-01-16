@@ -57,7 +57,7 @@
               <ion-button (click)="restarInsumoPedido()" [disabled]="formulario.controls.cantfin.value <= 1 || inhabilitarCambioCantidad">
                 <ion-icon slot="icon-only" name="remove"></ion-icon>
               </ion-button>
-              <input type="number" class="input-insumo" formControlName="cantfin" min="1" oninput="validity.valid||(value=1)">
+              <input type="number" class="input-insumo" formControlName="cantfin" min="0" step="0.0001"><!-- oninput="validity.valid||(value = 1)" -->
               <ion-button (click)="sumarInsumoPedido()" [disabled]="inhabilitarCambioCantidad">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
               </ion-button>
@@ -80,7 +80,7 @@
   <ion-card *ngFor="let insumo of insumosPqr" [ngClass]="insumo.cantidadDisponible <= 0 || insumo.cantfin > insumo.cantidadDisponible ? 'requerir' : ''">
 
     <ion-card-content>
-      <ion-button color="danger" style="position: absolute; top: -4px; right: -2px; z-index: 1000;" (click)="eliminarInsumo(insumo)">
+      <ion-button *ngIf="insumo.cantidaddescargada <= 0" color="danger" style="position: absolute; top: -4px; right: -2px; z-index: 1000;" (click)="eliminarInsumo(insumo)">
         <ion-icon name="trash"></ion-icon>
       </ion-button>
 
@@ -119,10 +119,10 @@
         <div style="width: 100%; display: flex; align-items: center;">
           <label class="">Cantidad Usada o Requerida</label>
           <div class="div-insumo-inputs">
-            <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin == 0 || inhabilitarCambioCantidad">
+            <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin <= 0 || inhabilitarCambioCantidad">
               <ion-icon slot="icon-only" name="remove"></ion-icon>
             </ion-button>
-            <input type="number" class="input-insumo" [(ngModel)]="insumo.cantfin" min="0" oninput="validity.valid||(value=0)">
+            <input type="number" class="input-insumo" [(ngModel)]="insumo.cantfin" min="0" step="0.0001" ><!-- oninput="validity.valid||(value = 0)" -->
             <ion-button (click)="sumarInsumo(insumo)" [disabled]="inhabilitarCambioCantidad">
               <ion-icon slot="icon-only" name="add"></ion-icon>
             </ion-button>

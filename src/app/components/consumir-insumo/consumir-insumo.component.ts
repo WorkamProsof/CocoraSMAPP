@@ -41,7 +41,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
 
   formulario = new FormGroup({
     productoid: new FormControl('', [Validators.required]),
-    cantfin: new FormControl(1, [Validators.required, Validators.min(1)]),
+    cantfin: new FormControl(1.0, [Validators.required, Validators.min(0.0001)]),
     nombre: new FormControl(''),
     unidad: new FormControl(''),
     cantidadDisponible: new FormControl(0),
@@ -67,11 +67,26 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
       if(resp) {
         this.insumosPqr = resp.body.listaInsumos.map(insumo => (
           {...insumo,
-            cantfin : insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidaddescargada) == 0 ? parseInt(insumo.cantfin) : parseInt(insumo.cantidaddescargada) >= parseInt(insumo.cantini) ? 0 : parseInt(insumo.cantini) - parseInt(insumo.cantidaddescargada),
-            cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseInt(insumo.cantidadDisponible),
-            cantidaddescargada  : parseInt(insumo.cantidaddescargada)
+            cantfin : insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidaddescargada) == 0 ? parseFloat(insumo.cantfin) : parseFloat(insumo.cantidaddescargada) >= parseFloat(insumo.cantini) ? 0 : parseFloat(insumo.cantini) - parseFloat(insumo.cantidaddescargada),
+            cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidadDisponible),
+            cantidaddescargada  : parseFloat(insumo.cantidaddescargada)
           }
         ));
+        this.iniciarFormulario();
+        this.insumo = {
+          cantfin           : 0,
+          cantidadDisponible: 0,
+          cantini           : 0,
+          costo             : '',
+          headpqrinsumoid   : null,
+          operacion         : '',
+          operacionid       : '',
+          pqrid             : '',
+          producto          : '',
+          productoid        : '',
+          tipo              : '',
+          unidad            : ''
+        };
       }
     });
   }
@@ -87,6 +102,15 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     }
   }
 
+  sumarInsumoPedido() {
+    this.formulario.controls.cantfin.setValue(this.formulario.controls.cantfin.value + 1);
+  }
+
+  restarInsumoPedido() {
+    if(this.formulario.controls.cantfin.value <= 0) return;
+    this.formulario.controls.cantfin.setValue(Number((parseFloat(this.formulario.controls.cantfin.value) - 1).toFixed(4)));
+  }
+
   agregarInsumoALista() {
     this.insumo.cantini = this.formulario.controls.cantfin.value;
     this.insumo.cantfin = this.formulario.controls.cantfin.value;
@@ -100,26 +124,11 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         if(!resp.body.error) {
           this.cargarInsumos();
           this.alertService.presentToast(resp.body.mensaje, 'middle');
-          this.iniciarFormulario();
-          this.insumo = {
-            cantfin           : 0,
-            cantidadDisponible: 0,
-            cantini           : 0,
-            costo             : '',
-            headpqrinsumoid   : null,
-            operacion         : '',
-            operacionid       : '',
-            pqrid             : '',
-            producto          : '',
-            productoid        : '',
-            tipo              : '',
-            unidad            : ''
-          };
         } else {
           this.alertService.presentToast(resp.body.mensaje, 'middle');
         }
       });
-    }
+    };
   }
 
   cancelarAgregarInsumo() {
@@ -132,15 +141,14 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
 
   restarInsumo(insumo: any) {
     this.insumosPqr = this.insumosPqr.map(i => i.productoid === insumo.productoid ? {...i, cantfin: i.cantfin - 1} : i);
-  }
-
-  sumarInsumoPedido() {
-    this.formulario.controls.cantfin.setValue(this.formulario.controls.cantfin.value + 1);
-  }
-
-  restarInsumoPedido() {
-    if(this.formulario.controls.cantfin.value <= 0) return;
-    this.formulario.controls.cantfin.setValue(parseInt(this.formulario.controls.cantfin.value) - 1);
+    this.insumosPqr.forEach(i => {
+      if(i.productoid === insumo.productoid) {
+        if (i.cantfin <= 0) {
+          i.cantfin = 0; 
+        }
+        return;
+      }
+    });
   }
 
   async eliminarInsumo(insumo) {
@@ -159,21 +167,6 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         if(!resp.body.error) {
           this.cargarInsumos();
           this.alertService.presentToast(resp.body.mensaje, 'middle');
-          this.iniciarFormulario();
-          this.insumo = {
-            cantfin           : 0,
-            cantidadDisponible: 0,
-            cantini           : 0,
-            costo             : '',
-            headpqrinsumoid   : null,
-            operacion         : '',
-            operacionid       : '',
-            pqrid             : '',
-            producto          : '',
-            productoid        : '',
-            tipo              : '',
-            unidad            : ''
-          };
         } else {
           this.alertService.presentToast(resp.body.mensaje, 'middle');
         }
@@ -202,6 +195,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
           this.alertService.presentToast(resp.body.mensaje, 'middle');
         } else {
           this.alertService.presentToast(resp.body.mensaje, 'middle');
+          this.cargarInsumos();
         }
         this.descargarInsumos = false;
       });
