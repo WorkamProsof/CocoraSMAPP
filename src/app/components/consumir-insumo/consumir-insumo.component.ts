@@ -23,6 +23,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   agregarInsumo             : boolean = false;
   descargarInsumos          : boolean = false;
   procesando                : boolean = false;
+  stepCantidadInsumo        : number = 1;
 
   insumo: {
     cantfin           : number,
@@ -36,7 +37,8 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     producto          : string,
     productoid        : string,
     tipo              : string,
-    unidad            : string
+    unidad            : string,
+    cantidadDecimales : number
   }
 
   formulario = new FormGroup({
@@ -69,7 +71,8 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
           {...insumo,
             cantfin : insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidaddescargada) == 0 ? parseFloat(insumo.cantfin) : parseFloat(insumo.cantidaddescargada) >= parseFloat(insumo.cantini) ? 0 : parseFloat(insumo.cantini) - parseFloat(insumo.cantidaddescargada),
             cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidadDisponible),
-            cantidaddescargada  : parseFloat(insumo.cantidaddescargada)
+            cantidaddescargada  : parseFloat(insumo.cantidaddescargada),
+            stepCantidadInsumo  : 1 / (Math.pow(10, insumo.cantidadDecimales))
           }
         ));
         this.iniciarFormulario();
@@ -85,7 +88,8 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
           producto          : '',
           productoid        : '',
           tipo              : '',
-          unidad            : ''
+          unidad            : '',
+          cantidadDecimales : 0
         };
       }
     });
@@ -108,7 +112,16 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
 
   restarInsumoPedido() {
     if(this.formulario.controls.cantfin.value <= 0) return;
-    this.formulario.controls.cantfin.setValue(Number((parseFloat(this.formulario.controls.cantfin.value) - 1).toFixed(4)));
+    this.formulario.controls.cantfin.setValue(parseFloat((parseFloat(this.formulario.controls.cantfin.value) - 1).toFixed(this.insumo.cantidadDecimales)));
+  }
+
+  limitarDecimales() {
+    let valor: any = String(this.formulario.value.cantfin);
+    if (valor.includes('.') && (valor.split('.')[1].length > this.insumo.cantidadDecimales)) {
+      let valorFixed = parseFloat(valor).toFixed(this.insumo.cantidadDecimales);
+      valor = parseFloat(valorFixed);
+      this.formulario.controls.cantfin.setValue(valor);
+    };
   }
 
   agregarInsumoALista() {
@@ -149,6 +162,15 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         return;
       }
     });
+  }
+
+  limitarDecimalesInsumos(insumo) {
+    let valor: any = String(insumo.cantfin);
+    if (valor.includes('.') && (valor.split('.')[1].length > insumo.cantidadDecimales)) {
+      let valorFixed = parseFloat(valor).toFixed(insumo.cantidadDecimales);
+      valor = parseFloat(valorFixed);
+      this.insumosPqr = this.insumosPqr.map(i => i.headpqrinsumoid === insumo.headpqrinsumoid ? {...i, cantfin: valor} : i);
+    };
   }
 
   async eliminarInsumo(insumo) {
@@ -199,7 +221,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         }
         this.descargarInsumos = false;
       });
-    }
+    };
   }
 
   async modalSeleccionProducto() {
@@ -225,16 +247,17 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         producto          : data.nombre,
         productoid        : data.productoid,
         tipo              : 'Adicional',
-        unidad            : data.unidad
+        unidad            : data.unidad,
+        cantidadDecimales : data.decimalesCantidad
       };
-    }
+      this.stepCantidadInsumo = 1/(Math.pow(10, data.decimalesCantidad));
+    };
 
     if (role === 'cancelar') {
       if (this.formulario.controls.productoid.value === '') {
         this.agregarInsumo = false;
       }
-    }
-    
+    };
   }
 
   iniciarFormulario() {

@@ -57,7 +57,7 @@
               <ion-button (click)="restarInsumoPedido()" [disabled]="formulario.controls.cantfin.value <= 1 || inhabilitarCambioCantidad">
                 <ion-icon slot="icon-only" name="remove"></ion-icon>
               </ion-button>
-              <input type="number" class="input-insumo" formControlName="cantfin" min="0" step="0.0001"><!-- oninput="validity.valid||(value = 1)" -->
+              <input type="number" class="input-insumo" formControlName="cantfin" min="0" [step]="stepCantidadInsumo" (input)="limitarDecimales()"><!-- oninput="validity.valid||(value = 1)" -->
               <ion-button (click)="sumarInsumoPedido()" [disabled]="inhabilitarCambioCantidad">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
               </ion-button>
@@ -122,7 +122,7 @@
             <ion-button (click)="restarInsumo(insumo)" [disabled]="insumo.cantfin <= 0 || inhabilitarCambioCantidad">
               <ion-icon slot="icon-only" name="remove"></ion-icon>
             </ion-button>
-            <input type="number" class="input-insumo" [(ngModel)]="insumo.cantfin" min="0" step="0.0001" ><!-- oninput="validity.valid||(value = 0)" -->
+            <input type="number" class="input-insumo" [(ngModel)]="insumo.cantfin" min="0" [step]="insumo.stepCantidadInsumo" (input)="limitarDecimalesInsumos(insumo)"><!-- oninput="validity.valid||(value = 0)" -->
             <ion-button (click)="sumarInsumo(insumo)" [disabled]="inhabilitarCambioCantidad">
               <ion-icon slot="icon-only" name="add"></ion-icon>
             </ion-button>
