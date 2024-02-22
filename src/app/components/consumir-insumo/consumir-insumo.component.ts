@@ -72,7 +72,10 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
             cantfin : insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidaddescargada) == 0 ? parseFloat(insumo.cantfin) : parseFloat(insumo.cantidaddescargada) >= parseFloat(insumo.cantini) ? 0 : parseFloat(insumo.cantini) - parseFloat(insumo.cantidaddescargada),
             cantidadDisponible: insumo.cantidadDisponible == '.00000000' ? 0 : parseFloat(insumo.cantidadDisponible),
             cantidaddescargada  : parseFloat(insumo.cantidaddescargada),
-            stepCantidadInsumo  : 1 / (Math.pow(10, insumo.cantidadDecimales))
+            stepCantidadInsumo  : 1 / (Math.pow(10, insumo.cantidadDecimales)),
+            cantini: parseFloat(insumo.cantini),
+            cantreq: parseFloat(insumo.cantreq),
+            cantpendientereq: parseFloat(insumo.cantpendientereq),
           }
         ));
         this.iniciarFormulario();

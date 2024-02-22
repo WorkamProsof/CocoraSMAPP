@@ -80,7 +80,7 @@
   <ion-card *ngFor="let insumo of insumosPqr" [ngClass]="insumo.cantidadDisponible <= 0 || insumo.cantfin > insumo.cantidadDisponible ? 'requerir' : ''">
 
     <ion-card-content>
-      <ion-button *ngIf="insumo.cantidaddescargada <= 0 && insumo.cantreq <= 0" color="danger" style="position: absolute; top: -4px; right: -2px; z-index: 1000;" (click)="eliminarInsumo(insumo)">
+      <ion-button *ngIf="insumo.cantidaddescargada <= 0 && insumo.cantreq <= 0 && insumo.cantpendientereq <= 0" color="danger" style="position: absolute; top: -4px; right: -2px; z-index: 1000;" (click)="eliminarInsumo(insumo)">
         <ion-icon name="trash"></ion-icon>
       </ion-button>
 
@@ -92,25 +92,30 @@
       </ion-row>
 
       <ion-row style="justify-content: center w-100">
-        <ion-col size="5">
-          <label class="label-insumo">Cantidad Sugerida</label>
+        <ion-col size="4">
+          <label class="label-insumo">Cant. Sugerida</label>
           <p class="p-insumo">{{ insumo.cantini }}</p>
         </ion-col>
         
-        <ion-col size="5" style="min-width: 71px;">
-          <label class="label-insumo">Cantidad Desc.</label>
+        <ion-col size="4">
+          <label class="label-insumo">Cant. Disp.</label>
+          <p class="p-insumo">{{ insumo.cantidadDisponible }}</p>
+        </ion-col>
+        
+        <ion-col size="4" style="min-width: 71px;">
+          <label class="label-insumo">Cant. Desc.</label>
           <p class="p-insumo">{{ insumo.cantidaddescargada }}</p>
         </ion-col>
       </ion-row>
 
       <ion-row  style="justify-content: center w-100">
-        <ion-col size="5">
-          <label class="label-insumo">Cantidad Disp.</label>
-          <p class="p-insumo">{{ insumo.cantidadDisponible }}</p>
+        <ion-col size="6">
+          <label class="label-insumo">Cant. Pend. Requerir</label>
+          <p class="p-insumo">{{ insumo.cantpendientereq }}</p>
         </ion-col>
 
-        <ion-col size="5">
-          <label class="label-insumo">Cantidad Requerida</label>
+        <ion-col size="6">
+          <label class="label-insumo">Cant. Requerida</label>
           <p class="p-insumo">{{ insumo.cantreq }}</p>
         </ion-col>
       </ion-row>
