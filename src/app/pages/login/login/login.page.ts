@@ -71,20 +71,28 @@ export class LoginPage implements OnInit {
 		this.loader(true);
 		this.loginService.login(form.value.user, form.value.password)
 		.subscribe(
-			data => {
+			(data: any) => {
+				console.log(data);
+				// return;
 				if(data == 0){
 					this.alertService.presentToast('Contraseña no válida...');
 				}else if(typeof data === 'object'){
-					this.dismissLogin();
+					const licenciasCliente = data.cantidad ? data.cantidad : 0;
+					const usuariosLogueados = data.users ? data.users : [];
+					if (licenciasCliente < usuariosLogueados.length) {
+						this.alertService.presentToast(`No puede ingresar ha superado la cantidad maxima de usuarios logueados`);
+					} else {
+						this.dismissLogin();
 
-					for (var i in this.usuarios ){
-						if(form.value.user == this.usuarios[i].usuarioid){
-							form.value.nombreusuario = this.usuarios[i].nombre;
-							form.value.telefonocoordinador = this.usuarios[i].telefonocoordinador;
+						for (var i in this.usuarios ){
+							if(form.value.user == this.usuarios[i].usuarioid){
+								form.value.nombreusuario = this.usuarios[i].nombre;
+								form.value.telefonocoordinador = this.usuarios[i].telefonocoordinador;
+							}
 						}
+						this.storageService.set('usuarios',form.value);
+						this.navCtrl.navigateRoot('/dashboard');
 					}
-					this.storageService.set('usuarios',form.value);
-					this.navCtrl.navigateRoot('/dashboard');
 				}else{
 					this.alertService.presentToast('Ha ocurrido un problema, pero no te preocupes. No es tu culpa');
 					console.error(data);
