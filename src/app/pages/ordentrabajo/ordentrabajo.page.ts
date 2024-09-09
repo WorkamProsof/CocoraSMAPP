@@ -619,6 +619,14 @@ export class OrdentrabajoPage implements OnInit {
 
 		let options: CameraOptions = dataOption
 		this.camera.getPicture(options).then((imageData) =>{
+			if (options.sourceType != undefined || options.sourceType == 0) {
+				//SE VERIFICA SI LA INFORMACION DE LA IMAGEN LLEGA CON EXTENCION, DE SER ASI NO SE GUARDA PORQUE NO HAY FORMA DE RECONOCER QUE TIPO DE IMAGEN ES
+				let imagenExtencion = imageData.split('.');
+				if (imagenExtencion.length > 1) {
+					this.alertService.presentToast('No se puede subir ese tipo de imagen');
+					return;
+				};
+			};
 			var contenido = `${imageData}`;
 			this.image = `data:image/jpeg;base64,${imageData}`;
 			let objimg = {
