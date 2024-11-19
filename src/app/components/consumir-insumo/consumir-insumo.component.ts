@@ -23,7 +23,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   agregarInsumo             : boolean = false;
   descargarInsumos          : boolean = false;
   procesando                : boolean = false;
-  stepCantidadInsumo        : number = 1;
+  stepCantidadInsumo        : number = 1;  
 
   insumo: {
     cantfin           : number,
