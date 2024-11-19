@@ -38,6 +38,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     productoid        : string,
     tipo              : string,
     unidad            : string,
+    observacion       : string,
     cantidadDecimales : number
   }
 
@@ -46,6 +47,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     cantfin: new FormControl(1.0, [Validators.required, Validators.min(0.0001)]),
     nombre: new FormControl(''),
     unidad: new FormControl(''),
+    observacion: new FormControl(''),
     cantidadDisponible: new FormControl(0),
   });
 
@@ -76,6 +78,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
             cantini: parseFloat(insumo.cantini),
             cantreq: parseFloat(insumo.cantreq),
             cantpendientereq: parseFloat(insumo.cantpendientereq),
+            observacion: insumo.observacion,
           }
         ));
         this.iniciarFormulario();
@@ -92,6 +95,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
           productoid        : '',
           tipo              : '',
           unidad            : '',
+          observacion       : '',
           cantidadDecimales : 0
         };
       }
@@ -130,6 +134,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
   agregarInsumoALista() {
     this.insumo.cantini = this.formulario.controls.cantfin.value;
     this.insumo.cantfin = this.formulario.controls.cantfin.value;
+    this.insumo.observacion = this.formulario.controls.observacion.value;
     if (this.insumosPqr.find(insumo => insumo.productoid === this.formulario.controls.productoid.value)) {
       this.alertService.presentToast('El insumo ya se encuentra en la lista', 'middle');
     } else {
@@ -251,6 +256,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
         productoid        : data.productoid,
         tipo              : 'Adicional',
         unidad            : data.unidad,
+        observacion       : data.observacion,
         cantidadDecimales : data.decimalesCantidad
       };
       this.stepCantidadInsumo = 1/(Math.pow(10, data.decimalesCantidad));
@@ -268,6 +274,7 @@ export class ConsumirInsumoComponent implements OnInit, OnDestroy {
     this.formulario.controls.cantfin.setValue(1);
     this.formulario.controls.nombre.setValue('');
     this.formulario.controls.unidad.setValue('');
+    this.formulario.controls.observacion.setValue('');
     this.formulario.controls.cantidadDisponible.setValue('');
   }
 

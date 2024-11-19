@@ -134,6 +134,15 @@
           </div>
         </div>
       </ion-row>
+      <ion-row>
+        <h6 class="p-insumo">Observación</h6>
+        <div style="width: 100%; display: flex; align-items: center;">
+          <ion-col size="12">
+            <textarea  style="width: 100%;" [(ngModel)]="insumo.observacion" [disabled]="insumo.cantfin <= 0 || inhabilitarCambioCantidad"></textarea>
+          </ion-col>
+
+        </div>
+      </ion-row>
     </ion-card-content>
   </ion-card>
  
